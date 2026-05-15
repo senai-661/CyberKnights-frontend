@@ -6,16 +6,21 @@ import { Message } from "primereact/message";
 import { Button } from "primereact/button";
 import ClienteRequests from "../../../fetch/ClienteRequests";
 import type {ClienteDTO} from "../../../dto/ClienteDTO";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function DetalhesCliente(): JSX.Element {
+// Defina a interface das props
+interface DetalhesClienteProps {
+  id_cliente: number;
+}
+
+// Adicione o tipo no componente
+function DetalhesCliente({ id_cliente }: DetalhesClienteProps): JSX.Element {
 
     const [cliente, setCliente] = useState<ClienteDTO | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [erro, setErro] = useState<string>("");
 
     const navigate = useNavigate();
-    const { id } = useParams();
 
     useEffect(() => {
         buscarCliente();
@@ -24,7 +29,7 @@ function DetalhesCliente(): JSX.Element {
     const buscarCliente = async () => {
         try {
 
-            if (!id) {
+            if (!id_cliente) {
                 setErro("ID do cliente não informado");
                 return;
             }

@@ -7,16 +7,20 @@ import { Tag } from "primereact/tag";
 import { Button } from "primereact/button";
 import ProdutoRequests from "../../../fetch/ProdutoRequests";
 import type {ProdutoDTO} from "../../../dto/ProdutoDTO";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function DetalhesProdutos(): JSX.Element {
+// Interface das props
+interface DetalhesProdutosProps {
+    id_produto: number;
+}
+
+function DetalhesProdutos({ id_produto }: DetalhesProdutosProps): JSX.Element {
 
     const [produto, setProduto] = useState<ProdutoDTO | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [erro, setErro] = useState<string>("");
 
     const navigate = useNavigate();
-    const { id } = useParams();
 
     useEffect(() => {
         buscarProduto();
@@ -26,7 +30,7 @@ function DetalhesProdutos(): JSX.Element {
 
         try {
 
-            if (!id) {
+            if (!id_produto) {
                 setErro("ID do produto não informado");
                 return;
             }

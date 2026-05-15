@@ -7,16 +7,20 @@ import { Tag } from "primereact/tag";
 import { Button } from "primereact/button";
 import PedidoRequests from "../../../fetch/PedidoRequests";
 import type {PedidoDTO} from "../../../dto/PedidoDTO";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function DetalhesPedidos(): JSX.Element {
+// Interface das props
+interface DetalhesPedidosProps {
+    id_pedido: number;
+}
+
+function DetalhesPedidos({ id_pedido }: DetalhesPedidosProps): JSX.Element {
 
     const [pedido, setPedido] = useState<PedidoDTO | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [erro, setErro] = useState<string>("");
 
     const navigate = useNavigate();
-    const { id } = useParams();
 
     useEffect(() => {
         buscarPedido();
@@ -26,7 +30,7 @@ function DetalhesPedidos(): JSX.Element {
 
         try {
 
-            if (!id) {
+            if (!id_pedido) {
                 setErro("ID do pedido não informado");
                 return;
             }
