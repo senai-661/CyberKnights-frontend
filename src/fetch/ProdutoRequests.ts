@@ -5,7 +5,7 @@ class ProdutoRequests {
 
     constructor() {
         this.serverURL = `http://localhost:3333`;
-        this.endpointProduto = `/api/produtos`;
+        this.endpointProduto = `/api/produto`;
     }
 
     async obterListaDeProdutos() {
