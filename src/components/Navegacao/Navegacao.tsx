@@ -35,19 +35,19 @@ function Navegacao(): JSX.Element {
                 label: 'Clientes',
                 icon: 'pi pi-star',
                 className: 'm-5 text-white text-lg',
-                url: "/lista/clientes"
+                url: "/lista/cliente"
             },
             {
                 label: 'Pedidos',
                 icon: 'pi pi-star',
                 className: 'm-5 text-white text-lg',
-                url: "/lista/pedidos"
+                url: "/lista/pedido"
             },
             {
                 label: 'Produtos',
                 icon: 'pi pi-star',
                 className: 'm-5 text-white text-lg',
-                url: "/lista/produtos"
+                url: "/lista/produto"
             }
         ] : [])
     ];
