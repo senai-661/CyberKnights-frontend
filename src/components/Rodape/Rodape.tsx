@@ -20,10 +20,10 @@ function Rodape(): JSX.Element {
                 <div className="rodape-links">
                     <h4>Desenvolvido por</h4>
                     <div className="equipe-lista">
-                        <span>lavinia</span> • 
+                        <span>Lavinia</span> • 
                         <span>Beatriz</span> • 
-                        <span>Heloisa</span> • 
-                        <span>Sophia</span> • 
+                        <span>Heloísa</span> • 
+                        <span>Sofia</span> • 
                         <span>Clara</span>
                     </div>
                 </div>
