@@ -1,66 +1,197 @@
-import { type JSX } from "react";
+import React, { type JSX } from "react";
 import { useState, useEffect } from "react";
-import ClienteRequests from "../../../fetch/ClienteRequests";
+import type { ClienteDTO } from "../../../dto/ClienteDTO";
+import ClienteRequest from "../../../fetch/ClienteRequests";
 
-function ListagemClientes(): JSX.Element {
-    const [Clientes, setClientes] = useState([]);
+// Certifique-se de que os caminhos das importações estão corretos
+import Navegacao from "../../../components/Navegacao/Navegacao";
+import Rodape from "../../../components/Rodape/Rodape";
+
+function ListagemCliente(): JSX.Element {
+    const [clientes, setClientes] = useState<ClienteDTO[]>([]);
 
     useEffect(() => {
         const buscarClientes = async () => {
             try {
-                const listaDeClientes = await ClienteRequests.obterListaDeClientes();
+                const listaDeClientes = await ClienteRequest.obterListaDeClientes();
                 setClientes(listaDeClientes);
             } catch (error) {
                 console.error(`Erro ao buscar clientes. ${error}`);
-                alert("Erro ao criar a listagem de clientes.");
             }
-        }
+        };
 
         buscarClientes();
     }, []);
 
     return (
-        <main className="bg-gray-200 h-[76vh]"> {/* Web Semântica SEO (Search Engine Optimizer) */}
-            <div className="w-8/10 flex m-auto p-12">
-                <h1 className="w-9/10 text-3xl text-center">Clientes</h1>
-                <a href="#" className="w-1/10 p-3 text-md bg-slate-700 rounded-md text-center text-white font-bold flex items-center justify-center hover:cursor-pointer">
-                    Novo Cliente
-                </a>
-            </div>
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                minHeight: "100vh",
+                width: "100%",
+            }}
+        >
+            {/* CABEÇALHO */}
+            <Navegacao />
 
-            <div className="w-8/10 max-w-[80%] max-h-7/10 overflow-auto overscroll-none m-auto border border-slate-800">
-                <table className="table-auto w-full border-collapse text-sm">
-                    <thead className="bg-slate-700 sticky top-0 z-10">
-                        <tr>
-                            <th className="border border-slate-600 text-white">ID</th>
-                            <th className="border border-slate-600 text-white">Nome</th>
-                            <th className="border border-slate-600 text-white">E-mail</th>
-                            <th className="border border-slate-600 text-white">Telefone</th>
-                            <th className="border border-slate-600 text-white">Endereço</th>
-                            <th className="border border-slate-600 text-white">CPF</th>
-                        </tr>
-                    </thead>
-                    <tbody> {/* Dados fictícios (por enquanto) */}
-                        {Clientes.map((cliente) => (
-                            <tr className="border-b-2 text-center odd:bg-slate-300 even:bg-slate-100 hover:bg-slate-600 hover:text-white hover:cursor-pointer" key={cliente.id_cliente}>
-                                <td>{cliente.id_cliente}</td>
-                                <td className="p-3">{cliente.nome}</td>
-                                <td>{cliente.email}</td>
-                                <td>{cliente.telefone}</td>
-                                <td>{cliente.endereco}</td>
-                                <td>{cliente.cpf}</td>
-                                <td>
-                                    <a href="#" className="inline-block bg-sky-600 p-2 m-2 w-1/5 rounded-md text-white text-center">Detalhes</a>
-                                    <a href="#" className="inline-block bg-emerald-400 p-2 m-2 w-1/5 rounded-md text-white">Atualizar</a>
-                                    <a href="#" className="inline-block bg-red-600 p-2 m-2 w-1/5 rounded-md text-white">Deletar</a>
-                                </td>
+            {/* CONTEÚDO PRINCIPAL */}
+            <main
+                style={{
+                    flex: 1,
+                    padding: "40px 10%",
+                    backgroundColor: "#f4f7f6",
+                }}
+            >
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: "24px",
+                    }}
+                >
+                    <h1
+                        style={{
+                            color: "#2c3e50",
+                            fontSize: "1.8rem",
+                            fontWeight: "bold",
+                            margin: 0,
+                        }}
+                    >
+                        Clientes
+                    </h1>
+
+                    <button style={btnNovo}>+ Novo Cliente</button>
+                </div>
+
+                <div style={containerTabela}>
+                    <table
+                        style={{
+                            width: "100%",
+                            borderCollapse: "collapse",
+                            textAlign: "left",
+                        }}
+                    >
+                        <thead>
+                            <tr
+                                style={{
+                                    borderBottom: "2px solid #f0f0f0",
+                                    backgroundColor: "#f9f9f9",
+                                }}
+                            >
+                                <th style={estiloCabecalho}>NOME</th>
+                                <th style={estiloCabecalho}>ENDEREÇO</th>
+                                <th style={estiloCabecalho}>TELEFONE</th>
+                                <th style={estiloCabecalho}>CPF</th>
+                                <th style={estiloCabecalho}>AÇÕES</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    );
+                        </thead>
 
+                        <tbody>
+                            {clientes.map((cliente) => {
+                                return (
+                                    <tr
+                                        key={cliente.idCliente}
+                                        style={{
+                                            borderBottom: "1px solid #f0f0f0",
+                                        }}
+                                    >
+                                        <td style={estiloCelula}>
+                                            <div style={{ fontWeight: "bold" }}>
+                                                {cliente.nome}
+                                            </div>
+                                        </td>
+
+                                        <td style={estiloCelula}>
+                                            {cliente.endereco}
+                                        </td>
+
+                                        <td style={estiloCelula}>
+                                            {cliente.telefone}
+                                        </td>
+
+                                        <td style={estiloCelula}>
+                                            {cliente.cpf || "Não informado"}
+                                        </td>
+
+                                        <td style={estiloCelula}>
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    gap: "8px",
+                                                }}
+                                            >
+                                                <button style={btnAcao}>
+                                                    Detalhes
+                                                </button>
+
+                                                <button
+                                                    style={{
+                                                        ...btnAcao,
+                                                        color: "#E53E3E",
+                                                    }}
+                                                >
+                                                    Excluir
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+
+            {/* RODAPÉ */}
+            <Rodape />
+        </div>
+    );
 }
-export default ListagemClientes;
+
+// ESTILOS
+
+const estiloCabecalho: React.CSSProperties = {
+    padding: "16px",
+    fontSize: "0.75rem",
+    color: "#888",
+    textTransform: "uppercase",
+    letterSpacing: "1px",
+};
+
+const estiloCelula: React.CSSProperties = {
+    padding: "16px",
+    fontSize: "0.95rem",
+    color: "#333",
+};
+
+const containerTabela: React.CSSProperties = {
+    backgroundColor: "white",
+    borderRadius: "12px",
+    boxShadow: "0 4px 6px rgba(0,0,0,0.05)",
+    overflow: "hidden",
+    border: "1px solid #e0e0e0",
+};
+
+const btnNovo: React.CSSProperties = {
+    backgroundColor: "#3f4de3",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "8px",
+    border: "none",
+    fontWeight: "bold",
+    cursor: "pointer",
+};
+
+const btnAcao: React.CSSProperties = {
+    padding: "6px 12px",
+    borderRadius: "6px",
+    border: "1px solid #ddd",
+    backgroundColor: "white",
+    fontSize: "0.8rem",
+    cursor: "pointer",
+};
+
+export default ListagemCliente;
+
