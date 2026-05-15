@@ -1,29 +1,44 @@
+import { useNavigate } from "react-router-dom";
 import React, { type JSX } from "react";
 import { useState, useEffect } from "react";
+
 import type { ClienteDTO } from "../../../dto/ClienteDTO";
 import ClienteRequest from "../../../fetch/ClienteRequests";
 
-// Certifique-se de que os caminhos das importações estão corretos
 import Navegacao from "../../../components/Navegacao/Navegacao";
 import Rodape from "../../../components/Rodape/Rodape";
 
 function ListagemCliente(): JSX.Element {
+
+    const navigate = useNavigate();
+
     const [clientes, setClientes] = useState<ClienteDTO[]>([]);
 
     useEffect(() => {
+
         const buscarClientes = async () => {
+
             try {
-                const listaDeClientes = await ClienteRequest.obterListaDeClientes();
+
+                const listaDeClientes =
+                    await ClienteRequest.obterListaDeClientes();
+
                 setClientes(listaDeClientes);
+
             } catch (error) {
+
                 console.error(`Erro ao buscar clientes. ${error}`);
+
             }
+
         };
 
         buscarClientes();
+
     }, []);
 
     return (
+
         <div
             style={{
                 display: "flex",
@@ -32,6 +47,7 @@ function ListagemCliente(): JSX.Element {
                 width: "100%",
             }}
         >
+
             {/* CABEÇALHO */}
             <Navegacao />
 
@@ -43,6 +59,7 @@ function ListagemCliente(): JSX.Element {
                     backgroundColor: "#f4f7f6",
                 }}
             >
+
                 <div
                     style={{
                         display: "flex",
@@ -51,6 +68,7 @@ function ListagemCliente(): JSX.Element {
                         marginBottom: "24px",
                     }}
                 >
+
                     <h1
                         style={{
                             color: "#2c3e50",
@@ -62,10 +80,14 @@ function ListagemCliente(): JSX.Element {
                         Clientes
                     </h1>
 
-                    <button style={btnNovo}>+ Novo Cliente</button>
+                    <button style={btnNovo}>
+                        + Novo Cliente
+                    </button>
+
                 </div>
 
                 <div style={containerTabela}>
+
                     <table
                         style={{
                             width: "100%",
@@ -73,32 +95,60 @@ function ListagemCliente(): JSX.Element {
                             textAlign: "left",
                         }}
                     >
+
                         <thead>
+
                             <tr
                                 style={{
                                     borderBottom: "2px solid #f0f0f0",
                                     backgroundColor: "#f9f9f9",
                                 }}
                             >
-                                <th style={estiloCabecalho}>NOME</th>
-                                <th style={estiloCabecalho}>ENDEREÇO</th>
-                                <th style={estiloCabecalho}>TELEFONE</th>
-                                <th style={estiloCabecalho}>CPF</th>
-                                <th style={estiloCabecalho}>AÇÕES</th>
+
+                                <th style={estiloCabecalho}>
+                                    NOME
+                                </th>
+
+                                <th style={estiloCabecalho}>
+                                    ENDEREÇO
+                                </th>
+
+                                <th style={estiloCabecalho}>
+                                    TELEFONE
+                                </th>
+
+                                <th style={estiloCabecalho}>
+                                    CPF
+                                </th>
+
+                                <th style={estiloCabecalho}>
+                                    AÇÕES
+                                </th>
+
                             </tr>
+
                         </thead>
 
                         <tbody>
+
                             {clientes.map((cliente) => {
+
                                 return (
+
                                     <tr
                                         key={cliente.idCliente}
                                         style={{
-                                            borderBottom: "1px solid #f0f0f0",
+                                            borderBottom:
+                                                "1px solid #f0f0f0",
                                         }}
                                     >
+
                                         <td style={estiloCelula}>
-                                            <div style={{ fontWeight: "bold" }}>
+                                            <div
+                                                style={{
+                                                    fontWeight: "bold",
+                                                }}
+                                            >
                                                 {cliente.nome}
                                             </div>
                                         </td>
@@ -112,17 +162,27 @@ function ListagemCliente(): JSX.Element {
                                         </td>
 
                                         <td style={estiloCelula}>
-                                            {cliente.cpf || "Não informado"}
+                                            {cliente.cpf ||
+                                                "Não informado"}
                                         </td>
 
                                         <td style={estiloCelula}>
+
                                             <div
                                                 style={{
                                                     display: "flex",
                                                     gap: "8px",
                                                 }}
                                             >
-                                                <button style={btnAcao}>
+
+                                                <button
+                                                    style={btnAcao}
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/detalhes/cliente/${cliente.idCliente}`
+                                                        )
+                                                    }
+                                                >
                                                     Detalhes
                                                 </button>
 
@@ -134,20 +194,32 @@ function ListagemCliente(): JSX.Element {
                                                 >
                                                     Excluir
                                                 </button>
+
                                             </div>
+
                                         </td>
+
                                     </tr>
+
                                 );
+
                             })}
+
                         </tbody>
+
                     </table>
+
                 </div>
+
             </main>
 
             {/* RODAPÉ */}
             <Rodape />
+
         </div>
+
     );
+
 }
 
 // ESTILOS

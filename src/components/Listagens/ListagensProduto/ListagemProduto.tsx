@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import React, { type JSX } from "react";
 import { useState, useEffect } from "react";
 import type { ProdutoDTO } from "../../../dto/ProdutoDTO";
@@ -8,6 +9,7 @@ import Navegacao from "../../../components/Navegacao/Navegacao";
 import Rodape from "../../../components/Rodape/Rodape";
 
 function ListagemProduto(): JSX.Element {
+    const navigate = useNavigate();
     const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
 
     useEffect(() => {
@@ -161,7 +163,12 @@ function ListagemProduto(): JSX.Element {
                                                     gap: "8px",
                                                 }}
                                             >
-                                                <button style={btnAcao}>
+                                                <button
+                                                    style={btnAcao}
+                                                    onClick={() =>
+                                                        navigate(`/detalhes/produto/${produto.idProduto}`)
+                                                    }
+                                                >
                                                     Detalhes
                                                 </button>
 

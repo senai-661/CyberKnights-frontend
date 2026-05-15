@@ -30,6 +30,34 @@ class ClienteRequests {
             return;
         }
     }
+
+    async obterClientePorId(id: number) {
+
+    try {
+
+        const token = localStorage.getItem('token');
+
+        const respostaAPI = await fetch(
+            `${this.serverURL}${this.endpointCliente}/${id}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${token}`
+                }
+            }
+        );
+
+        const resposta = await respostaAPI.json();
+
+        return resposta;
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
 }
 
 export default new ClienteRequests;
