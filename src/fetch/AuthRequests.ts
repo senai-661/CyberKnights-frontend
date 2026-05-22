@@ -32,23 +32,31 @@ class AuthRequests {
                 // passando as informações de login no corpo da requisição
                 body: JSON.stringify(login)
             });
-            
-            // Verifica alguma falha na comunicação
+
+            const responseText = await response.text();
+            let data: any;
+
+            try {
+                data = responseText ? JSON.parse(responseText) : {};
+            } catch {
+                data = { message: responseText };
+            }
+
             if (!response.ok) {
-                console.log('Erro na autenticação');
-                throw new Error('Falha no login');
-            }
-            // caso a requisição seja bem sucedida, armazena a resposta em uma constante
-            const data = await response.json();
-            console.log( data );
-
-            // verifica se o atributo auth da resposta tem o valor TRUE, se tiver é porque a autenticação teve sucesso
-            if (data.auth) {
-                // persistem o token, o nome e o id do professor no localstorage
-                this.persistToken(data.token, data.usuario, data.auth);
+                console.error('Erro na autenticação', response.status, data);
+                throw new Error(data?.message || `Falha no login (${response.status})`);
             }
 
-            // retorna a resposta da requisição a quem chamou a função
+            console.log(data);
+
+            if (!data.auth) {
+                const message = data?.message || 'Autenticação negada pelo servidor';
+                throw new Error(message);
+            }
+
+            // persistem o token, o nome e o id do professor no localstorage
+            this.persistToken(data.token, data.usuario, data.auth);
+
             return true;
         } catch (error) {
             // lança um erro em caso de falha

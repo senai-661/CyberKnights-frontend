@@ -6,15 +6,13 @@ import { Message } from "primereact/message";
 import { Tag } from "primereact/tag";
 import { Button } from "primereact/button";
 import PedidoRequests from "../../../fetch/PedidoRequests";
-import type {PedidoDTO} from "../../../dto/PedidoDTO";
-import { useNavigate } from "react-router-dom";
+import type { PedidoDTO } from "../../../dto/PedidoDTO";
+import { useNavigate, useParams } from "react-router-dom"; // ✅ useParams adicionado
 
-// Interface das props
-interface DetalhesPedidosProps {
-    id_pedido: number;
-}
+function DetalhesPedidos(): JSX.Element {
 
-function DetalhesPedidos({ id_pedido }: DetalhesPedidosProps): JSX.Element {
+    // ✅ Pegando o ID pela URL em vez de prop
+    const { id_pedido } = useParams<{ id_pedido: string }>();
 
     const [pedido, setPedido] = useState<PedidoDTO | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -24,45 +22,43 @@ function DetalhesPedidos({ id_pedido }: DetalhesPedidosProps): JSX.Element {
 
     useEffect(() => {
         buscarPedido();
-    }, []);
+    }, [id_pedido]); // ✅ depende do id_pedido
 
     const buscarPedido = async () => {
-
         try {
 
+            // ✅ Valida se o ID existe na URL
             if (!id_pedido) {
                 setErro("ID do pedido não informado");
+                setLoading(false);
                 return;
             }
 
-            const resposta = await PedidoRequests.obterListaDePedidos();
+            // ✅ Busca apenas o pedido pelo ID, não a lista toda
+            const resposta = await PedidoRequests.obterPedidoPorId(Number(id_pedido));
+
+            if (!resposta) {
+                setErro("Pedido não encontrado");
+                return;
+            }
 
             setPedido(resposta);
 
         } catch (error) {
-
             setErro("Erro ao buscar pedido");
-
         } finally {
-
             setLoading(false);
-
         }
     };
 
     const getStatusSeverity = (status: string) => {
-
         switch (status) {
-
             case "Entregue":
                 return "success";
-
             case "Pendente":
                 return "warning";
-
             case "Cancelado":
                 return "danger";
-
             default:
                 return "info";
         }
@@ -90,7 +86,6 @@ function DetalhesPedidos({ id_pedido }: DetalhesPedidosProps): JSX.Element {
                 title="Detalhes do Pedido"
                 className="w-6 shadow-4"
             >
-
                 <div className="mb-3">
                     <h3>ID do Pedido</h3>
                     <p>{pedido?.idPedido}</p>
@@ -125,16 +120,13 @@ function DetalhesPedidos({ id_pedido }: DetalhesPedidosProps): JSX.Element {
 
                 <div className="mb-3">
                     <h3>Valor Total</h3>
-                    <p>
-                        R$ {pedido?.valorTotal.toFixed(2)}
-                    </p>
+                    <p>R$ {pedido?.valorTotal.toFixed(2)}</p>
                 </div>
 
                 <Divider />
 
                 <div className="mb-3">
                     <h3>Status do Pedido</h3>
-
                     <Tag
                         value={pedido?.statusPedido}
                         severity={getStatusSeverity(pedido?.statusPedido || "")}
@@ -147,10 +139,9 @@ function DetalhesPedidos({ id_pedido }: DetalhesPedidosProps): JSX.Element {
                     <Button
                         label="Voltar"
                         icon="pi pi-arrow-left"
-                        onClick={() => navigate("/pedidos")}
+                        onClick={() => navigate("/lista/pedido")} // ✅ rota corrigida
                     />
                 </div>
-
             </Card>
         </div>
     );

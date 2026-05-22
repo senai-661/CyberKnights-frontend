@@ -1,5 +1,6 @@
 import React, { type JSX } from "react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import type { ClienteDTO } from "../../../dto/ClienteDTO";
 import ClienteRequest from "../../../fetch/ClienteRequests";
 
@@ -9,6 +10,7 @@ import Rodape from "../../../components/Rodape/Rodape";
 
 function ListagemCliente(): JSX.Element {
     const [clientes, setClientes] = useState<ClienteDTO[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const buscarClientes = async () => {
@@ -122,7 +124,10 @@ function ListagemCliente(): JSX.Element {
                                                     gap: "8px",
                                                 }}
                                             >
-                                                <button style={btnAcao}>
+                                                <button
+                                                    style={btnAcao}
+                                                    onClick={() => navigate(`/lista/cliente/${cliente.idCliente}`)}
+                                                >
                                                     Detalhes
                                                 </button>
 
