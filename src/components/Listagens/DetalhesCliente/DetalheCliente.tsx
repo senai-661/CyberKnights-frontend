@@ -5,16 +5,13 @@ import { Divider } from "primereact/divider";
 import { Message } from "primereact/message";
 import { Button } from "primereact/button";
 import ClienteRequests from "../../../fetch/ClienteRequests";
-import type {ClienteDTO} from "../../../dto/ClienteDTO";
-import { useNavigate } from "react-router-dom";
+import type { ClienteDTO } from "../../../dto/ClienteDTO";
+import { useNavigate, useParams } from "react-router-dom"; // ✅ useParams adicionado
 
-// Defina a interface das props
-interface DetalhesClienteProps {
-  id_cliente: number;
-}
+function DetalhesCliente(): JSX.Element {
 
-// Adicione o tipo no componente
-function DetalhesCliente({ id_cliente }: DetalhesClienteProps): JSX.Element {
+    // ✅ Pegando o ID pela URL em vez de prop
+    const { id_cliente } = useParams<{ id_cliente: string }>();
 
     const [cliente, setCliente] = useState<ClienteDTO | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -24,28 +21,32 @@ function DetalhesCliente({ id_cliente }: DetalhesClienteProps): JSX.Element {
 
     useEffect(() => {
         buscarCliente();
-    }, []);
+    }, [id_cliente]); // ✅ depende do id_cliente
 
     const buscarCliente = async () => {
         try {
 
+            // ✅ Valida se o ID existe na URL
             if (!id_cliente) {
                 setErro("ID do cliente não informado");
+                setLoading(false);
                 return;
             }
 
-            const resposta = await ClienteRequests.obterListaDeClientes();
+            // ✅ Busca apenas o cliente pelo ID, não a lista toda
+            const resposta = await ClienteRequests.obterClientePorId(Number(id_cliente));
+
+            if (!resposta) {
+                setErro("Cliente não encontrado");
+                return;
+            }
 
             setCliente(resposta);
 
         } catch (error) {
-
             setErro("Erro ao buscar cliente");
-
         } finally {
-
             setLoading(false);
-
         }
     };
 
@@ -71,7 +72,6 @@ function DetalhesCliente({ id_cliente }: DetalhesClienteProps): JSX.Element {
                 title="Detalhes do Cliente"
                 className="w-6 shadow-4"
             >
-
                 <div className="mb-3">
                     <h3>ID</h3>
                     <p>{cliente?.idCliente}</p>
@@ -111,10 +111,9 @@ function DetalhesCliente({ id_cliente }: DetalhesClienteProps): JSX.Element {
                     <Button
                         label="Voltar"
                         icon="pi pi-arrow-left"
-                        onClick={() => navigate("/clientes")}
+                        onClick={() => navigate("/lista/cliente")} // ✅ rota corrigida
                     />
                 </div>
-
             </Card>
         </div>
     );

@@ -1,5 +1,6 @@
 import React, { type JSX } from "react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import type { PedidoDTO } from "../../../dto/PedidoDTO";
 import PedidoRequest from "../../../fetch/PedidoRequests";
 
@@ -9,6 +10,7 @@ import Rodape from "../../../components/Rodape/Rodape";
 
 function ListagemPedido(): JSX.Element {
     const [pedidos, setPedidos] = useState<PedidoDTO[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const buscarPedidos = async () => {
@@ -190,7 +192,10 @@ function ListagemPedido(): JSX.Element {
                                                     gap: "8px",
                                                 }}
                                             >
-                                                <button style={btnAcao}>
+                                                <button
+                                                    style={btnAcao}
+                                                    onClick={() => navigate(`/lista/pedido/${pedido.idPedido}`)}
+                                                >
                                                     Detalhes
                                                 </button>
 

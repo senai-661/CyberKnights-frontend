@@ -1,5 +1,6 @@
 import React, { type JSX } from "react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import type { ProdutoDTO } from "../../../dto/ProdutoDTO";
 import ProdutoRequest from "../../../fetch/ProdutoRequests";
 
@@ -9,6 +10,7 @@ import Rodape from "../../../components/Rodape/Rodape";
 
 function ListagemProduto(): JSX.Element {
     const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const buscarProdutos = async () => {
@@ -161,7 +163,10 @@ function ListagemProduto(): JSX.Element {
                                                     gap: "8px",
                                                 }}
                                             >
-                                                <button style={btnAcao}>
+                                                <button
+                                                    style={btnAcao}
+                                                    onClick={() => navigate(`/lista/produto/${produto.idProduto}`)}
+                                                >
                                                     Detalhes
                                                 </button>
 

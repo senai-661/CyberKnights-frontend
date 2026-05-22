@@ -7,23 +7,31 @@ import PListagensPedidos from './components/Listagens/ListagensPedido/ListagensP
 import PListagensProdutos from './components/Listagens/ListagensProduto/ListagemProduto'
 import ProtectedRoute from './components/Rotas/ProtectedRoutes'
 
+// ✅ Importe os componentes de detalhes
+import DetalhesCliente from './components/Listagens/DetalhesCliente/DetalheCliente'
+import DetalhesPedidos from './components/Listagens/DetalhesPedidos/DetalhesPedidos'
+import DetalhesProdutos from './components/Listagens/DetalhesProdutos/DetalhesProdutos'
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>
-        {/* Rota Principal: Landing Page do MedFlow */}
-        <Route path='/' element={<PHome />} /> 
-        <Route path='/login' element = {<PLogin/>}/>
-        <Route path='/lista/cliente' element={<ProtectedRoute element={<PListagensClientes />} />}/>
-        <Route path='/lista/pedido' element={<ProtectedRoute element={<PListagensPedidos />} />}/>
-        <Route path='/lista/produto' element={<ProtectedRoute element={<PListagensProdutos />} />}/> 
+        {/* Rota Principal */}
+        <Route path='/' element={<PHome />} />
+        <Route path='/login' element={<PLogin />} />
 
+        {/* Listagens */}
+        <Route path='/lista/cliente' element={<ProtectedRoute element={<PListagensClientes />} />} />
+        <Route path='/lista/pedido'  element={<ProtectedRoute element={<PListagensPedidos />} />} />
+        <Route path='/lista/produto' element={<ProtectedRoute element={<PListagensProdutos />} />} />
+
+        {/* ✅ Detalhes — rotas novas */}
+        <Route path='/lista/cliente/:id_cliente' element={<ProtectedRoute element={<DetalhesCliente />} />} />
+        <Route path='/lista/pedido/:id_pedido'   element={<ProtectedRoute element={<DetalhesPedidos />} />} />
+        <Route path='/lista/produto/:id_produto' element={<ProtectedRoute element={<DetalhesProdutos />} />} />
       </Routes>
     </BrowserRouter>
   )
 }
 
-export default App;
-
+export default App
