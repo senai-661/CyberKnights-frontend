@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState } from "react";
 import styles from "../../components/Formularios/FormLogin.module.css";
 
@@ -42,3 +43,25 @@ export default function PLogin() {
     </div>
   );
 }
+=======
+import { type JSX } from "react";
+
+import Navegacao from "../../components/Navegacao/Navegacao";
+
+import LoginForm from "../../components/FormLogin/FormLogin";
+
+
+function PLogin(): JSX.Element {
+    return (
+        <div className="pagina-grid">
+      
+            <Navegacao />
+
+
+            <LoginForm />
+        </div>
+    );
+}
+
+export default PLogin;
+>>>>>>> 66f4c7606323417193cd9d4d194b4353224875d1

@@ -21,7 +21,7 @@ function Navegacao(): JSX.Element {
 
     const nome = localStorage.getItem('nome') || 'Usuário';
     const email = localStorage.getItem('email') || '';
-    const avatarImage = "https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png";
+  
 
     const items: CustomMenuItem[] = [
         {
@@ -32,22 +32,22 @@ function Navegacao(): JSX.Element {
         },
         ...(isAuthenticated ? [
             {
-                label: 'Alunos',
+                label: 'Clientes',
                 icon: 'pi pi-star',
                 className: 'm-5 text-white text-lg',
-                url: "/lista/aluno"
+                url: "/lista/cliente"
             },
             {
-                label: 'Livros',
+                label: 'Pedidos',
                 icon: 'pi pi-star',
                 className: 'm-5 text-white text-lg',
-                url: "/lista/livro"
+                url: "/lista/pedido"
             },
             {
-                label: 'Empréstimos',
+                label: 'Produtos',
                 icon: 'pi pi-star',
                 className: 'm-5 text-white text-lg',
-                url: "/lista/emprestimo"
+                url: "/lista/produto"
             }
         ] : [])
     ];
@@ -69,7 +69,7 @@ function Navegacao(): JSX.Element {
                 <p className="text-white text-sm m-0">{email}</p>
             </div>
             <Avatar
-                image={avatarImage}
+              
                 shape="circle"
                 className="!w-[10%] !h-[10%]"
             />

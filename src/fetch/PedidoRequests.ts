@@ -7,7 +7,6 @@ class PedidoRequests {
         this.endpointPedido = "/api/pedido";
     }
 
-    // LISTAR PEDIDOS
     async obterListaDePedidos() {
         try {
             const token = localStorage.getItem("token");
@@ -22,18 +21,21 @@ class PedidoRequests {
                 }
             );
 
-            if (!respostaAPI.ok) {
-                throw new Error("Erro ao listar pedidos");
+            if (respostaAPI.ok) {
+                return await respostaAPI.json();
+            } else {
+                throw new Error("Não foi possível listar os pedidos.");
             }
 
-            return await respostaAPI.json();
+            const listaDePedidos = await respostaAPI.json();
+            return listaDePedidos;
+
         } catch (error) {
-            console.error("Erro ao listar pedidos:", error);
+            console.error("Erro ao fazer a consulta de pedidos.", error);
             return [];
         }
     }
 
-    // (OPCIONAL MAS RECOMENDADO) BUSCAR POR ID
     async obterPedidoPorId(id: number) {
         try {
             const token = localStorage.getItem("token");
@@ -49,12 +51,14 @@ class PedidoRequests {
             );
 
             if (!respostaAPI.ok) {
-                throw new Error("Pedido não encontrado");
+                throw new Error("Não foi possível buscar o pedido por ID.");
             }
 
-            return await respostaAPI.json();
+            const resposta = await respostaAPI.json();
+            return resposta;
+
         } catch (error) {
-            console.error("Erro ao buscar pedido por ID:", error);
+            console.error("Erro ao buscar pedido por ID.", error);
             return null;
         }
     }
