@@ -120,7 +120,7 @@ function DetalhesPedidos(): JSX.Element {
 
                 <div className="mb-3">
                     <h3>Valor Total</h3>
-                    <p>R$ {pedido?.valorTotal.toFixed(2)}</p>
+                    <p>R$ {pedido?.valorTotal}</p>
                 </div>
 
                 <Divider />

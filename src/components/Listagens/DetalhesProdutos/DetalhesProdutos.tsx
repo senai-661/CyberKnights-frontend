@@ -101,7 +101,7 @@ function DetalhesProdutos(): JSX.Element {
 
                 <div className="mb-3">
                     <h3>Preço</h3>
-                    <p>R$ {produto?.preco.toFixed(2)}</p>
+                    <p>R$ {produto?.preco}</p>
                 </div>
 
                 <Divider />
