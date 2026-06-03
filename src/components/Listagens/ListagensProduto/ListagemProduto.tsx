@@ -1,6 +1,6 @@
+import { useNavigate } from "react-router-dom";
 import React, { type JSX } from "react";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import type { ProdutoDTO } from "../../../dto/ProdutoDTO";
 import ProdutoRequest from "../../../fetch/ProdutoRequests";
 
@@ -9,9 +9,8 @@ import Navegacao from "../../../components/Navegacao/Navegacao";
 import Rodape from "../../../components/Rodape/Rodape";
 
 function ListagemProduto(): JSX.Element {
-    const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
     const navigate = useNavigate();
-
+    const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
     useEffect(() => {
         const buscarProdutos = async () => {
             try {
