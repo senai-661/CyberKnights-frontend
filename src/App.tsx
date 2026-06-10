@@ -5,6 +5,7 @@ import PHome from './pages/PHome/PHome'
 import PLogin from './pages/PLogin/PLogin'
 
 import PListagensClientes from './components/Listagens/ListagensClientes/ListagensClientes'
+import PCadastroCliente from './pages/PCadastro/PCadastroCliente/PCadastroCliente'
 import PListagensPedidos from './components/Listagens/ListagensPedido/ListagensPedidos'
 import PListagensProdutos from './components/Listagens/ListagensProduto/ListagemProduto'
 
@@ -33,6 +34,7 @@ function App() {
         <Route path='/lista/cliente/:id_cliente' element={<ProtectedRoute element={<DetalhesCliente />} />} />
         <Route path='/lista/pedido/:id_pedido'   element={<ProtectedRoute element={<DetalhesPedidos />} />} />
         <Route path='/lista/produto/:id_produto' element={<ProtectedRoute element={<DetalhesProdutos />} />} />
+        <Route path='/cadastro/cliente' element={<PCadastroCliente />} />
       </Routes>
 
     </BrowserRouter>
