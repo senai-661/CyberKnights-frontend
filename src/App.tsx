@@ -4,9 +4,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import PHome from './pages/PHome/PHome'
 import PLogin from './pages/PLogin/PLogin'
 
-import PListagensClientes from './components/Listagens/ListagemClientes/ListagemCliente'
-import PListagensPedidos from './components/Listagens/ListagemPedidos/ListagemPedidos'
-import PListagensProdutos from './components/Listagens/ListagemProdutos/ListagemProdutos'
+import PListagensClientes from './components/Listagens/ListagensCliente/ListagemCliente'
+import PCadastroCliente from './pages/PCadatro/PCadastroCliente/PCadastroCliente'
+import PListagensPedidos from './components/Listagens/ListagensPedido/ListagensPedidos'
+import PListagensProdutos from './components/Listagens/ListagensProduto/ListagemProduto'
 
 // ✅ Importe os componentes de detalhes
 import DetalhesCliente from './components/Listagens/DetalhesCliente/DetalheCliente'
@@ -30,9 +31,12 @@ function App() {
         <Route path='/lista/produto' element={<ProtectedRoute element={<PListagensProdutos />} />} />
 
         {/* ✅ Detalhes — rotas novas */}
-        <Route path='/lista/cliente/:id_cliente' element={<ProtectedRoute element={<DetalhesCliente />} />} />
-        <Route path='/lista/pedido/:id_pedido'   element={<ProtectedRoute element={<DetalhesPedidos />} />} />
-        <Route path='/lista/produto/:id_produto' element={<ProtectedRoute element={<DetalhesProdutos />} />} />
+        <Route path='/detalhes/cliente/:id_cliente' element={<ProtectedRoute element={<DetalhesCliente />} />} />
+        <Route path='/detalhes/pedido/:id_pedido'   element={<ProtectedRoute element={<DetalhesPedidos />} />} />
+        <Route path='/detalhes/produto/:id_produto' element={<ProtectedRoute element={<DetalhesProdutos />} />} />
+
+        {/* Cadastros */}
+        <Route path='/cadastro/cliente' element={<PCadastroCliente />} />
       </Routes>
 
     </BrowserRouter>
