@@ -1,16 +1,17 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import React, { type JSX } from "react";
 import { useState, useEffect } from "react";
-import type ClienteDTO from "../../../dto/ClienteDTO";
+import type { ClienteDTO } from "../../../dto/ClienteDTO";
 import ClienteRequest from "../../../fetch/ClienteRequests";
 
-// Certifique-se de que os caminhos das importações estão corretos
 import Navegacao from "../../../components/Navegacao/Navegacao";
 import Rodape from "../../../components/Rodape/Rodape";
 
 function ListagemCliente(): JSX.Element {
 
+
     const [clientes, setClientes] = useState<ClienteDTO[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -78,13 +79,9 @@ function ListagemCliente(): JSX.Element {
                         Clientes
                     </h1>
 
-                    <Link to="/novo-cliente">
-
-                        <button style={btnNovo}>
-                            + Novo Cliente
-                        </button>
-
-                    </Link>
+                    <button style={btnNovo}>
+                        + Novo Cliente
+                    </button>
 
                 </div>
 
@@ -107,11 +104,25 @@ function ListagemCliente(): JSX.Element {
                                 }}
                             >
 
-                                <th style={estiloCabecalho}>NOME</th>
-                                <th style={estiloCabecalho}>ENDEREÇO</th>
-                                <th style={estiloCabecalho}>TELEFONE</th>
-                                <th style={estiloCabecalho}>CPF</th>
-                                <th style={estiloCabecalho}>AÇÕES</th>
+                                <th style={estiloCabecalho}>
+                                    NOME
+                                </th>
+
+                                <th style={estiloCabecalho}>
+                                    ENDEREÇO
+                                </th>
+
+                                <th style={estiloCabecalho}>
+                                    TELEFONE
+                                </th>
+
+                                <th style={estiloCabecalho}>
+                                    CPF
+                                </th>
+
+                                <th style={estiloCabecalho}>
+                                    AÇÕES
+                                </th>
 
                             </tr>
 
@@ -124,18 +135,21 @@ function ListagemCliente(): JSX.Element {
                                 return (
 
                                     <tr
-                                        key={cliente.id_cliente}
+                                        key={cliente.idCliente}
                                         style={{
-                                            borderBottom: "1px solid #f0f0f0",
+                                            borderBottom:
+                                                "1px solid #f0f0f0",
                                         }}
                                     >
 
                                         <td style={estiloCelula}>
-
-                                            <div style={{ fontWeight: "bold" }}>
+                                            <div
+                                                style={{
+                                                    fontWeight: "bold",
+                                                }}
+                                            >
                                                 {cliente.nome}
                                             </div>
-
                                         </td>
 
                                         <td style={estiloCelula}>
@@ -147,7 +161,8 @@ function ListagemCliente(): JSX.Element {
                                         </td>
 
                                         <td style={estiloCelula}>
-                                            {cliente.cpf || "Não informado"}
+                                            {cliente.cpf ||
+                                                "Não informado"}
                                         </td>
 
                                         <td style={estiloCelula}>
@@ -158,17 +173,12 @@ function ListagemCliente(): JSX.Element {
                                                     gap: "8px",
                                                 }}
                                             >
-
-                                                {/* BOTÃO DETALHES CORRIGIDO */}
-                                                <Link
-                                                    to={`/detalhes/cliente/${cliente.id_cliente}`}
+                                                <button
+                                                    style={btnAcao}
+                                                    onClick={() => navigate(`/lista/cliente/${cliente.idCliente}`)}
                                                 >
-
-                                                    <button style={btnAcao}>
-                                                        Detalhes
-                                                    </button>
-
-                                                </Link>
+                                                    Detalhes
+                                                </button>
 
                                                 <button
                                                     style={{

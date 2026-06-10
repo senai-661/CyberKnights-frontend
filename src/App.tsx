@@ -4,9 +4,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import PHome from './pages/PHome/PHome'
 import PLogin from './pages/PLogin/PLogin'
 
-import PListagensClientes from './components/Listagens/ListagensClientes/ListagensClientes'
-import PListagensPedidos from './components/Listagens/ListagensPedido/ListagensPedidos'
-import PListagensProdutos from './components/Listagens/ListagensProduto/ListagemProduto'
+import PListagensClientes from './components/Listagens/ListagemClientes/ListagemCliente'
+import PListagensPedidos from './components/Listagens/ListagemPedidos/ListagemPedidos'
+import PListagensProdutos from './components/Listagens/ListagemProdutos/ListagemProdutos'
 
 // ✅ Importe os componentes de detalhes
 import DetalhesCliente from './components/Listagens/DetalhesCliente/DetalheCliente'

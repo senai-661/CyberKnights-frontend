@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-import type { JSX } from "react";
-
-function Rodape(): JSX.Element {
-    return (
-        <footer className="bg-slate-700 h-[12vh] flex items-center justify-around">
-            <p className="text-white text-xl">Copyright - Todos os direitos e esquerdos reservados</p>
-            <p className="text-white text-xl">[ Lanches Maga ]</p>
-=======
 import { type JSX } from "react";
 import "./Rodape.css";
 
@@ -56,7 +47,6 @@ function Rodape(): JSX.Element {
                 <p>© 2026 Mega Lanches - Rede de lanches .</p>
                 <p>Versão 1.0.2</p>
             </div>
->>>>>>> 66f4c7606323417193cd9d4d194b4353224875d1
         </footer>
     );
 }

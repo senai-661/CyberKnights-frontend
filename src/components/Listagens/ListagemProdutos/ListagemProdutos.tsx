@@ -1,43 +1,39 @@
 import { useNavigate } from "react-router-dom";
 import React, { type JSX } from "react";
 import { useState, useEffect } from "react";
-import type { ClienteDTO } from "../../../dto/ClienteDTO";
-import ClienteRequest from "../../../fetch/ClienteRequests";
+import type { ProdutoDTO } from "../../../dto/ProdutoDTO";
+import ProdutoRequest from "../../../fetch/ProdutoRequests";
 
-import Navegacao from "../../../components/Navegacao/Navegacao";
-import Rodape from "../../../components/Rodape/Rodape";
+// Certifique-se de que os caminhos das importações estão corretos
+import Navegacao from "../../Navegacao/Navegacao";
+import Rodape from "../../Rodape/Rodape";
 
-function ListagemCliente(): JSX.Element {
-
-
-    const [clientes, setClientes] = useState<ClienteDTO[]>([]);
+function ListagemProduto(): JSX.Element {
     const navigate = useNavigate();
-
+    const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
     useEffect(() => {
-
-        const buscarClientes = async () => {
-
+        const buscarProdutos = async () => {
             try {
+                const listaDeProdutos =
+                    await ProdutoRequest.obterListaDeProdutos();
 
-                const listaDeClientes =
-                    await ClienteRequest.obterListaDeClientes();
-
-                setClientes(listaDeClientes);
-
+                setProdutos(listaDeProdutos);
             } catch (error) {
-
-                console.error(`Erro ao buscar clientes. ${error}`);
-
+                console.error(`Erro ao buscar produtos. ${error}`);
             }
-
         };
 
-        buscarClientes();
-
+        buscarProdutos();
     }, []);
 
-    return (
+    const formatarMoeda = (valor: number) => {
+        return valor.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+        });
+    };
 
+    return (
         <div
             style={{
                 display: "flex",
@@ -46,7 +42,6 @@ function ListagemCliente(): JSX.Element {
                 width: "100%",
             }}
         >
-
             {/* CABEÇALHO */}
             <Navegacao />
 
@@ -58,7 +53,6 @@ function ListagemCliente(): JSX.Element {
                     backgroundColor: "#f4f7f6",
                 }}
             >
-
                 <div
                     style={{
                         display: "flex",
@@ -67,7 +61,6 @@ function ListagemCliente(): JSX.Element {
                         marginBottom: "24px",
                     }}
                 >
-
                     <h1
                         style={{
                             color: "#2c3e50",
@@ -76,17 +69,13 @@ function ListagemCliente(): JSX.Element {
                             margin: 0,
                         }}
                     >
-                        Clientes
+                        Produtos
                     </h1>
 
-                    <button style={btnNovo}>
-                        + Novo Cliente
-                    </button>
-
+                    <button style={btnNovo}>+ Novo Produto</button>
                 </div>
 
                 <div style={containerTabela}>
-
                     <table
                         style={{
                             width: "100%",
@@ -94,53 +83,42 @@ function ListagemCliente(): JSX.Element {
                             textAlign: "left",
                         }}
                     >
-
                         <thead>
-
                             <tr
                                 style={{
                                     borderBottom: "2px solid #f0f0f0",
                                     backgroundColor: "#f9f9f9",
                                 }}
                             >
+                                <th style={estiloCabecalho}>CÓDIGO</th>
 
                                 <th style={estiloCabecalho}>
-                                    NOME
+                                    NOME DO PRODUTO
                                 </th>
+
+                                <th style={estiloCabecalho}>PREÇO</th>
 
                                 <th style={estiloCabecalho}>
-                                    ENDEREÇO
+                                    DISPONIBILIDADE
                                 </th>
 
-                                <th style={estiloCabecalho}>
-                                    TELEFONE
-                                </th>
-
-                                <th style={estiloCabecalho}>
-                                    CPF
-                                </th>
-
-                                <th style={estiloCabecalho}>
-                                    AÇÕES
-                                </th>
-
+                                <th style={estiloCabecalho}>AÇÕES</th>
                             </tr>
-
                         </thead>
 
                         <tbody>
-
-                            {clientes.map((cliente) => {
-
+                            {produtos.map((produto) => {
                                 return (
-
                                     <tr
-                                        key={cliente.idCliente}
+                                        key={produto.idProduto}
                                         style={{
                                             borderBottom:
                                                 "1px solid #f0f0f0",
                                         }}
                                     >
+                                        <td style={estiloCelula}>
+                                            #{produto.idProduto}
+                                        </td>
 
                                         <td style={estiloCelula}>
                                             <div
@@ -148,25 +126,36 @@ function ListagemCliente(): JSX.Element {
                                                     fontWeight: "bold",
                                                 }}
                                             >
-                                                {cliente.nome}
+                                                {produto.nomeProduto}
                                             </div>
                                         </td>
 
                                         <td style={estiloCelula}>
-                                            {cliente.endereco}
+                                            <div
+                                                style={{
+                                                    fontWeight: "bold",
+                                                    color: "#2ecc71",
+                                                }}
+                                            >
+                                                {formatarMoeda(
+                                                    produto.preco
+                                                )}
+                                            </div>
                                         </td>
 
                                         <td style={estiloCelula}>
-                                            {cliente.telefone}
+                                            <div
+                                                style={
+                                                    estiloDisponibilidade
+                                                }
+                                            >
+                                                {
+                                                    produto.disponibilidade
+                                                }
+                                            </div>
                                         </td>
 
                                         <td style={estiloCelula}>
-                                            {cliente.cpf ||
-                                                "Não informado"}
-                                        </td>
-
-                                        <td style={estiloCelula}>
-
                                             <div
                                                 style={{
                                                     display: "flex",
@@ -175,7 +164,7 @@ function ListagemCliente(): JSX.Element {
                                             >
                                                 <button
                                                     style={btnAcao}
-                                                    onClick={() => navigate(`/lista/cliente/${cliente.idCliente}`)}
+                                                    onClick={() => navigate(`/lista/produto/${produto.idProduto}`)}
                                                 >
                                                     Detalhes
                                                 </button>
@@ -188,32 +177,20 @@ function ListagemCliente(): JSX.Element {
                                                 >
                                                     Excluir
                                                 </button>
-
                                             </div>
-
                                         </td>
-
                                     </tr>
-
                                 );
-
                             })}
-
                         </tbody>
-
                     </table>
-
                 </div>
-
             </main>
 
             {/* RODAPÉ */}
             <Rodape />
-
         </div>
-
     );
-
 }
 
 // ESTILOS
@@ -259,4 +236,10 @@ const btnAcao: React.CSSProperties = {
     cursor: "pointer",
 };
 
-export default ListagemCliente;
+const estiloDisponibilidade: React.CSSProperties = {
+    fontSize: "0.85rem",
+    color: "#666",
+    textTransform: "capitalize",
+};
+
+export default ListagemProduto;

@@ -2,16 +2,6 @@ import type { JSX } from "react";
 import BoasVindas from "../../components/BoasVindas/BoasVindas";
 import Navegacao from "../../components/Navegacao/Navegacao";
 import Rodape from "../../components/Rodape/Rodape";
-<<<<<<< HEAD
- 
-function PHome(): JSX.Element {
-    return (
-        <>
-            <Navegacao />
-            <BoasVindas />
-            <Rodape />
-        </>
-=======
 
 function PHome(): JSX.Element {
     return (
@@ -24,7 +14,6 @@ function PHome(): JSX.Element {
 
             <Rodape />
         </div>
->>>>>>> 66f4c7606323417193cd9d4d194b4353224875d1
     );
 }
 

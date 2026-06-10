@@ -1,49 +1,13 @@
-<<<<<<< HEAD
-import { Link } from "react-router-dom";
-import React, { type JSX } from "react";
-import { useState, useEffect } from "react";
-
-import type PedidoDTO from "../../../dto/PedidoDTO";
-=======
 import { useNavigate } from "react-router-dom";
 import React, { type JSX } from "react";
 import { useState, useEffect } from "react";
 import type { PedidoDTO } from "../../../dto/PedidoDTO";
->>>>>>> 66f4c7606323417193cd9d4d194b4353224875d1
 import PedidoRequest from "../../../fetch/PedidoRequests";
 
-import Navegacao from "../../../components/Navegacao/Navegacao";
-import Rodape from "../../../components/Rodape/Rodape";
+import Navegacao from "../../Navegacao/Navegacao";
+import Rodape from "../../Rodape/Rodape";
 
 function ListagemPedido(): JSX.Element {
-<<<<<<< HEAD
-
-    const [pedidos, setPedidos] = useState<PedidoDTO[]>([]);
-
-    useEffect(() => {
-
-        const buscarPedidos = async () => {
-
-            try {
-
-                const listaDePedidos =
-                    await PedidoRequest.obterListaDePedidos();
-
-                setPedidos(listaDePedidos || []);
-
-            } catch (error) {
-                console.error(`Erro ao buscar pedidos. ${error}`);
-            }
-
-        };
-
-        buscarPedidos();
-
-    }, []);
-
-    const formatarDataHora = (dataIso: string | Date) => {
-
-=======
     const [pedidos, setPedidos] = useState<PedidoDTO[]>([]);
     const navigate = useNavigate();
 
@@ -76,7 +40,6 @@ function ListagemPedido(): JSX.Element {
 }, []);
 
     const formatarDataHora = (dataIso: string | Date) => {
->>>>>>> 66f4c7606323417193cd9d4d194b4353224875d1
         const dataObj = new Date(dataIso);
 
         return {
@@ -96,57 +59,6 @@ function ListagemPedido(): JSX.Element {
     };
 
     return (
-<<<<<<< HEAD
-
-        <div style={{
-            display: "flex",
-            flexDirection: "column",
-            minHeight: "100vh",
-            width: "100%",
-        }}>
-
-            <Navegacao />
-
-            <main style={{
-                flex: 1,
-                padding: "40px 10%",
-                backgroundColor: "#f4f7f6",
-            }}>
-
-                <h1 style={{
-                    color: "#2c3e50",
-                    fontSize: "1.8rem",
-                    fontWeight: "bold",
-                    marginBottom: "24px",
-                }}>
-                    Lista de Pedidos
-                </h1>
-
-                <div style={{
-                    backgroundColor: "white",
-                    borderRadius: "12px",
-                    overflow: "hidden",
-                    border: "1px solid #e0e0e0",
-                }}>
-
-                    <table style={{
-                        width: "100%",
-                        borderCollapse: "collapse",
-                        textAlign: "left",
-                    }}>
-
-                        <thead>
-                            <tr style={{ backgroundColor: "#f9f9f9" }}>
-
-                                <th style={estiloCabecalho}>ID</th>
-                                <th style={estiloCabecalho}>DATA</th>
-                                <th style={estiloCabecalho}>CLIENTE</th>
-                                <th style={estiloCabecalho}>PRODUTO</th>
-                                <th style={estiloCabecalho}>PREÇO</th>
-                                <th style={estiloCabecalho}>STATUS</th>
-                                <th style={estiloCabecalho}>AÇÕES</th>
-
-=======
         <div
             style={{
                 display: "flex",
@@ -222,30 +134,10 @@ function ListagemPedido(): JSX.Element {
                                 <th style={estiloCabecalho}>STATUS</th>
 
                                 <th style={estiloCabecalho}>AÇÕES</th>
->>>>>>> 66f4c7606323417193cd9d4d194b4353224875d1
                             </tr>
                         </thead>
 
                         <tbody>
-<<<<<<< HEAD
-
-                            {pedidos.map((pedido) => {
-
-                                const { data, hora } =
-                                    formatarDataHora(pedido.data_pedido);
-
-                                return (
-
-                                    <tr key={pedido.id_Pedido}>
-
-                                        <td style={estiloCelula}>
-                                            #{pedido.id_Pedido}
-                                        </td>
-
-                                        <td style={estiloCelula}>
-                                            <div style={{ fontWeight: "bold" }}>{data}</div>
-                                            <div style={{ fontSize: "0.8rem", color: "#888" }}>
-=======
                             {pedidos.map((pedido) => {
                                 const { data, hora } = formatarDataHora(
                                     pedido.dataPedido.toString()
@@ -278,57 +170,11 @@ function ListagemPedido(): JSX.Element {
                                                     color: "#888",
                                                 }}
                                             >
->>>>>>> 66f4c7606323417193cd9d4d194b4353224875d1
                                                 às {hora}
                                             </div>
                                         </td>
 
                                         <td style={estiloCelula}>
-<<<<<<< HEAD
-                                            {pedido.cliente.nome}
-                                        </td>
-
-                                        <td style={estiloCelula}>
-                                            {pedido.produto.nome_produto}
-                                        </td>
-
-                                        <td style={estiloCelula}>
-                                            <strong style={{ color: "#2ecc71" }}>
-                                                {formatarMoeda(pedido.produto.preco)}
-                                            </strong>
-                                        </td>
-
-                                        <td style={estiloCelula}>
-                                            {pedido.status}
-                                        </td>
-
-                                        <td style={estiloCelula}>
-
-                                            <Link to={`/detalhes/pedido/${pedido.id_Pedido}`}>
-                                                <button style={btnAcao}>
-                                                    Detalhes
-                                                </button>
-                                            </Link>
-
-                                        </td>
-
-                                    </tr>
-
-                                );
-
-                            })}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </main>
-
-            <Rodape />
-
-=======
                                             #{pedido.idCliente}
                                         </td>
 
@@ -389,7 +235,6 @@ function ListagemPedido(): JSX.Element {
 
             {/* RODAPÉ */}
             <Rodape />
->>>>>>> 66f4c7606323417193cd9d4d194b4353224875d1
         </div>
     );
 }
@@ -410,8 +255,6 @@ const estiloCelula: React.CSSProperties = {
     color: "#333",
 };
 
-<<<<<<< HEAD
-=======
 const containerTabela: React.CSSProperties = {
     backgroundColor: "white",
     borderRadius: "12px",
@@ -430,7 +273,6 @@ const btnNovo: React.CSSProperties = {
     cursor: "pointer",
 };
 
->>>>>>> 66f4c7606323417193cd9d4d194b4353224875d1
 const btnAcao: React.CSSProperties = {
     padding: "6px 12px",
     borderRadius: "6px",
@@ -440,8 +282,6 @@ const btnAcao: React.CSSProperties = {
     cursor: "pointer",
 };
 
-<<<<<<< HEAD
-=======
 const estiloStatus: React.CSSProperties = {
     fontSize: "0.85rem",
     color: "#666",
@@ -452,5 +292,4 @@ const estiloStatus: React.CSSProperties = {
     textTransform: "capitalize",
 };
 
->>>>>>> 66f4c7606323417193cd9d4d194b4353224875d1
 export default ListagemPedido;
