@@ -1,29 +1,43 @@
+import { useNavigate } from "react-router-dom";
 import React, { type JSX } from "react";
 import { useState, useEffect } from "react";
 import type { PedidoDTO } from "../../../dto/PedidoDTO";
 import PedidoRequest from "../../../fetch/PedidoRequests";
 
-// Certifique-se de que os caminhos das importações estão corretos
-import Navegacao from "../../../components/Navegacao/Navegacao";
+import Navegacao from "../../Navegacao/Navegacao";
 import Rodape from "../../../components/Rodape/Rodape";
 
 function ListagemPedido(): JSX.Element {
     const [pedidos, setPedidos] = useState<PedidoDTO[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const buscarPedidos = async () => {
-            try {
-                const listaDePedidos =
-                    await PedidoRequest.obterListaDePedidos();
+    const buscarPedidos = async () => {
+        try {
+            const listaDePedidos = await PedidoRequest.obterListaDePedidos();
 
-                setPedidos(listaDePedidos);
-            } catch (error) {
-                console.error(`Erro ao buscar pedidos. ${error}`);
-            }
-        };
+            console.log("Campos do pedido (raw):", JSON.stringify(listaDePedidos[0]));
 
-        buscarPedidos();
-    }, []);
+            const normalized = (listaDePedidos || []).map((p: any) => ({
+                idPedido: p.idPedido ?? p.id_pedido ?? p.id ?? null,
+                idCliente: p.idCliente ?? p.id_cliente ?? null,
+                idProduto: p.idProduto ?? p.id_produto ?? null,
+                dataPedido: p.dataPedido ?? p.data_pedido ?? p.data_pedido ?? null,
+                valorTotal: p.valorTotal ?? p.valor_total ?? 0,
+                statusPedido: p.statusPedido ?? p.status_pedido ?? "",
+            }));
+
+            console.log("Pedido normalizado exemplo:", JSON.stringify(normalized[0]));
+
+            // Não filtrar completamente; exibir resultados normalizados mesmo sem `idPedido`
+            setPedidos(normalized as PedidoDTO[]);
+        } catch (error) {
+            console.error(`Erro ao buscar pedidos. ${error}`);
+        }
+    };
+
+    buscarPedidos();
+}, []);
 
     const formatarDataHora = (dataIso: string | Date) => {
         const dataObj = new Date(dataIso);
@@ -129,9 +143,13 @@ function ListagemPedido(): JSX.Element {
                                     pedido.dataPedido.toString()
                                 );
 
+                                const idPedido =
+                                    pedido.idPedido ??
+                                    (pedido as any).id_pedido;
+
                                 return (
                                     <tr
-                                        key={pedido.idPedido}
+                                        key={idPedido ?? pedido.idPedido}
                                         style={{
                                             borderBottom:
                                                 "1px solid #f0f0f0",
@@ -190,7 +208,10 @@ function ListagemPedido(): JSX.Element {
                                                     gap: "8px",
                                                 }}
                                             >
-                                                <button style={btnAcao}>
+                                                <button
+                                                    style={btnAcao}
+                                                    onClick={() => navigate(`/lista/pedido/${pedido.idPedido}`)}
+                                                >
                                                     Detalhes
                                                 </button>
 
