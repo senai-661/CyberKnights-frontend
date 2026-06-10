@@ -34,6 +34,8 @@ function App() {
         <Route path='/detalhes/cliente/:id_cliente' element={<ProtectedRoute element={<DetalhesCliente />} />} />
         <Route path='/detalhes/pedido/:id_pedido'   element={<ProtectedRoute element={<DetalhesPedidos />} />} />
         <Route path='/detalhes/produto/:id_produto' element={<ProtectedRoute element={<DetalhesProdutos />} />} />
+
+        {/* Cadastros */}
         <Route path='/cadastro/cliente' element={<PCadastroCliente />} />
       </Routes>
 
