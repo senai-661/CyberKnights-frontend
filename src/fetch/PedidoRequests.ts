@@ -1,3 +1,5 @@
+import type { PedidoDTO } from "../dto/PedidoDTO";
+
 class PedidoRequests {
     private serverURL: string;
     private endpointPedido: string;
@@ -60,6 +62,29 @@ class PedidoRequests {
         } catch (error) {
             console.error("Erro ao buscar pedido por ID.", error);
             return null;
+        }
+    }
+
+    async enviarFormularioPedido(formPedido: PedidoDTO): Promise<boolean> {
+        try {
+            const token = localStorage.getItem('token');
+            const respostaAPI = await fetch(`${this.serverURL}${this.endpointPedido}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${token}`
+                },
+                body: JSON.stringify(formPedido)
+            });
+
+            if (!respostaAPI.ok) throw new Error(`Erro ${respostaAPI.status}: ${respostaAPI.statusText}`);
+
+            console.info(`${respostaAPI.status}: ${respostaAPI.statusText}`);
+
+            return true;
+        } catch (error) {
+            console.error(`Erro ao fazer consulta à API. ${error}`);
+            return false;
         }
     }
 }
