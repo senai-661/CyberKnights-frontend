@@ -6,11 +6,10 @@ import { Message } from "primereact/message";
 import { Button } from "primereact/button";
 import ClienteRequests from "../../../fetch/ClienteRequests";
 import type { ClienteDTO } from "../../../dto/ClienteDTO";
-import { useNavigate, useParams } from "react-router-dom"; // ✅ useParams adicionado
+import { useNavigate, useParams } from "react-router-dom";
 
 function DetalhesCliente(): JSX.Element {
 
-    // ✅ Pegando o ID pela URL em vez de prop
     const { id_cliente } = useParams<{ id_cliente: string }>();
 
     const [cliente, setCliente] = useState<ClienteDTO | null>(null);
@@ -21,26 +20,33 @@ function DetalhesCliente(): JSX.Element {
 
     useEffect(() => {
         buscarCliente();
-    }, [id_cliente]); // ✅ depende do id_cliente
+    }, [id_cliente]);
 
     const buscarCliente = async () => {
         try {
 
-            // ✅ Valida se o ID existe na URL
+            setLoading(true);
+            setErro("");
+
+            console.log("ID DA URL:", id_cliente);
+
             if (!id_cliente) {
                 setErro("ID do cliente não informado");
                 setLoading(false);
                 return;
             }
 
-            // ✅ Busca apenas o cliente pelo ID, não a lista toda
             const resposta = await ClienteRequests.obterClientePorId(Number(id_cliente));
+
+            console.log("RESPOSTA API:", resposta);
 
             if (!resposta) {
                 setErro("Cliente não encontrado");
+                setLoading(false);
                 return;
             }
 
+            // ✅ CORREÇÃO PRINCIPAL AQUI
             setCliente(resposta);
 
         } catch (error) {
@@ -68,10 +74,8 @@ function DetalhesCliente(): JSX.Element {
 
     return (
         <div className="flex justify-content-center mt-5">
-            <Card
-                title="Detalhes do Cliente"
-                className="w-6 shadow-4"
-            >
+            <Card title="Detalhes do Cliente" className="w-6 shadow-4">
+
                 <div className="mb-3">
                     <h3>ID</h3>
                     <p>{cliente?.idCliente}</p>
@@ -111,9 +115,10 @@ function DetalhesCliente(): JSX.Element {
                     <Button
                         label="Voltar"
                         icon="pi pi-arrow-left"
-                        onClick={() => navigate("/lista/cliente")} // ✅ rota corrigida
+                        onClick={() => navigate("/lista/cliente")}
                     />
                 </div>
+
             </Card>
         </div>
     );

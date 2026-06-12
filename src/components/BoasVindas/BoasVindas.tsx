@@ -21,7 +21,7 @@ function BoasVindas(): JSX.Element {
                     lineHeight: '1.1',
                     marginBottom: '1.5rem' 
                 }}>
-                    Bem-vindo ao <span style={{ color: '#000' }}>MegaLanches</span>
+                    Bem-vindo ao <span style={{ color: '#000' }}>MagaLanches</span>
                 </h1>
                 <p style={{ 
                     fontSize: '1.25rem', 
