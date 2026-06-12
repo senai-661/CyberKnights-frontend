@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "name": "cyberknights-frontend",
-=======
-  "name": "sprint",
->>>>>>> master
+  "name": "src",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,18 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "primeicons": "^7.0.0",
-<<<<<<< HEAD
-    "primereact": "^10.9.8",
     "react": "^19.2.5",
-    "react-dom": "^19.2.7",
-    "react-router-dom": "^7.15.1"
-=======
-    "primereact": "^10.9.7",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "react-router-dom": "^7.14.2"
->>>>>>> master
+    "react-dom": "^19.2.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
