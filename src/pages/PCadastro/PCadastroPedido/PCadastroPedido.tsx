@@ -1,20 +1,16 @@
 import { type JSX } from "react";
 import Navegacao from "../../../components/Navegacao/Navegacao";
-import DetalhesProdutos from "../../../components/Listagens/DetalhesProdutos/DetalhesProdutos";
+import FormPedido from "../../../components/Formularios/FormPedido/FormPedido";
 import Rodape from "../../../components/Rodape/Rodape";
 
-function PDetalhesProduto(): JSX.Element {
+function PCadastroPedido(): JSX.Element {
     return (
         <div className="min-h-screen flex flex-col">
-
             <Navegacao />
-
-            <DetalhesProdutos />
-
+            <FormPedido />
             <Rodape />
-
         </div>
     );
 }
 
-export default PDetalhesProduto;
+export default PCadastroPedido;

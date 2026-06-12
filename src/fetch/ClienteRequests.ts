@@ -1,3 +1,5 @@
+import type { ClienteDTO } from "../dto/ClienteDTO";
+
 class ClienteRequests {
     private serverURL;
     private endpointCliente;
@@ -49,6 +51,29 @@ class ClienteRequests {
         } catch (error) {
             console.error(`Erro ao buscar cliente por ID. ${error}`);
             return;
+        }
+    }
+
+    async enviarFormularioCliente(formCliente: ClienteDTO): Promise<boolean> {
+        try {
+            const token = localStorage.getItem('token');
+            const respostaAPI = await fetch(`${this.serverURL}${this.endpointCliente}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${token}`
+                },
+                body: JSON.stringify(formCliente)
+            });
+
+            if (!respostaAPI.ok) throw new Error(`Erro ${respostaAPI.status}: ${respostaAPI.statusText}`);
+
+            console.info(`${respostaAPI.status}: ${respostaAPI.statusText}`);
+
+            return true;
+        } catch (error) {
+            console.error(`Erro ao fazer consulta à API. ${error}`);
+            return false;
         }
     }
 }
