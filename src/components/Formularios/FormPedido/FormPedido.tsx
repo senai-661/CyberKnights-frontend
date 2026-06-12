@@ -1,45 +1,32 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ClienteRequests from '../../../fetch/ClienteRequests';
-import Utilitario from '../../../utils/Utilitario';
+import PedidoRequests from '../../../fetch/PedidoRequests';
 
-function FormCliente() {
+function FormPedido() {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState<any>({
-        email: '',
-        nome: '',
-        endereco: '',
-        telefone: '',
-        cpf: '',
+        idCliente: '',
+        idProduto: '',
+        dataPedido: '',
+        valorTotal: '',
+        statusPedido: '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-
-        if (name === 'telefone') {
-            const telefoneFormatado = Utilitario.formatarTelefone(value);
-            setFormData(prev => ({ ...prev, [name]: telefoneFormatado }));
-            return;
-        }
-
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!Utilitario.validarEmail(formData.email)) {
-            alert("E-mail inválido");
-            return;
-        }
-
-        const resposta = await ClienteRequests.enviarFormularioCliente(formData);
+        const resposta = await PedidoRequests.enviarFormularioPedido(formData);
 
         if (resposta) {
-            alert("Cliente cadastrado com sucesso");
+            alert("Pedido cadastrado com sucesso");
         } else {
-            alert("Erro ao cadastrar cliente");
+            alert("Erro ao cadastrar pedido");
         }
     };
 
@@ -52,88 +39,102 @@ function FormCliente() {
                     className="bg-white shadow-2xl rounded-2xl p-6 sm:p-10 border border-slate-200"
                 >
                     <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-bold text-slate-800 mb-8 sm:mb-12">
-                        Cadastro de Cliente
+                        Cadastro de Pedido
                     </h1>
 
                     <div className="space-y-6 sm:space-y-8">
 
                         <div className="flex flex-col sm:flex-row gap-6">
+
                             <div className="flex-1">
-                                <label htmlFor="nome" className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Nome
+                                <label htmlFor="idCliente" className="block text-sm font-semibold text-slate-700 mb-2">
+                                    ID do Cliente
                                 </label>
                                 <input
                                     type="text"
-                                    name="nome"
-                                    id="nome"
+                                    name="idCliente"
+                                    id="idCliente"
                                     required
-                                    minLength={3}
+                                    minLength={1}
                                     onChange={handleChange}
-                                    placeholder="Digite o nome"
+                                    placeholder="Digite o ID do cliente"
                                     className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
                                 />
                             </div>
 
                             <div className="flex-1">
-                                <label htmlFor="telefone" className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Telefone
+                                <label htmlFor="idProduto" className="block text-sm font-semibold text-slate-700 mb-2">
+                                    ID do Produto
                                 </label>
                                 <input
-                                    type="tel"
-                                    name="telefone"
-                                    id="telefone"
-                                    value={formData.telefone}
+                                    type="text"
+                                    name="idProduto"
+                                    id="idProduto"
+                                    required
+                                    minLength={1}
                                     onChange={handleChange}
-                                    placeholder="(xx) x xxxx-xxxx"
+                                    placeholder="Digite o ID do produto"
                                     className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
                                 />
                             </div>
+
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-6">
+
                             <div className="flex-1">
-                                <label htmlFor="endereco" className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Endereço
+                                <label htmlFor="dataPedido" className="block text-sm font-semibold text-slate-700 mb-2">
+                                    Data do Pedido
                                 </label>
                                 <input
                                     type="text"
-                                    name="endereco"
-                                    id="endereco"
+                                    name="dataPedido"
+                                    id="dataPedido"
                                     minLength={6}
                                     onChange={handleChange}
-                                    placeholder="Rua, número, bairro..."
+                                    placeholder="DD/MM/AAAA"
                                     className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
                                 />
                             </div>
 
-                            <div className="flex-1">
-                                <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">
-                                    E-mail
-                                </label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    id="email"
-                                    onChange={handleChange}
-                                    placeholder="exemplo@email.com"
-                                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
-                                />
-                            </div>
                         </div>
 
-                        <div className="flex-1">
-                            <label htmlFor="cpf" className="block text-sm font-semibold text-slate-700 mb-2">
-                                CPF
-                            </label>
-                            <input
-                                type="number"
-                                name="cpf"
-                                id="cpf"
-                                value={formData.cpf}
-                                onChange={handleChange}
-                                placeholder="000.000.000-00"
-                                className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
-                            />
+                        <div className="flex flex-col sm:flex-row gap-6">
+
+                            <div className="flex-1">
+                                <label htmlFor="valorTotal" className="block text-sm font-semibold text-slate-700 mb-2">
+                                    Valor Total
+                                </label>
+                                <input
+                                    type="text"
+                                    name="valorTotal"
+                                    id="valorTotal"
+                                    minLength={5}
+                                    onChange={handleChange}
+                                    placeholder="R$ 0,00"
+                                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
+                                />
+                            </div>
+
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-6">
+
+                            <div className="flex-1">
+                                <label htmlFor="statusPedido" className="block text-sm font-semibold text-slate-700 mb-2">
+                                    Status do Pedido
+                                </label>
+                                <input
+                                    type="text"
+                                    name="statusPedido"
+                                    id="statusPedido"
+                                    minLength={6}
+                                    onChange={handleChange}
+                                    placeholder="Em andamento, Concluído, Cancelado..."
+                                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
+                                />
+                            </div>
+
                         </div>
 
                     </div>
@@ -142,19 +143,20 @@ function FormCliente() {
 
                         <input
                             type="submit"
-                            value="CADASTRAR CLIENTE"
+                            value="CADASTRAR PEDIDO"
                             className="w-full bg-slate-800 text-white py-4 rounded-xl font-bold text-lg cursor-pointer hover:bg-slate-700 shadow-lg hover:shadow-xl transition-all active:scale-[0.98]"
                         />
 
                         <button
                             type="button"
-                            onClick={() => navigate('/lista/cliente')}
+                            onClick={() => navigate('/lista/pedido')}
                             className="w-full bg-white border-2 border-slate-300 text-slate-600 py-4 rounded-xl font-bold text-lg hover:bg-slate-50 transition-all active:scale-[0.98]"
                         >
                             VOLTAR PARA LISTAGEM
                         </button>
 
                     </div>
+
                 </form>
 
             </div>
@@ -162,4 +164,4 @@ function FormCliente() {
     );
 }
 
-export default FormCliente;
+export default FormPedido;

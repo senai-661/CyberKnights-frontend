@@ -1,8 +1,8 @@
 import { useEffect, useState, type JSX } from "react";
 import { useParams } from "react-router-dom";
 
-import Navegacao from "../../Navegacao/Navegacao";
-import Rodape from "../../Rodape/Rodape";
+import Navegacao from "../../../components/Navegacao/Navegacao";
+import Rodape from "../../../components/Rodape/Rodape";
 
 import ProdutoRequest from "../../../fetch/ProdutoRequests";
 import type { ProdutoDTO } from "../../../dto/ProdutoDTO";
