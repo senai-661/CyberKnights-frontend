@@ -1,12 +1,12 @@
-import type {ClienteDTO} from "../dto/ClienteDTO";
+import type { ClienteDTO } from "../dto/ClienteDTO";
 
 class ClienteRequests {
     private serverURL;
     private endpointCliente;
 
     constructor() {
-        this.serverURL = 'http://localhost:3333';
-        this.endpointCliente = '/api/clientes';
+        this.serverURL = `http://localhost:3333`;
+        this.endpointCliente = `/api/cliente`;
     }
 
     async obterListaDeClientes() {
@@ -21,8 +21,7 @@ class ClienteRequests {
             });
 
             if (respostaAPI.ok) {
-                const listaDeClientes = await respostaAPI.json();
-                return listaDeClientes;
+                return await respostaAPI.json();
             } else {
                 throw new Error("Não foi possível listar os clientes.");
             }
@@ -32,10 +31,12 @@ class ClienteRequests {
         }
     }
 
-    async obterClientePorId(id_cliente: number): Promise<ClienteDTO | undefined> {
+    // ✅ MÉTODO NOVO - busca um cliente pelo ID
+    async obterClientePorId(id: number) {
         try {
             const token = localStorage.getItem('token');
-            const respostaAPI = await fetch(`${this.serverURL}${this.endpointCliente}/${id_cliente}`, {
+
+            const respostaAPI = await fetch(`${this.serverURL}${this.endpointCliente}/${id}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'x-access-token': `${token}`
@@ -43,16 +44,38 @@ class ClienteRequests {
             });
 
             if (respostaAPI.ok) {
-                const cliente: ClienteDTO = await respostaAPI.json();
-                return cliente;
+                return await respostaAPI.json();
             } else {
                 throw new Error("Não foi possível buscar o cliente.");
             }
         } catch (error) {
-            console.error(`Erro ao fazer a consulta de cliente por ID. ${error}`);
+            console.error(`Erro ao buscar cliente por ID. ${error}`);
             return;
         }
     }
-} 
+
+    async enviarFormularioCliente(formCliente: ClienteDTO): Promise<boolean> {
+        try {
+            const token = localStorage.getItem('token');
+            const respostaAPI = await fetch(`${this.serverURL}${this.endpointCliente}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${token}`
+                },
+                body: JSON.stringify(formCliente)
+            });
+
+            if (!respostaAPI.ok) throw new Error(`Erro ${respostaAPI.status}: ${respostaAPI.statusText}`);
+
+            console.info(`${respostaAPI.status}: ${respostaAPI.statusText}`);
+
+            return true;
+        } catch (error) {
+            console.error(`Erro ao fazer consulta à API. ${error}`);
+            return false;
+        }
+    }
+}
 
 export default new ClienteRequests;

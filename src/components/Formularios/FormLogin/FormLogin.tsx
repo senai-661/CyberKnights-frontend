@@ -1,6 +1,6 @@
 import { type JSX, useState } from 'react';
 import { Link } from 'react-router-dom';
-import AuthRequests from '../../fetch/AuthRequests';
+import AuthRequests from '../../../fetch/AuthRequests';
 
 function LoginForm(): JSX.Element {
     const [email, setEmail] = useState('');
@@ -24,7 +24,8 @@ function LoginForm(): JSX.Element {
             }
         } catch (error) {
             console.error(`Erro ao tentar fazer login: ${error}`);
-            alert('Erro ao fazer login, verifique se usuário e/ou senha estão corretos.');
+            const message = error instanceof Error ? error.message : 'Erro ao fazer login';
+            alert(`Falha no login: ${message}`);
         }
     };
 

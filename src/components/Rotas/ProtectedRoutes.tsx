@@ -6,8 +6,8 @@ interface ProtectedRouteProps {
 }
 
 /**
- * Lida com a proteção das rotas
- * A proteção previne o acesso não autorizado a rotas privadas, evitando também que a aplicação quebre.
+ * Lida com a ção das rotas
+ * A ção previne o acesso não autorizado a rotas privadas, evitando também que a aplicação quebre.
  * 
  * A função recebe o elemento que será renderizado. Caso o usuário esteja autenticado, o elemento é renderizado, caso contrário, o usuário é redirecionado para a página de login.
  * 
