@@ -55,7 +55,7 @@ function Navegacao(): JSX.Element {
     const start = (
         <img
             alt="logo"
-            src='./src/assets/app-icon.png'
+            src='./src/assets/logo.png'
             height="100"
             // className="h-20 p-3 ml-10 mr-5 h-[7rem]"
             className="w-[40%] max-w-[40%] ml-10"
@@ -74,7 +74,7 @@ function Navegacao(): JSX.Element {
                 className="!w-[10%] !h-[10%]"
             />
             <button
-                className="bg-white ml-6 text-slate-700 px-10 py-5 rounded border-none cursor-pointer flex items-center justify-center gap-1 hover:bg-gray-100 transition-colors"
+               className="bg-orange-300 font-bold text-white px-10 py-5 mr-10 rounded border-none cursor-pointer flex items-center justify-center gap-1 hover:bg-orange-400 transition-colors"
                 onClick={AuthRequests.removeToken}
                 style={{ height: '32px', fontSize: '14px' }}
             >
@@ -84,7 +84,7 @@ function Navegacao(): JSX.Element {
         </div>
     ) : (
         <button
-            className="bg-white font-bold text-slate-700 px-10 py-5 mr-10 rounded border-none cursor-pointer flex items-center justify-center gap-1 hover:bg-gray-100 transition-colors"
+          className="bg-orange-300 ml-6 text-white px-10 py-5 rounded border-none cursor-pointer flex items-center justify-center gap-1 hover:bg-orange-400 transition-colors"
             onClick={() => navigate('/login')}
             style={{ height: '32px', fontSize: '14px' }}
         >
@@ -94,7 +94,7 @@ function Navegacao(): JSX.Element {
     );
 
     return (
-        <header className="card h-[12vh] bg-slate-700 flex items-center px-4">
+        <header className="card h-[12vh] bg-orange-300 flex items-center px-4">
             <div className="flex-1">
                 <Menubar
                     model={items}
