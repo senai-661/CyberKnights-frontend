@@ -88,6 +88,7 @@ function FormCliente() {
                                     type="tel"
                                     name="telefone"
                                     id="telefone"
+                                    required
                                     value={formData.telefone}
                                     onChange={handleChange}
                                     placeholder="(xx) x xxxx-xxxx"
@@ -105,6 +106,7 @@ function FormCliente() {
                                     type="text"
                                     name="endereco"
                                     id="endereco"
+                                    required
                                     minLength={6}
                                     onChange={handleChange}
                                     placeholder="Rua, número, bairro..."
