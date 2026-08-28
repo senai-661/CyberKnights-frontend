@@ -1,0 +1,18 @@
+/* Reseta as margens padrão do navegador */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #1a1a1a; /* O fundo escuro geral da sua expectativa */
+  color: #ffffff; /* Letras brancas por padrão */
+  font-family: system-ui, -apple-system, sans-serif; /* Fonte limpa sem serifa */
+}
+
+/* Cor principal do projeto (Amarelo/Laranja) para usar em vários lugares */
+:root {
+  --cor-primaria: #f59e0b; /* Ajuste para o tom exato do seu projeto */
+  --cor-fundo-card: #242424;
+}
