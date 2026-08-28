@@ -17,14 +17,40 @@ function LoginForm(): JSX.Element {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        const login: LoginData = { email, senha };
+
+        if (!email.trim()) {
+            alert("O e-mail é obrigatório.");
+            return;
+        }
+
+        if (!senha.trim()) {
+            alert("A senha é obrigatória.");
+            return;
+        }
+
+        const formatoEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!formatoEmail.test(email)) {
+            alert("Digite um e-mail válido.");
+            return;
+        }
+
+        const login: LoginData = {
+            email: email.trim(),
+            senha: senha
+        };
+
         try {
             if (await AuthRequests.login(login)) {
                 window.location.href = '/';
             }
         } catch (error) {
             console.error(`Erro ao tentar fazer login: ${error}`);
-            const message = error instanceof Error ? error.message : 'Erro ao fazer login';
+
+            const message = error instanceof Error
+                ? error.message
+                : 'Erro ao fazer login';
+
             alert(`Falha no login: ${message}`);
         }
     };
