@@ -6,7 +6,7 @@ import Utilitario from '../../../utils/Utilitario';
 function FormCliente() {
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState<any>({
+    const [formData, setFormData] = useState({
         email: '',
         nome: '',
         endereco: '',
@@ -34,7 +34,13 @@ function FormCliente() {
             return;
         }
 
-        const resposta = await ClienteRequests.enviarFormularioCliente(formData);
+        const dadosCliente = {
+            ...formData,
+            telefone: Number(formData.telefone.replace(/\D/g, '')),
+            cpf: formData.cpf ? Number(formData.cpf) : undefined
+        };
+
+        const resposta = await ClienteRequests.enviarFormularioCliente(dadosCliente);
 
         if (resposta) {
             alert("Cliente cadastrado com sucesso");
@@ -82,6 +88,7 @@ function FormCliente() {
                                     type="tel"
                                     name="telefone"
                                     id="telefone"
+                                    required
                                     value={formData.telefone}
                                     onChange={handleChange}
                                     placeholder="(xx) x xxxx-xxxx"
@@ -99,6 +106,7 @@ function FormCliente() {
                                     type="text"
                                     name="endereco"
                                     id="endereco"
+                                    required
                                     minLength={6}
                                     onChange={handleChange}
                                     placeholder="Rua, número, bairro..."

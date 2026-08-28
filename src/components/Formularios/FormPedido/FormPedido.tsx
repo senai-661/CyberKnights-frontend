@@ -5,7 +5,7 @@ import PedidoRequests from '../../../fetch/PedidoRequests';
 function FormPedido() {
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState<any>({
+    const [formData, setFormData] = useState({
         idCliente: '',
         idProduto: '',
         dataPedido: '',
@@ -15,13 +15,25 @@ function FormPedido() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const resposta = await PedidoRequests.enviarFormularioPedido(formData);
+        const dadosPedido = {
+            idCliente: Number(formData.idCliente),
+            idProduto: Number(formData.idProduto),
+            dataPedido: new Date(formData.dataPedido),
+            valorTotal: Number(formData.valorTotal),
+            statusPedido: formData.statusPedido
+        };
+
+        const resposta = await PedidoRequests.enviarFormularioPedido(dadosPedido);
 
         if (resposta) {
             alert("Pedido cadastrado com sucesso");
@@ -47,15 +59,19 @@ function FormPedido() {
                         <div className="flex flex-col sm:flex-row gap-6">
 
                             <div className="flex-1">
-                                <label htmlFor="idCliente" className="block text-sm font-semibold text-slate-700 mb-2">
+                                <label
+                                    htmlFor="idCliente"
+                                    className="block text-sm font-semibold text-slate-700 mb-2"
+                                >
                                     ID do Cliente
                                 </label>
+
                                 <input
-                                    type="text"
+                                    type="number"
                                     name="idCliente"
                                     id="idCliente"
                                     required
-                                    minLength={1}
+                                    min="1"
                                     onChange={handleChange}
                                     placeholder="Digite o ID do cliente"
                                     className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
@@ -63,15 +79,19 @@ function FormPedido() {
                             </div>
 
                             <div className="flex-1">
-                                <label htmlFor="idProduto" className="block text-sm font-semibold text-slate-700 mb-2">
+                                <label
+                                    htmlFor="idProduto"
+                                    className="block text-sm font-semibold text-slate-700 mb-2"
+                                >
                                     ID do Produto
                                 </label>
+
                                 <input
-                                    type="text"
+                                    type="number"
                                     name="idProduto"
                                     id="idProduto"
                                     required
-                                    minLength={1}
+                                    min="1"
                                     onChange={handleChange}
                                     placeholder="Digite o ID do produto"
                                     className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
@@ -83,17 +103,20 @@ function FormPedido() {
                         <div className="flex flex-col sm:flex-row gap-6">
 
                             <div className="flex-1">
-                                <label htmlFor="dataPedido" className="block text-sm font-semibold text-slate-700 mb-2">
+                                <label
+                                    htmlFor="dataPedido"
+                                    className="block text-sm font-semibold text-slate-700 mb-2"
+                                >
                                     Data do Pedido
                                 </label>
+
                                 <input
-                                    type="text"
+                                    type="date"
                                     name="dataPedido"
                                     id="dataPedido"
-                                    minLength={6}
+                                    required
                                     onChange={handleChange}
-                                    placeholder="DD/MM/AAAA"
-                                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
+                                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all"
                                 />
                             </div>
 
@@ -102,14 +125,20 @@ function FormPedido() {
                         <div className="flex flex-col sm:flex-row gap-6">
 
                             <div className="flex-1">
-                                <label htmlFor="valorTotal" className="block text-sm font-semibold text-slate-700 mb-2">
+                                <label
+                                    htmlFor="valorTotal"
+                                    className="block text-sm font-semibold text-slate-700 mb-2"
+                                >
                                     Valor Total
                                 </label>
+
                                 <input
-                                    type="text"
+                                    type="number"
                                     name="valorTotal"
                                     id="valorTotal"
-                                    minLength={5}
+                                    required
+                                    min="0"
+                                    step="0.01"
                                     onChange={handleChange}
                                     placeholder="R$ 0,00"
                                     className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
@@ -121,14 +150,19 @@ function FormPedido() {
                         <div className="flex flex-col sm:flex-row gap-6">
 
                             <div className="flex-1">
-                                <label htmlFor="statusPedido" className="block text-sm font-semibold text-slate-700 mb-2">
+                                <label
+                                    htmlFor="statusPedido"
+                                    className="block text-sm font-semibold text-slate-700 mb-2"
+                                >
                                     Status do Pedido
                                 </label>
+
                                 <input
                                     type="text"
                                     name="statusPedido"
                                     id="statusPedido"
-                                    minLength={6}
+                                    required
+                                    minLength={3}
                                     onChange={handleChange}
                                     placeholder="Em andamento, Concluído, Cancelado..."
                                     className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
