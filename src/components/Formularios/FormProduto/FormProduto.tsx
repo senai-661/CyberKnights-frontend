@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProdutoRequests from '../../../fetch/ProdutoRequests';
-import type { ProdutoDTO } from '../../../dto/ProdutoDTO';
 
 function FormProduto() {
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState<any>({
+    const [formData, setFormData] = useState({
         nomeProduto: '',
         preco: '',
         disponibilidade: '',
@@ -14,19 +13,23 @@ function FormProduto() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData((prev: ProdutoDTO) => ({
-               ...prev,
-               [name]: name === 'telefone' || name === 'cpf'
-                   ? Number(value)
-                   : value
-           }));
+
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-       
-        const resposta = await ProdutoRequests.enviarFormularioProduto(formData);
+        const dadosProduto = {
+            nomeProduto: formData.nomeProduto,
+            preco: Number(formData.preco),
+            disponibilidade: formData.disponibilidade
+        };
+
+        const resposta = await ProdutoRequests.enviarFormularioProduto(dadosProduto);
 
         if (resposta) {
             alert("Produto cadastrado com sucesso");
@@ -52,9 +55,13 @@ function FormProduto() {
                         <div className="flex flex-col sm:flex-row gap-6">
 
                             <div className="flex-1">
-                                <label htmlFor="nomeProduto" className="block text-sm font-semibold text-slate-700 mb-2">
+                                <label
+                                    htmlFor="nomeProduto"
+                                    className="block text-sm font-semibold text-slate-700 mb-2"
+                                >
                                     Nome do Produto
                                 </label>
+
                                 <input
                                     type="text"
                                     name="nomeProduto"
@@ -68,9 +75,13 @@ function FormProduto() {
                             </div>
 
                             <div className="flex-1">
-                                <label htmlFor="preco" className="block text-sm font-semibold text-slate-700 mb-2">
+                                <label
+                                    htmlFor="preco"
+                                    className="block text-sm font-semibold text-slate-700 mb-2"
+                                >
                                     Preço
                                 </label>
+
                                 <input
                                     type="number"
                                     name="preco"
@@ -89,13 +100,18 @@ function FormProduto() {
                         <div className="flex flex-col sm:flex-row gap-6">
 
                             <div className="flex-1">
-                                <label htmlFor="disponibilidade" className="block text-sm font-semibold text-slate-700 mb-2">
+                                <label
+                                    htmlFor="disponibilidade"
+                                    className="block text-sm font-semibold text-slate-700 mb-2"
+                                >
                                     Disponibilidade
                                 </label>
+
                                 <input
                                     type="text"
                                     name="disponibilidade"
                                     id="disponibilidade"
+                                    required
                                     minLength={6}
                                     onChange={handleChange}
                                     placeholder="Disponível, Indisponível"

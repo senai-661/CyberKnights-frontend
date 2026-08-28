@@ -2,12 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ClienteRequests from '../../../fetch/ClienteRequests';
 import Utilitario from '../../../utils/Utilitario';
-import type { ClienteDTO } from '../../../dto/ClienteDTO';
 
 function FormCliente() {
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState<any>({
+    const [formData, setFormData] = useState({
         email: '',
         nome: '',
         endereco: '',
@@ -15,16 +14,18 @@ function FormCliente() {
         cpf: '',
     });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
 
-    setFormData((prev: ClienteDTO) => ({
-        ...prev,
-        [name]: name === 'telefone' || name === 'cpf'
-            ? Number(value)
-            : value
-    }));
-};
+        if (name === 'telefone') {
+            const telefoneFormatado = Utilitario.formatarTelefone(value);
+            setFormData(prev => ({ ...prev, [name]: telefoneFormatado }));
+            return;
+        }
+
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -33,7 +34,13 @@ function FormCliente() {
             return;
         }
 
-        const resposta = await ClienteRequests.enviarFormularioCliente(formData);
+        const dadosCliente = {
+            ...formData,
+            telefone: Number(formData.telefone.replace(/\D/g, '')),
+            cpf: formData.cpf ? Number(formData.cpf) : undefined
+        };
+
+        const resposta = await ClienteRequests.enviarFormularioCliente(dadosCliente);
 
         if (resposta) {
             alert("Cliente cadastrado com sucesso");
@@ -81,6 +88,7 @@ function FormCliente() {
                                     type="tel"
                                     name="telefone"
                                     id="telefone"
+                                    required
                                     value={formData.telefone}
                                     onChange={handleChange}
                                     placeholder="(xx) x xxxx-xxxx"
@@ -98,6 +106,7 @@ function FormCliente() {
                                     type="text"
                                     name="endereco"
                                     id="endereco"
+                                    required
                                     minLength={6}
                                     onChange={handleChange}
                                     placeholder="Rua, número, bairro..."
@@ -147,7 +156,7 @@ function FormCliente() {
 
                         <button
                             type="button"
-                            onClick={() => navigate('/lista/clientes')}
+                            onClick={() => navigate('/lista/cliente')}
                             className="w-full bg-white border-2 border-slate-300 text-slate-600 py-4 rounded-xl font-bold text-lg hover:bg-slate-50 transition-all active:scale-[0.98]"
                         >
                             VOLTAR PARA LISTAGEM
