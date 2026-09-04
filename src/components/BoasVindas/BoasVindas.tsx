@@ -1,7 +1,9 @@
 import { type JSX } from "react";
+import logoMaga from "../../assets/ChatGPT Image 2 de set. de 2026, 13_59_46.png";
 
 function BoasVindas(): JSX.Element {
     return (
+<<<<<<< HEAD
         <section style={{
             display: 'flex',
             alignItems: 'center',
@@ -57,6 +59,17 @@ function BoasVindas(): JSX.Element {
                         opacity: 0.7,
                     }}
                 />
+=======
+        <section className="hero-shell">
+            <div className="hero-copy">
+                <h1>Bem-vindo ao <span>Lanches Maga</span></h1>
+                <p>Lanches artesanais feitos com ingredientes frescos e muito sabor.</p>
+                <p className="hero-subtitle">Os melhores lanches para você.</p>
+                <button className="hero-button" type="button">Faça seu pedido agora <span>›</span></button>
+            </div>
+            <div className="hero-image-wrap">
+                <img className="hero-image" src={logoMaga} alt="Lanches Maga" />
+>>>>>>> a684f86 (nova funcionalidade atualizar)
             </div>
 
         </section>

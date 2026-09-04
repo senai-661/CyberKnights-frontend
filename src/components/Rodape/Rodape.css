@@ -1,9 +1,9 @@
 /* Rodape.css */
 .rodape-container {
-    background-color: #f8fafc; /* Um cinza azulado bem clarinho e moderno */
-    border-top: 1px solid #e2e8f0;
-    padding: 40px 10% 20px 10%;
-    color: #475569;
+    background-color: #000000;
+    border-top: 1px solid #f18927;
+    padding: 20px 5% 16px;
+    color: #f85e21;
     font-family: 'Inter', sans-serif;
 }
 
@@ -12,22 +12,23 @@
     justify-content: space-between;
     align-items: flex-start;
     flex-wrap: wrap;
-    gap: 30px;
-    margin-bottom: 30px;
+    gap: 48px;
+    margin: 0 auto 20px;
+    max-width: 1280px;
 }
 
 .rodape-info h3 {
-    color: #1e293b;
-    font-size: 1.2rem;
+    color: #ff8300;
+    font-size: 1.35rem;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .rodape-info p {
-    font-size: 0.9rem;
+    font-size: 1rem;
     line-height: 1.5;
     max-width: 300px;
 }
@@ -39,43 +40,64 @@
 }
 
 .rodape-links h4 {
-    color: #1e293b;
-    font-size: 0.95rem;
+    color: #a8a8a8;
+    font-size: 1.05rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 .rodape-equipe {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
+    color: #a8a8a8;
 }
 
 .equipe-lista {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    color: #3b82f6; /* Azul MedFlow */
+    color: #d97706;
+    font-size: 1rem;
     font-weight: 500;
 }
 
 .rodape-bottom {
-    border-top: 1px solid #e2e8f0;
-    padding-top: 20px;
+    border-top: 1px solid #e7dede;
+    padding-top: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.8rem;
-    color: #94a3b8;
+    font-size: 0.9rem;
+    color: #8a8a8a;
+    margin: 0 auto;
+    max-width: 1280px;
 }
 
 .social-icons {
     display: flex;
     gap: 15px;
-    font-size: 1.2rem;
+    font-size: 1.35rem;
+    color: #a8a8a8;
 }
 
 .social-icons i:hover {
-    color: #3b82f6;
+    color: #d97706;
     cursor: pointer;
     transition: 0.3s;
+}
+
+@media (max-width: 700px) {
+    .rodape-container {
+        padding: 36px 24px 20px;
+    }
+
+    .rodape-content {
+        gap: 24px;
+    }
+
+    .rodape-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
 }

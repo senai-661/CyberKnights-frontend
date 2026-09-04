@@ -19,6 +19,9 @@ import ProtectedRoute from './components/Rotas/ProtectedRoutes'
 import PCadastroCliente from './pages/PCadastro/PCadastroCliente/PCadastroCliente'
 import PCadastroProduto from './pages/PCadastro/PCadastroProduto/PCadastroPoduto'
 import PCadastroPedido from './pages/PCadastro/PCadastroPedido/PCadastroPedido'
+import PAtualizarCliente from './pages/PAtualizar/PAtualizarCliente/PAtualizarCliente'
+import PAtualizarProduto from './pages/PAtualizar/PAtualizarProduto/PAtualizarProduto'
+import PAtualizarPedido from './pages/PAtualizar/PAtualizarPedido/PAtualizarPedido'
 
 function App() {
   return (
@@ -44,6 +47,11 @@ function App() {
         <Route path='/cadastro/cliente' element={<PCadastroCliente />} />
         <Route path='/cadastro/produto' element={<PCadastroProduto />} />
         <Route path='/cadastro/pedido' element={<PCadastroPedido />} />
+
+        {/* Atualizações */}
+        <Route path='/atualizar/cliente/:id_cliente' element={<ProtectedRoute element={<PAtualizarCliente />} />} />
+        <Route path='/atualizar/produto/:id_produto' element={<ProtectedRoute element={<PAtualizarProduto />} />} />
+        <Route path='/atualizar/pedido/:id_pedido' element={<ProtectedRoute element={<PAtualizarPedido />} />} />
       </Routes>
 
     </BrowserRouter>

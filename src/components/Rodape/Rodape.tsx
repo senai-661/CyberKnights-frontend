@@ -8,7 +8,7 @@ function Rodape(): JSX.Element {
                 {/* Lado Esquerdo: Marca */}
                 <div className="rodape-info">
                     <h3>
-                        <i className="pi pi-heart-fill" style={{ color: '#10b981' }}></i>
+                        <i className="pi pi-heart-fill"></i>
                         Bem-vindo ao lanches maga
                     </h3>
                     <p>

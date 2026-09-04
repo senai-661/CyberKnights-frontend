@@ -33,6 +33,16 @@ function ListagemClientes(): JSX.Element {
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+    const handleDelete = async (idCliente: number) => {
+        if (!window.confirm('Deseja realmente excluir este cliente?')) return;
+        const resultado = await ClienteRequests.deletarCliente(idCliente);
+        if (!resultado.sucesso) {
+            alert(resultado.mensagem);
+            return;
+        }
+        setClientes((listaAtual) => listaAtual.filter((cliente) => cliente.idCliente !== idCliente));
+    };
+
     return (
     <>
         <Navegacao />
@@ -45,75 +55,48 @@ function ListagemClientes(): JSX.Element {
                 </a>
             </div>
 
-            <input type="text" name="busca-cliente" id="busca-cliente" placeholder="Buscar cliente" className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm" />
-
             <div className="w-full max-w-7xl mx-auto flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow-xl border border-slate-300 overflow-hidden">
                 <div className="flex-1 overflow-auto overscroll-none">
                     <table className="table-auto w-full border-collapse text-xs sm:text-sm md:text-base">
                         <thead className="bg-slate-700 sticky top-0 z-10 shadow-sm">
                             <tr>
-                                <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden md:table-cell text-left">ID</th>
-                                <th className="border-b border-slate-600 text-white p-3 md:p-4 text-left">E-mail</th>
+                                <th className="border-b border-slate-600 text-white p-3 md:p-4 text-left">ID</th>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 text-left">Nome</th>
-                                <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden sm:table-cell text-left">Endereço</th>
-                                <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden lg:table-cell text-left">Telefone</th>
-                                <th className="border-b border-slate-600 text-white p-3 md:p-4 text-center">CPF</th>
+                                <th className="border-b border-slate-600 text-white p-3 md:p-4 text-left">E-mail</th>
+                                <th className="border-b border-slate-600 text-white p-3 md:p-4 text-left">Endereço</th>
+                                <th className="border-b border-slate-600 text-white p-3 md:p-4 text-left">Telefone</th>
+                                <th className="border-b border-slate-600 text-white p-3 md:p-4 text-left">CPF</th>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-200">
-                            {currentClientes && currentClientes.length > 0 ? (
-                                currentClientes.map((cliente) => (
-                                    <tr className="text-center md:text-left transition-colors hover:bg-slate-50 group" key={cliente.idCliente}>
-                                        <td className="p-3 md:p-4 hidden md:table-cell text-slate-500">{cliente.idCliente}</td>
-                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{cliente.email}</td>
-                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{cliente.nome}</td>
-                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{cliente.endereco}</td>
-                                        <td className="p-3 md:p-4 hidden lg:table-cell text-slate-600">{cliente.telefone}</td>
-                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{cliente.cpf}</td>
-                                        <td className="p-2 md:p-4">
-                                            <div className="flex flex-col sm:flex-row items-center justify-center gap-1 md:gap-2">
-                                                <button
-                                                    className="w-full sm:w-auto bg-sky-100 text-sky-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-sky-600 hover:text-white transition-all hover:cursor-pointer"
-                                                    onClick={() => navigate(`/detalhes/cliente/${cliente.idCliente}`)}
-                                                >
-                                                    Detalhes
-                                                </button>
-                                                <button className="w-full sm:w-auto bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-emerald-600 hover:text-white transition-all">Atualizar</button>
-                                                <button className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all">Deletar</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={6} className="text-center p-10 text-slate-500 italic">
-                                        Nenhum cliente encontrado
+                        {currentClientes && currentClientes.length > 0 ? (
+                            currentClientes.map((cliente) => (
+                                <tr className="text-center md:text-left transition-colors hover:bg-slate-50 group" key={cliente.idCliente}>
+                                    <td className="p-3 md:p-4 text-slate-500">{cliente.idCliente}</td>
+                                    <td className="p-3 md:p-4 text-slate-600">{cliente.nome}</td>
+                                    <td className="p-3 md:p-4 text-slate-600">{cliente.email || 'Não informado'}</td>
+                                    <td className="p-3 md:p-4 text-slate-600">{cliente.endereco}</td>
+                                    <td className="p-3 md:p-4 text-slate-600">{cliente.telefone}</td>
+                                    <td className="p-3 md:p-4 text-slate-600">{cliente.cpf ?? '-'}</td>
+                                    <td className="p-2 md:p-4">
+                                        <div className="flex flex-col sm:flex-row items-center justify-center gap-1 md:gap-2">
+                                            <button className="w-full sm:w-auto bg-sky-100 text-sky-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-sky-600 hover:text-white transition-all" onClick={() => navigate(`/detalhes/cliente/${cliente.idCliente}`)}>Detalhes</button>
+                                            <button className="w-full sm:w-auto bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-emerald-600 hover:text-white transition-all" onClick={() => navigate(`/atualizar/cliente/${cliente.idCliente}`)}>Atualizar</button>
+                                            <button className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all" onClick={() => handleDelete(cliente.idCliente!)}>Deletar</button>
+                                        </div>
                                     </td>
                                 </tr>
-                            )}
+                            ))
+                        ) : (
+                            <tr><td colSpan={7} className="text-center p-10 text-slate-500 italic">Nenhum cliente cadastrado</td></tr>
+                        )}
                         </tbody>
                     </table>
                 </div>
 
                 {/* Paginação */}
                 <div className="bg-slate-50 border-t border-slate-200 px-4 py-3 sm:px-6 flex items-center justify-between flex-shrink-0">
-                    <div className="flex-1 flex justify-between sm:hidden">
-                        <button
-                            onClick={() => paginate(Math.max(1, currentPage - 1))}
-                            disabled={currentPage === 1}
-                            className={`relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            Anterior
-                        </button>
-                        <button
-                            onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
-                            disabled={currentPage === totalPages}
-                            className={`ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            Próximo
-                        </button>
-                    </div>
                     <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
                             <p className="text-sm text-slate-700">

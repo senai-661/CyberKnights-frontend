@@ -6,11 +6,13 @@ import { Message } from "primereact/message";
 import { Button } from "primereact/button";
 import ClienteRequests from "../../../fetch/ClienteRequests";
 import type { ClienteDTO } from "../../../dto/ClienteDTO";
-import { useNavigate, useParams } from "react-router-dom"; // ✅ useParams adicionado
+import { useNavigate, useParams } from "react-router-dom";
+import Navegacao from "../../Navegacao/Navegacao";
+import Rodape from "../../Rodape/Rodape";
+import "./DetalheCliente.css";
 
 function DetalhesCliente(): JSX.Element {
 
-    // ✅ Pegando o ID pela URL em vez de prop
     const { id_cliente } = useParams<{ id_cliente: string }>();
 
     const [cliente, setCliente] = useState<ClienteDTO | null>(null);
@@ -20,101 +22,95 @@ function DetalhesCliente(): JSX.Element {
     const navigate = useNavigate();
 
     useEffect(() => {
-        buscarCliente();
-    }, [id_cliente]); // ✅ depende do id_cliente
+        let ativo = true;
 
-    const buscarCliente = async () => {
-        try {
+        const carregarCliente = async () => {
+            await Promise.resolve();
 
-            // ✅ Valida se o ID existe na URL
-            if (!id_cliente) {
-                setErro("ID do cliente não informado");
-                setLoading(false);
-                return;
+            try {
+                if (!id_cliente) {
+                    if (ativo) setErro("ID do cliente não informado");
+                    return;
+                }
+
+                const resposta = await ClienteRequests.obterClientePorId(Number(id_cliente));
+
+                if (!ativo) return;
+                if (!resposta) {
+                    setErro("Cliente não encontrado");
+                    return;
+                }
+
+                setCliente(resposta);
+            } catch {
+                if (ativo) setErro("Erro ao buscar cliente");
+            } finally {
+                if (ativo) setLoading(false);
             }
+        };
 
-            // ✅ Busca apenas o cliente pelo ID, não a lista toda
-            const resposta = await ClienteRequests.obterClientePorId(Number(id_cliente));
-
-            if (!resposta) {
-                setErro("Cliente não encontrado");
-                return;
-            }
-
-            setCliente(resposta);
-
-        } catch (error) {
-            setErro("Erro ao buscar cliente");
-        } finally {
-            setLoading(false);
-        }
-    };
+        void carregarCliente();
+        return () => { ativo = false; };
+    }, [id_cliente]);
 
     if (loading) {
         return (
-            <div className="p-4">
-                <Skeleton width="100%" height="20rem" />
+            <div className="cliente-details-page">
+                <Navegacao />
+                <main className="cliente-details-main cliente-details-state">
+                    <Skeleton width="100%" height="20rem" />
+                </main>
+                <Rodape />
             </div>
         );
     }
 
     if (erro) {
         return (
-            <div className="p-4">
-                <Message severity="error" text={erro} />
+            <div className="cliente-details-page">
+                <Navegacao />
+                <main className="cliente-details-main cliente-details-state">
+                    <Message severity="error" text={erro} />
+                </main>
+                <Rodape />
             </div>
         );
     }
 
     return (
-        <div className="flex justify-content-center mt-5">
-            <Card
-                title="Detalhes do Cliente"
-                className="w-6 shadow-4"
-            >
-                <div className="mb-3">
-                    <h3>ID</h3>
-                    <p>{cliente?.idCliente}</p>
+        <div className="cliente-details-page">
+            <Navegacao />
+            <main className="cliente-details-main">
+                <div className="cliente-details-heading">
+                    <div className="cliente-details-icon"><i className="pi pi-user" /></div>
+                    <div>
+                        <h1>Detalhes do <span>Cliente</span></h1>
+                        <p>Informações completas do cliente selecionado</p>
+                    </div>
                 </div>
 
-                <Divider />
+                <Card className="cliente-details-card">
+                    {[
+                        ["ID", cliente?.idCliente, "pi-hashtag"],
+                        ["Nome", cliente?.nome, "pi-user"],
+                        ["Endereço", cliente?.endereco, "pi-map-marker"],
+                        ["Telefone", cliente?.telefone, "pi-phone"],
+                        ["CPF", cliente?.cpf, "pi-id-card"]
+                    ].map(([label, value, icon], index) => (
+                        <div className="cliente-detail-row" key={label}>
+                            <div className="cliente-detail-row-icon"><i className={`pi ${icon}`} /></div>
+                            <div className="cliente-detail-copy">
+                                <span>{label}</span>
+                                <strong>{value}</strong>
+                            </div>
+                            {index < 4 && <Divider />}
+                        </div>
+                    ))}
+                </Card>
 
-                <div className="mb-3">
-                    <h3>Nome</h3>
-                    <p>{cliente?.nome}</p>
-                </div>
-
-                <Divider />
-
-                <div className="mb-3">
-                    <h3>Endereço</h3>
-                    <p>{cliente?.endereco}</p>
-                </div>
-
-                <Divider />
-
-                <div className="mb-3">
-                    <h3>Telefone</h3>
-                    <p>{cliente?.telefone}</p>
-                </div>
-
-                <Divider />
-
-                <div className="mb-3">
-                    <h3>CPF</h3>
-                    <p>{cliente?.cpf}</p>
-                </div>
-
-                <Divider />
-
-                <div className="flex justify-content-end mt-4">
-                    <Button
-                        label="Voltar"
-                        icon="pi pi-arrow-left"
-                        onClick={() => navigate("/lista/cliente")} // ✅ rota corrigida
-                    />
-                </div>
-            </Card>
+                <Button label="Voltar" icon="pi pi-arrow-left" className="cliente-details-back" onClick={() => navigate("/lista/cliente")} />
+            </main>
+            <Rodape />
         </div>
     );
 }

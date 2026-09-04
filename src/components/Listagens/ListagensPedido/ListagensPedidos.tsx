@@ -7,6 +7,7 @@ import Navegacao from "../../../components/Navegacao/Navegacao";
 
 function ListagemPedidos(): JSX.Element {
     const [pedidos, setPedidos] = useState<PedidoDTO[]>([]);
+    const [pedidoExcluindo, setPedidoExcluindo] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 5;
     const navigate = useNavigate();
@@ -15,7 +16,7 @@ function ListagemPedidos(): JSX.Element {
         const buscarPedidos = async () => {
             try {
                 const listaDePedidos = await PedidoRequests.obterListaDePedidos();
-                setPedidos(listaDePedidos);
+                setPedidos(Array.isArray(listaDePedidos) ? listaDePedidos : []);
             } catch (error) {
                 console.error(`Erro ao buscar pedidos. ${error}`);
                 alert("Erro ao criar a listagem de pedidos.");
@@ -32,6 +33,21 @@ function ListagemPedidos(): JSX.Element {
     const currentPedidos = pedidos.slice(indexOfFirstRow, indexOfLastRow);
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+    const handleDelete = async (idPedido: number) => {
+        if (!window.confirm('Deseja realmente excluir este pedido?')) return;
+        setPedidoExcluindo(idPedido);
+        try {
+            const resultado = await PedidoRequests.deletarPedido(idPedido);
+            if (!resultado.sucesso) {
+                alert(resultado.mensagem);
+                return;
+            }
+            setPedidos((listaAtual) => listaAtual.filter((pedido) => pedido.idPedido !== idPedido));
+        } finally {
+            setPedidoExcluindo(null);
+        }
+    };
 
     return (
     <>
@@ -56,6 +72,8 @@ function ListagemPedidos(): JSX.Element {
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 text-left">ID Cliente</th>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden sm:table-cell text-left">ID Produto</th>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden lg:table-cell text-left">Data do Pedido</th>
+                                <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden sm:table-cell text-left">Valor Total</th>
+                                <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden sm:table-cell text-left">Status</th>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 text-center">Ações</th>
                             </tr>
                         </thead>
@@ -80,15 +98,15 @@ function ListagemPedidos(): JSX.Element {
                                                 >
                                                     Detalhes
                                                 </button>
-                                                <button className="w-full sm:w-auto bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-emerald-600 hover:text-white transition-all">Atualizar</button>
-                                                <button className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all">Deletar</button>
+                                                <button className="w-full sm:w-auto bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-emerald-600 hover:text-white transition-all" onClick={() => navigate(`/atualizar/pedido/${pedido.idPedido}`)}>Atualizar</button>
+                                                <button className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all" onClick={() => handleDelete(pedido.idPedido)} disabled={pedidoExcluindo === pedido.idPedido}>{pedidoExcluindo === pedido.idPedido ? 'Excluindo...' : 'Deletar'}</button>
                                             </div>
                                         </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center p-10 text-slate-500 italic">
+                                    <td colSpan={7} className="text-center p-10 text-slate-500 italic">
                                         Nenhum pedido encontrado
                                     </td>
                                 </tr>
@@ -99,22 +117,6 @@ function ListagemPedidos(): JSX.Element {
 
                 {/* Paginação */}
                 <div className="bg-slate-50 border-t border-slate-200 px-4 py-3 sm:px-6 flex items-center justify-between flex-shrink-0">
-                    <div className="flex-1 flex justify-between sm:hidden">
-                        <button
-                            onClick={() => paginate(Math.max(1, currentPage - 1))}
-                            disabled={currentPage === 1}
-                            className={`relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            Anterior
-                        </button>
-                        <button
-                            onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
-                            disabled={currentPage === totalPages}
-                            className={`ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            Próximo
-                        </button>
-                    </div>
                     <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
                             <p className="text-sm text-slate-700">

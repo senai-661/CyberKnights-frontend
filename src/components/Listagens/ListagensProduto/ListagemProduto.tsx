@@ -15,7 +15,7 @@ function ListagemProdutos(): JSX.Element {
         const buscarProdutos = async () => {
             try {
                 const listaDeProdutos = await ProdutoRequests.obterListaDeProdutos();
-                setProdutos(listaDeProdutos);
+                setProdutos(Array.isArray(listaDeProdutos) ? listaDeProdutos : []);
             } catch (error) {
                 console.error(`Erro ao buscar produtos. ${error}`);
                 alert("Erro ao criar a listagem de produtos.");
@@ -32,6 +32,16 @@ function ListagemProdutos(): JSX.Element {
     const currentProdutos = produtos.slice(indexOfFirstRow, indexOfLastRow);
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+    const handleDelete = async (idProduto: number) => {
+        if (!window.confirm('Deseja realmente excluir este produto?')) return;
+        const resultado = await ProdutoRequests.deletarProduto(idProduto);
+        if (!resultado.sucesso) {
+            alert(resultado.mensagem);
+            return;
+        }
+        setProdutos((listaAtual) => listaAtual.filter((produto) => produto.idProduto !== idProduto));
+    };
 
     return (
         <>
@@ -76,8 +86,8 @@ function ListagemProdutos(): JSX.Element {
                                                 >
                                                     Detalhes
                                                 </button>
-                                                <button className="w-full sm:w-auto bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-emerald-600 hover:text-white transition-all">Atualizar</button>
-                                                <button className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all">Deletar</button>
+                                                <button className="w-full sm:w-auto bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-emerald-600 hover:text-white transition-all" onClick={() => navigate(`/atualizar/produto/${produto.idProduto}`)}>Atualizar</button>
+                                                <button className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all" onClick={() => handleDelete(produto.idProduto)}>Deletar</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -95,22 +105,6 @@ function ListagemProdutos(): JSX.Element {
 
                 {/* Paginação */}
                 <div className="bg-slate-50 border-t border-slate-200 px-4 py-3 sm:px-6 flex items-center justify-between flex-shrink-0">
-                    <div className="flex-1 flex justify-between sm:hidden">
-                        <button
-                            onClick={() => paginate(Math.max(1, currentPage - 1))}
-                            disabled={currentPage === 1}
-                            className={`relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            Anterior
-                        </button>
-                        <button
-                            onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
-                            disabled={currentPage === totalPages}
-                            className={`ml-3 relative inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            Próximo
-                        </button>
-                    </div>
                     <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
                             <p className="text-sm text-slate-700">
