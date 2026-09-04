@@ -203,6 +203,3 @@ function FormPedido() {
 }
 
 export default FormPedido;
-
-
-/*kjgyufytfytdtdyuguywgiuwgeryawgrterkuytaekyufgkiurthawiuyrkiwery*/
