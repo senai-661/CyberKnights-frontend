@@ -15,15 +15,11 @@ function FormPedido() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-<<<<<<< HEAD
 
         setFormData(prev => ({
             ...prev,
             [name]: value
         }));
-=======
-        setFormData((prev: Record<string, string>) => ({ ...prev, [name]: value }));
->>>>>>> a684f86 (nova funcionalidade atualizar)
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -47,18 +43,18 @@ function FormPedido() {
     };
 
     return (
-        <main className="pedido-page bg-gray-100 flex-1 py-8 sm:py-12 px-4 sm:px-6 lg:px-8 overflow-y-auto">
+        <main className="bg-gray-100 flex-1 py-8 sm:py-12 px-4 sm:px-6 lg:px-8 overflow-y-auto">
             <div className="max-w-3xl mx-auto">
 
                 <form
                     onSubmit={handleSubmit}
-                    className="pedido-form bg-white shadow-2xl rounded-2xl p-6 sm:p-10 border border-slate-200"
+                    className="bg-white shadow-2xl rounded-2xl p-6 sm:p-10 border border-slate-200"
                 >
                     <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-bold text-slate-800 mb-8 sm:mb-12">
-                        <i className="pi pi-shopping-bag"></i> Cadastro de <span>Pedido</span>
+                        Cadastro de Pedido
                     </h1>
 
-                    <div className="pedido-fields space-y-6 sm:space-y-8">
+                    <div className="space-y-6 sm:space-y-8">
 
                         <div className="flex flex-col sm:flex-row gap-6">
 
@@ -177,7 +173,7 @@ function FormPedido() {
 
                     </div>
 
-                    <div className="pedido-actions mt-10 sm:mt-14 space-y-4">
+                    <div className="mt-10 sm:mt-14 space-y-4">
 
                         <input
                             type="submit"
