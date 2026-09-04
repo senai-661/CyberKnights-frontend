@@ -9,7 +9,6 @@ import ProdutoRequests from "../../../fetch/ProdutoRequests";
 import type { ProdutoDTO } from "../../../dto/ProdutoDTO";
 import { useNavigate, useParams } from "react-router-dom";
 import Navegacao from "../../Navegacao/Navegacao";
-import Rodape from "../../Rodape/Rodape";
 import "../DetalhesCliente/DetalheCliente.css";
 
 function DetalhesProdutos(): JSX.Element {
@@ -76,7 +75,6 @@ function DetalhesProdutos(): JSX.Element {
             <div className="cliente-details-page">
                 <Navegacao />
                 <main className="cliente-details-main cliente-details-state"><Skeleton width="100%" height="20rem" /></main>
-                <Rodape />
             </div>
         );
     }
@@ -86,7 +84,6 @@ function DetalhesProdutos(): JSX.Element {
             <div className="cliente-details-page">
                 <Navegacao />
                 <main className="cliente-details-main cliente-details-state"><Message severity="error" text={erro} /></main>
-                <Rodape />
             </div>
         );
     }
@@ -115,7 +112,6 @@ function DetalhesProdutos(): JSX.Element {
                 </Card>
                 <Button label="Voltar" icon="pi pi-arrow-left" className="cliente-details-back" onClick={() => navigate("/lista/produto")} />
             </main>
-            <Rodape />
         </div>
     );
 }

@@ -1,6 +1,7 @@
 import { type JSX, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthRequests from '../../../fetch/AuthRequests';
+import styles from './FormLogin.module.css';
 
 function LoginForm(): JSX.Element {
     const [email, setEmail] = useState('');
@@ -56,39 +57,19 @@ function LoginForm(): JSX.Element {
     };
 
     return (
-        <div style={{
-            minHeight: 'calc(100vh - 64px)',
-            backgroundColor: '#e8f4fd',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-        }}>
-            <div style={{
-                backgroundColor: '#ffffff',
-                borderRadius: '12px',
-                padding: '2.5rem 2rem',
-                width: '100%',
-                maxWidth: '420px',
-                boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
-                textAlign: 'center',
-            }}>
-                {/* Logo */}
-                <div style={{ marginBottom: '0.25rem' }}>
-                    <span style={{ color: '#2563eb', fontWeight: 700, fontSize: '1.4rem' }}>+ Lanches</span>
-                    <span style={{ color: '#16a34a', fontWeight: 700, fontSize: '1.4rem', marginLeft: '4px' }}>Mega</span>
-                </div>
-
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#111827', margin: '0.5rem 0 0.25rem' }}>
+        <div className={styles.loginFormContainer}>
+            <div className={styles.loginForm}>
+                <div className={styles.loginBrand}>Lanches<span>Maga</span></div>
+                <h2 className={styles.loginHeader}>
                     Área do cliente
                 </h2>
-                <p style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '1.75rem' }}>
+                <p className={styles.loginSubtitle}>
                     Bem-vindo de volta! Acesse sua conta.
                 </p>
 
-                <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
-                    {/* Email */}
-                    <div style={{ marginBottom: '1.25rem' }}>
-                        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, color: '#374151', marginBottom: '0.4rem' }}>
+                <form onSubmit={handleSubmit} className={styles.loginFields}>
+                    <div className={styles.formGroup}>
+                        <label>
                             E-mail
                         </label>
                         <input
@@ -97,36 +78,14 @@ function LoginForm(): JSX.Element {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            style={{
-                                width: '100%',
-                                padding: '0.65rem 0.85rem',
-                                borderRadius: '7px',
-                                border: '1px solid #d1d5db',
-                                fontSize: '0.95rem',
-                                color: '#111827',
-                                outline: 'none',
-                                boxSizing: 'border-box',
-                                transition: 'border-color 0.2s',
-                            }}
-                            onFocus={e => (e.currentTarget.style.borderColor = '#2563eb')}
-                            onBlur={e => (e.currentTarget.style.borderColor = '#d1d5db')}
                         />
                     </div>
 
-                    {/* Senha */}
-                    <div style={{ marginBottom: '1.5rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                            <label style={{ fontSize: '0.9rem', fontWeight: 600, color: '#374151' }}>
+                    <div className={styles.formGroup}>
+                        <div className={styles.passwordHeader}>
+                            <label>
                                 Senha
                             </label>
-                            <Link
-                                to="/recuperar-senha"
-                                style={{ fontSize: '0.85rem', color: '#2563eb', textDecoration: 'none', fontWeight: 500 }}
-                                onMouseEnter={e => (e.currentTarget.style.textDecoration = 'underline')}
-                                onMouseLeave={e => (e.currentTarget.style.textDecoration = 'none')}
-                            >
-                                Esqueci minha senha
-                            </Link>
                         </div>
                         <input
                             type="password"
@@ -134,54 +93,15 @@ function LoginForm(): JSX.Element {
                             value={senha}
                             onChange={(e) => setSenha(e.target.value)}
                             required
-                            style={{
-                                width: '100%',
-                                padding: '0.65rem 0.85rem',
-                                borderRadius: '7px',
-                                border: '1px solid #d1d5db',
-                                fontSize: '0.95rem',
-                                color: '#0f1627',
-                                outline: 'none',
-                                boxSizing: 'border-box',
-                                transition: 'border-color 0.2s',
-                            }}
-                            onFocus={e => (e.currentTarget.style.borderColor = '#2563eb')}
-                            onBlur={e => (e.currentTarget.style.borderColor = '#d1d5db')}
                         />
                     </div>
 
-                    {/* Botão */}
-                    <button
-                        type="submit"
-                        style={{
-                            width: '100%',
-                            padding: '0.75rem',
-                            backgroundColor: '#36a75f',
-                            color: '#ffffff',
-                            fontWeight: 700,
-                            fontSize: '1rem',
-                            border: 'none',
-                            borderRadius: '7px',
-                            cursor: 'pointer',
-                            transition: 'background-color 0.2s',
-                        }}
-                        onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#09722f')}
-                        onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#2d9151')}
-                    >
-                        Entrar na sua conta
-                    </button>
+                    <button type="submit" className={styles.loginButton}>Entrar na sua conta</button>
                 </form>
 
-                <p style={{ marginTop: '1.25rem', fontSize: '0.9rem', color: '#6b7280' }}>
+                <p className={styles.loginFooter}>
                     Ainda não tem conta?{' '}
-                    <Link
-                        to="/cadastro"
-                        style={{ color: '#849fda', fontWeight: 600, textDecoration: 'none' }}
-                        onMouseEnter={e => (e.currentTarget.style.textDecoration = 'underline')}
-                        onMouseLeave={e => (e.currentTarget.style.textDecoration = 'none')}
-                    >
-                        Cadastre-se grátis
-                    </Link>
+                    <Link to="/cadastro/cliente">Cadastre-se grátis</Link>
                 </p>
             </div>
         </div>

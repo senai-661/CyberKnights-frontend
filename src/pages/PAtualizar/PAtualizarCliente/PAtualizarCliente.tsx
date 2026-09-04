@@ -30,6 +30,7 @@ function PAtualizarCliente() {
         setErro('');
         const cliente: ClienteDTO = { idCliente: Number(id_cliente), nome: formData.nome.trim(), email: formData.email.trim(), endereco: formData.endereco.trim(), telefone: Number(formData.telefone.replace(/\D/g, '')), cpf: formData.cpf ? Number(formData.cpf.replace(/\D/g, '')) : undefined };
         if (!cliente.nome || !cliente.email || !cliente.endereco || !cliente.telefone) { setErro('Preencha todos os campos obrigatórios.'); setSalvando(false); return; }
+        if (cliente.idCliente === undefined) { setErro('Cliente inválido.'); setSalvando(false); return; }
         const resposta = await ClienteRequests.atualizarCliente(cliente.idCliente, cliente);
         if (resposta.sucesso) navigate('/lista/cliente');
         else setErro(resposta.mensagem ?? 'Não foi possível atualizar o cliente.');

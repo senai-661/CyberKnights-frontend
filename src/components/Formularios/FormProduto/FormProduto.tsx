@@ -13,15 +13,7 @@ function FormProduto() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-<<<<<<< HEAD
-
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-=======
-        setFormData((prev: Record<string, string>) => ({ ...prev, [name]: value }));
->>>>>>> a684f86 (nova funcionalidade atualizar)
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

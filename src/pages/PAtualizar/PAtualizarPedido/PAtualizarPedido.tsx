@@ -31,6 +31,7 @@ function PAtualizarPedido() {
         setErro('');
         const pedido: PedidoDTO = { idPedido: Number(id_pedido), idCliente: Number(formData.idCliente), idProduto: Number(formData.idProduto), dataPedido: new Date(`${formData.dataPedido}T00:00:00`), valorTotal: Number(formData.valorTotal.replace(',', '.')), statusPedido: formData.statusPedido.trim() };
         if (!pedido.idCliente || !pedido.idProduto || Number.isNaN(pedido.dataPedido.getTime()) || Number.isNaN(pedido.valorTotal) || !pedido.statusPedido) { setErro('Preencha todos os campos corretamente.'); setSalvando(false); return; }
+        if (pedido.idPedido === undefined) { setErro('Pedido inválido.'); setSalvando(false); return; }
         const resposta = await PedidoRequests.atualizarPedido(pedido.idPedido, pedido);
         if (resposta.sucesso) navigate('/lista/pedido');
         else setErro(resposta.mensagem ?? 'Não foi possível atualizar o pedido.');

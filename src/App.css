@@ -13,18 +13,34 @@ html, body, #root {
   margin: 0;
   min-height: 100%;
   width: 100%;
-  background: #0d0d0d;
+  background-color: #0d0d0d;
+  background-image: url("./assets/ChatGPT Image 4 de set. de 2026, 14_52_04.png");
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-  background: #0d0d0d;
+  background-color: #0d0d0d;
   color: #f5f5f5;
 }
+
+.home-page { background: #191919; }
+.cliente-page, .produto-page, .pedido-page, .loginFormContainer { background: transparent; }
+main.bg-gray-200 { background: transparent; }
+main.bg-gray-200,
+main.bg-gray-100,
+main.cliente-page,
+main.produto-page,
+main.pedido-page { background: transparent !important; }
 
 button, input {
   font: inherit;
 }
+
+.app-layout { min-height: 100vh; display: flex; flex-direction: column; }
+.app-content { flex: 1; display: flex; flex-direction: column; }
 
 .topbar {
   background: #0d0d0d;
@@ -240,14 +256,27 @@ main.bg-gray-200 .bg-red-100 { background: #252525; color: #ff7777; }
   .produto-fields > div, .pedido-fields > div, .produto-actions, .pedido-actions { grid-template-columns: 1fr; }
 }
 
+.welcome-page { min-height: calc(100vh - 104px); background: #191919; }
 .hero-shell {
-  min-height: calc(100vh - 170px);
+  min-height: calc(100vh - 104px);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
-  background: #f4bf3d;
-  padding: 48px 24px;
+  background: #191919;
+  padding: 28px 24px 48px;
+}
+
+.hero-panel {
+  width: min(100%, 1480px);
+  min-height: min(680px, calc(100vh - 190px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 72px clamp(42px, 8vw, 140px);
+  border-radius: 24px;
+  background: linear-gradient(135deg, #ffbd35, #f6a928);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, .24);
 }
 
 .hero-copy,
@@ -259,6 +288,8 @@ main.bg-gray-200 .bg-red-100 { background: #252525; color: #ff7777; }
 .hero-copy {
   text-align: left;
 }
+
+.hero-eyebrow { color: #5a2c12; font-weight: 900; letter-spacing: .18em; font-size: .8rem; }
 
 .hero-copy h1 {
   font-size: clamp(2.4rem, 5vw, 4.8rem);
@@ -287,6 +318,8 @@ main.bg-gray-200 .bg-red-100 { background: #252525; color: #ff7777; }
   display: flex;
   justify-content: center;
 }
+
+.hero-logo { width: min(100%, 500px); max-height: 440px; object-fit: contain; filter: drop-shadow(0 14px 12px rgba(44, 20, 0, .2)); }
 
 .hero-image {
   width: 100%;
@@ -321,6 +354,8 @@ main.bg-gray-200 .bg-red-100 { background: #252525; color: #ff7777; }
     flex-direction: column;
     text-align: center;
   }
+
+  .hero-panel { flex-direction: column-reverse; min-height: auto; padding: 48px 24px; text-align: center; }
 
   .hero-copy {
     text-align: center;

@@ -1,5 +1,6 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Rodape from './components/Rodape/Rodape'
 
 import PHome from './pages/PHome/PHome'
 import PLogin from './pages/PLogin/PLogin'
@@ -27,8 +28,9 @@ function App() {
   return (
 
     <BrowserRouter>
-
-      <Routes>
+      <div className="app-layout">
+        <main className="app-content">
+          <Routes>
         {/* Rota Principal */}
         <Route path='/' element={<PHome />} />
         <Route path='/login' element={<PLogin />} />
@@ -52,7 +54,10 @@ function App() {
         <Route path='/atualizar/cliente/:id_cliente' element={<ProtectedRoute element={<PAtualizarCliente />} />} />
         <Route path='/atualizar/produto/:id_produto' element={<ProtectedRoute element={<PAtualizarProduto />} />} />
         <Route path='/atualizar/pedido/:id_pedido' element={<ProtectedRoute element={<PAtualizarPedido />} />} />
-      </Routes>
+          </Routes>
+        </main>
+        <Rodape />
+      </div>
 
     </BrowserRouter>
 

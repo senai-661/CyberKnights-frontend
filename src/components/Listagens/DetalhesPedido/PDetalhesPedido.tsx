@@ -82,13 +82,13 @@ function PDetalhesPedido(): JSX.Element {
                 style={{
                     flex: 1,
                     padding: "40px 10%",
-                    backgroundColor: "#f4f7f6",
+                    backgroundColor: "transparent",
                 }}
             >
 
                 <div
                     style={{
-                        backgroundColor: "white",
+                        backgroundColor: "rgba(17, 17, 17, .88)",
                         padding: "30px",
                         borderRadius: "12px",
                         boxShadow: "0 4px 6px rgba(0,0,0,0.05)",

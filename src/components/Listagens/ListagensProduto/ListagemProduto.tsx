@@ -87,7 +87,7 @@ function ListagemProdutos(): JSX.Element {
                                                     Detalhes
                                                 </button>
                                                 <button className="w-full sm:w-auto bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-emerald-600 hover:text-white transition-all" onClick={() => navigate(`/atualizar/produto/${produto.idProduto}`)}>Atualizar</button>
-                                                <button className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all" onClick={() => handleDelete(produto.idProduto)}>Deletar</button>
+                                                <button className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all" onClick={() => produto.idProduto !== undefined && handleDelete(produto.idProduto)} disabled={produto.idProduto === undefined}>Deletar</button>
                                             </div>
                                         </td>
                                     </tr>

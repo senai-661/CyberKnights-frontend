@@ -99,7 +99,7 @@ function ListagemPedidos(): JSX.Element {
                                                     Detalhes
                                                 </button>
                                                 <button className="w-full sm:w-auto bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-emerald-600 hover:text-white transition-all" onClick={() => navigate(`/atualizar/pedido/${pedido.idPedido}`)}>Atualizar</button>
-                                                <button className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all" onClick={() => handleDelete(pedido.idPedido)} disabled={pedidoExcluindo === pedido.idPedido}>{pedidoExcluindo === pedido.idPedido ? 'Excluindo...' : 'Deletar'}</button>
+                                                <button className="w-full sm:w-auto bg-red-100 text-red-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-red-600 hover:text-white transition-all" onClick={() => pedido.idPedido !== undefined && handleDelete(pedido.idPedido)} disabled={pedido.idPedido === undefined || pedidoExcluindo === pedido.idPedido}>{pedidoExcluindo === pedido.idPedido ? 'Excluindo...' : 'Deletar'}</button>
                                             </div>
                                         </td>
                                     </tr>

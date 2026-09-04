@@ -8,7 +8,6 @@ import ClienteRequests from "../../../fetch/ClienteRequests";
 import type { ClienteDTO } from "../../../dto/ClienteDTO";
 import { useNavigate, useParams } from "react-router-dom";
 import Navegacao from "../../Navegacao/Navegacao";
-import Rodape from "../../Rodape/Rodape";
 import "./DetalheCliente.css";
 
 function DetalhesCliente(): JSX.Element {
@@ -60,7 +59,6 @@ function DetalhesCliente(): JSX.Element {
                 <main className="cliente-details-main cliente-details-state">
                     <Skeleton width="100%" height="20rem" />
                 </main>
-                <Rodape />
             </div>
         );
     }
@@ -72,7 +70,6 @@ function DetalhesCliente(): JSX.Element {
                 <main className="cliente-details-main cliente-details-state">
                     <Message severity="error" text={erro} />
                 </main>
-                <Rodape />
             </div>
         );
     }
@@ -110,7 +107,6 @@ function DetalhesCliente(): JSX.Element {
 
                 <Button label="Voltar" icon="pi pi-arrow-left" className="cliente-details-back" onClick={() => navigate("/lista/cliente")} />
             </main>
-            <Rodape />
         </div>
     );
 }

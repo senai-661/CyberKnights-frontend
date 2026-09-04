@@ -44,7 +44,6 @@ function FormCliente() {
             return;
         }
 
-<<<<<<< HEAD
         const dadosCliente = {
             ...formData,
             telefone: Number(formData.telefone.replace(/\D/g, '')),
@@ -52,10 +51,6 @@ function FormCliente() {
         };
 
         const resposta = await ClienteRequests.enviarFormularioCliente(dadosCliente);
-=======
-        const resposta =
-            await ClienteRequests.enviarFormularioCliente(formData);
->>>>>>> a684f86 (nova funcionalidade atualizar)
 
         if (resposta) {
             alert('Cliente cadastrado com sucesso');
@@ -102,77 +97,6 @@ function FormCliente() {
 
                     <div className="cliente-fields grid grid-cols-1 md:grid-cols-2 gap-6">
 
-<<<<<<< HEAD
-                        <div className="flex flex-col sm:flex-row gap-6">
-                            <div className="flex-1">
-                                <label htmlFor="nome" className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Nome
-                                </label>
-                                <input
-                                    type="text"
-                                    name="nome"
-                                    id="nome"
-                                    required
-                                    minLength={3}
-                                    onChange={handleChange}
-                                    placeholder="Digite o nome"
-                                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
-                                />
-                            </div>
-
-                            <div className="flex-1">
-                                <label htmlFor="telefone" className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Telefone
-                                </label>
-                                <input
-                                    type="tel"
-                                    name="telefone"
-                                    id="telefone"
-                                    required
-                                    value={formData.telefone}
-                                    onChange={handleChange}
-                                    placeholder="(xx) x xxxx-xxxx"
-                                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col sm:flex-row gap-6">
-                            <div className="flex-1">
-                                <label htmlFor="endereco" className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Endereço
-                                </label>
-                                <input
-                                    type="text"
-                                    name="endereco"
-                                    id="endereco"
-                                    required
-                                    minLength={6}
-                                    onChange={handleChange}
-                                    placeholder="Rua, número, bairro..."
-                                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
-                                />
-                            </div>
-
-                            <div className="flex-1">
-                                <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">
-                                    E-mail
-                                </label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    id="email"
-                                    onChange={handleChange}
-                                    placeholder="exemplo@email.com"
-                                    className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex-1">
-                            <label htmlFor="cpf" className="block text-sm font-semibold text-slate-700 mb-2">
-                                CPF
-=======
                         {/* Nome */}
                         <div>
                             <label
@@ -180,7 +104,6 @@ function FormCliente() {
                                 className="block text-white text-lg font-bold mb-2"
                             >
                                 Nome
->>>>>>> a684f86 (nova funcionalidade atualizar)
                             </label>
 
                             <input

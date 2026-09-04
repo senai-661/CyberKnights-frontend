@@ -29,6 +29,7 @@ function PAtualizarProduto() {
         setErro('');
         const produto: ProdutoDTO = { idProduto: Number(id_produto), nomeProduto: formData.nomeProduto.trim(), preco: Number(formData.preco.replace(',', '.')), disponibilidade: formData.disponibilidade.trim() };
         if (!produto.nomeProduto || Number.isNaN(produto.preco) || !produto.disponibilidade) { setErro('Preencha todos os campos corretamente.'); setSalvando(false); return; }
+        if (produto.idProduto === undefined) { setErro('Produto inválido.'); setSalvando(false); return; }
         const resposta = await ProdutoRequests.atualizarProduto(produto.idProduto, produto);
         if (resposta.sucesso) navigate('/lista/produto');
         else setErro(resposta.mensagem ?? 'Não foi possível atualizar o produto.');
