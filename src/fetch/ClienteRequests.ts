@@ -102,14 +102,17 @@ class ClienteRequests {
                 body: JSON.stringify(formCliente)
             });
 
-            if (!respostaAPI.ok) throw new Error(`Erro ${respostaAPI.status}: ${respostaAPI.statusText}`);
+            if (!respostaAPI.ok) {
+                const dados = await respostaAPI.json().catch(() => ({}));
+                throw new Error(dados.mensagem ?? dados.message ?? `Erro ${respostaAPI.status}: ${respostaAPI.statusText}`);
+            }
 
             console.info(`${respostaAPI.status}: ${respostaAPI.statusText}`);
 
             return true;
         } catch (error) {
             console.error(`Erro ao fazer consulta à API. ${error}`);
-            return false;
+            throw error;
         }
     }
 

@@ -3,6 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import ClienteRequests from '../../../fetch/ClienteRequests';
 import Utilitario from '../../../utils/Utilitario';
 
+function formatarCpf(valor: string): string {
+    const numeros = valor.replace(/\D/g, '').slice(0, 11);
+    return numeros
+        .replace(/^(\d{3})(\d)/, '$1.$2')
+        .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+        .replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
+}
+
 function FormCliente() {
     const navigate = useNavigate();
 
@@ -28,6 +36,11 @@ function FormCliente() {
             return;
         }
 
+        if (name === 'cpf') {
+            setFormData((prev) => ({ ...prev, cpf: formatarCpf(value) }));
+            return;
+        }
+
         setFormData((prev: any) => ({
             ...prev,
             [name]: value
@@ -46,17 +59,21 @@ function FormCliente() {
 
         const dadosCliente = {
             ...formData,
-            telefone: Number(formData.telefone.replace(/\D/g, '')),
-            cpf: formData.cpf ? Number(formData.cpf) : undefined
+            telefone: formData.telefone.replace(/\D/g, ''),
+            cpf: formData.cpf.replace(/\D/g, '')
         };
 
-        const resposta = await ClienteRequests.enviarFormularioCliente(dadosCliente);
+        try {
+            const resposta = await ClienteRequests.enviarFormularioCliente(dadosCliente);
 
-        if (resposta) {
-            alert('Cliente cadastrado com sucesso');
-            navigate('/lista/cliente');
-        } else {
-            alert('Erro ao cadastrar cliente');
+            if (resposta) {
+                alert('Cliente cadastrado com sucesso');
+                navigate('/lista/cliente');
+            } else {
+                alert('Não foi possível cadastrar o cliente. Confira o CPF e os demais dados.');
+            }
+        } catch (error) {
+            alert(error instanceof Error ? error.message : 'Não foi possível cadastrar o cliente.');
         }
     };
 
@@ -253,6 +270,8 @@ function FormCliente() {
                             inputMode="numeric"
                             name="cpf"
                             id="cpf"
+                            required
+                            maxLength={14}
                             value={formData.cpf}
                             onChange={handleChange}
                             placeholder="000.000.000-00"

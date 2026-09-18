@@ -3,6 +3,6 @@ export interface ClienteDTO {
     email: string,
     nome: string,
     endereco: string,
-    telefone: number,
-    cpf?: number
+    telefone: string,
+    cpf?: string
 }
