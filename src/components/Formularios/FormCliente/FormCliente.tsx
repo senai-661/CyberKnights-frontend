@@ -79,7 +79,7 @@ function FormCliente() {
                 >
 
                     <h1
-                        className="
+                        className="entity-heading
                             text-4xl
                             md:text-6xl
                             font-extrabold

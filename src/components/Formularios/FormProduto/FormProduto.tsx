@@ -42,7 +42,7 @@ function FormProduto() {
                     onSubmit={handleSubmit}
                     className="produto-form bg-white shadow-2xl rounded-2xl p-6 sm:p-10 border border-slate-200"
                 >
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-bold text-slate-800 mb-8 sm:mb-12">
+                    <h1 className="entity-heading text-3xl sm:text-4xl md:text-5xl text-center font-bold text-slate-800 mb-8 sm:mb-12">
                         <i className="pi pi-box"></i> Cadastro de <span>Produto</span>
                     </h1>
 
