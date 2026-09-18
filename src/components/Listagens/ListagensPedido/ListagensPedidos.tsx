@@ -5,6 +5,11 @@ import type { PedidoDTO } from "../../../dto/PedidoDTO";
 import { useNavigate } from "react-router-dom";
 import Navegacao from "../../../components/Navegacao/Navegacao";
 
+function formatarMoeda(valor: number | string): string {
+    const numero = Number(String(valor).replace(',', '.'));
+    return Number.isFinite(numero) ? numero.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'R$ 0,00';
+}
+
 function ListagemPedidos(): JSX.Element {
     const [pedidos, setPedidos] = useState<PedidoDTO[]>([]);
     const [pedidoExcluindo, setPedidoExcluindo] = useState<number | null>(null);
@@ -87,7 +92,7 @@ function ListagemPedidos(): JSX.Element {
                                         <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">
                                             {new Date(pedido.dataPedido).toLocaleDateString('pt-BR')}
                                         </td>
-                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{pedido.valorTotal}</td>
+                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{formatarMoeda(pedido.valorTotal)}</td>
                                         <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{pedido.statusPedido}</td>
 
                                         <td className="p-2 md:p-4">

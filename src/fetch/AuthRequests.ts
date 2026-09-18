@@ -39,7 +39,8 @@ class AuthRequests {
      * @param {*} login - email e senha
      * @returns **true** caso sucesso, **false** caso erro
      */
-    async login(login: { email: string, senha: string}) {       
+    async login(login: { email: string, senha: string}) {  
+        console.log("URL:", `${this.serverUrl}${this.endpointLogin}`);     
         try {
             const payload = {
                 email: login.email,

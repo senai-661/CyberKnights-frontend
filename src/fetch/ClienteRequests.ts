@@ -65,7 +65,7 @@ class ClienteRequests {
         }
     }
 
-    // ✅ MÉTODO NOVO - busca um cliente pelo ID
+    
     async obterClientePorId(id: number) {
         try {
             const token = localStorage.getItem('token');

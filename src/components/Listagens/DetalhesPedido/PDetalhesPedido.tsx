@@ -7,6 +7,11 @@ import Rodape from "../../Rodape/Rodape";
 import PedidoRequest from "../../../fetch/PedidoRequests";
 import type { PedidoDTO } from "../../../dto/PedidoDTO";
 
+function formatarMoeda(valor: number | string): string {
+    const numero = Number(String(valor).replace(',', '.'));
+    return Number.isFinite(numero) ? numero.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'R$ 0,00';
+}
+
 function PDetalhesPedido(): JSX.Element {
 
     const params = useParams<{ id?: string }>();
@@ -111,7 +116,7 @@ function PDetalhesPedido(): JSX.Element {
                     </p>
 
                     <p>
-                        <strong>Valor Total:</strong> {pedido.valorTotal}
+                        <strong>Valor Total:</strong> {formatarMoeda(pedido.valorTotal)}
                     </p>
 
                     <p>
