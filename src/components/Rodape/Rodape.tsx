@@ -20,6 +20,7 @@ function Rodape(): JSX.Element {
                 <div className="rodape-links">
                     <h4>Desenvolvido por</h4>
                     <div className="equipe-lista">
+                        <span>Lavinia</span>
                         <span>Beatriz</span>
                         <span>Sofia</span>
                         <span>Heloísa</span>
@@ -44,7 +45,7 @@ function Rodape(): JSX.Element {
             {/* Faixa de Copyright Final */}
             <div className="rodape-bottom">
                 <p>© 2026 Lanches Maga. Todos os direitos autorais reservados.</p>
-                <p>Desenvolvido por Beatriz, Sofia, Heloísa e Clara</p>
+                <p>Desenvolvido por Lavinia, Beatriz, Sofia, Heloísa e Clara</p>
             </div>
         </footer>
     );

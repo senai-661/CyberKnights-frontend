@@ -106,18 +106,39 @@ class ProdutoRequests {
 
      async deletarProduto(idProduto: number): Promise<{ sucesso: boolean; mensagem?: string }> {
         try {
-            if (!Number.isInteger(idProduto) || idProduto <= 0) {
+            if (!Number.isSafeInteger(idProduto) || idProduto <= 0) {
                 return { sucesso: false, mensagem: 'ID do produto inválido.' };
             }
 
             const token = localStorage.getItem('token');
+            if (!token) {
+                return { sucesso: false, mensagem: 'Sessão expirada. Faça login novamente.' };
+            }
+
             const respostaAPI = await fetch(`${this.serverURL}${this.endpointProduto}/${idProduto}`, {
                 method: 'DELETE',
-                headers: { 'x-access-token': `${token ?? ''}`, ...(token ? { Authorization: `Bearer ${token}` } : {}) }
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': token,
+                    Authorization: `Bearer ${token}`
+                }
             });
-            if (respostaAPI.ok) return { sucesso: true };
-            const dados = await respostaAPI.json().catch(() => ({}));
-            return { sucesso: false, mensagem: dados.mensagem ?? dados.message ?? dados.error ?? `Erro ${respostaAPI.status} ao excluir o produto.` };
+
+            const texto = await respostaAPI.text();
+            let corpo: unknown = {};
+            try {
+                corpo = texto ? JSON.parse(texto) : {};
+            } catch {
+                corpo = { mensagem: texto };
+            }
+
+            const dados = typeof corpo === 'object' && corpo !== null ? corpo as Record<string, unknown> : {};
+            const sucesso = respostaAPI.ok && dados.sucesso !== false && dados.success !== false;
+
+            return {
+                sucesso,
+                mensagem: sucesso ? undefined : String(dados.mensagem ?? dados.message ?? dados.error ?? `Erro ${respostaAPI.status} ao excluir o produto.`)
+            };
         } catch {
             return { sucesso: false, mensagem: 'Não foi possível conectar ao servidor.' };
         }
