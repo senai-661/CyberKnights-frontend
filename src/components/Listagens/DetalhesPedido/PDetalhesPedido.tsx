@@ -1,5 +1,4 @@
 import { useEffect, useState, type JSX } from "react";
-import { Card } from "primereact/card";
 import { Skeleton } from "primereact/skeleton";
 import { Divider } from "primereact/divider";
 import { Message } from "primereact/message";
@@ -7,6 +6,7 @@ import { Tag } from "primereact/tag";
 import { Button } from "primereact/button";
 import PedidoRequests from "../../../fetch/PedidoRequests";
 import type { PedidoDTO } from "../../../dto/PedidoDTO";
+import Navegacao from "../../Navegacao/Navegacao";
 import { useNavigate, useParams } from "react-router-dom"; // ✅ useParams adicionado
 
 function formatarMoeda(valor: number | string): string {
@@ -190,7 +190,7 @@ function PDetalhesPedido(): JSX.Element {
                         onClick={() => navigate("/lista/pedido")} // ✅ rota corrigida
                     />
                 </div>
-            </Card>
+            </main>
         </div>
     );
 }
