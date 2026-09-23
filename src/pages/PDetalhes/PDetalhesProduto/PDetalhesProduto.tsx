@@ -48,9 +48,9 @@ function PDetalhesProduto(): JSX.Element {
 
             <Navegacao />
 
-            <main style={{ flex: 1, padding: "40px 10%", backgroundColor: "#f4f7f6" }}>
+            <main style={{ flex: 1, padding: "40px 10%", backgroundColor: "transparent" }}>
 
-                <div style={{ backgroundColor: "white", padding: "30px", borderRadius: "12px", boxShadow: "0 4px 6px rgba(0,0,0,0.05)" }}>
+                <div style={{ backgroundColor: "rgba(17, 17, 17, .88)", padding: "30px", borderRadius: "12px", boxShadow: "0 4px 6px rgba(0,0,0,0.25)" }}>
 
                     <h1 style={{ marginBottom: "20px", color: "#2c3e50" }}>
                         Detalhes do Produto

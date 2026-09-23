@@ -5,22 +5,22 @@ import { Divider } from "primereact/divider";
 import { Message } from "primereact/message";
 import { Tag } from "primereact/tag";
 import { Button } from "primereact/button";
-import ProdutoRequests from "../../../fetch/ProdutoRequests";
-import type { ProdutoDTO } from "../../../dto/ProdutoDTO";
+import PedidoRequests from "../../../fetch/PedidoRequests";
+import type { PedidoDTO } from "../../../dto/PedidoDTO";
 import { useNavigate, useParams } from "react-router-dom";
 import Navegacao from "../../Navegacao/Navegacao";
 import "../DetalhesCliente/DetalheCliente.css";
 
-function DetalhesProdutos(): JSX.Element {
+function DetalhesPedidos(): JSX.Element {
 
     const formatarMoeda = (valor: number | string | undefined) => {
         const numero = Number(valor);
         return Number.isFinite(numero) ? `R$ ${numero.toFixed(2).replace(".", ",")}` : "";
     };
 
-    const { id_produto } = useParams<{ id_produto: string }>();
+    const { id_pedido } = useParams<{ id_pedido: string }>();
 
-    const [produto, setProduto] = useState<ProdutoDTO | null>(null);
+    const [pedido, setPedido] = useState<PedidoDTO | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [erro, setErro] = useState<string>("");
 
@@ -29,41 +29,41 @@ function DetalhesProdutos(): JSX.Element {
     useEffect(() => {
         let ativo = true;
 
-        const carregarProduto = async () => {
+        const carregarPedido = async () => {
             await Promise.resolve();
 
             try {
-                if (!id_produto) {
-                    if (ativo) setErro("ID do produto não informado");
+                if (!id_pedido) {
+                    if (ativo) setErro("ID do pedido não informado");
                     return;
                 }
 
-                const resposta = await ProdutoRequests.obterProdutoPorId(Number(id_produto));
+                const resposta = await PedidoRequests.obterPedidoPorId(Number(id_pedido));
                 if (!ativo) return;
                 if (!resposta) {
-                    setErro("Produto não encontrado");
+                    setErro("Pedido não encontrado");
                     return;
                 }
 
-                setProduto(resposta);
+                setPedido(resposta);
             } catch {
-                if (ativo) setErro("Erro ao buscar produto");
+                if (ativo) setErro("Erro ao buscar pedido");
             } finally {
                 if (ativo) setLoading(false);
             }
         };
 
-        void carregarProduto();
+        void carregarPedido();
         return () => { ativo = false; };
-    }, [id_produto]);
+    }, [id_pedido]);
 
-    const getDisponibilidadeSeverity = (disponibilidade: string) => {
-        switch (disponibilidade) {
-            case "Disponível":
+    const getStatusSeverity = (status: string) => {
+        switch (status) {
+            case "Entregue":
                 return "success";
-            case "Poucas Unidades":
+            case "Pendente":
                 return "warning";
-            case "Indisponível":
+            case "Cancelado":
                 return "danger";
             default:
                 return "info";
@@ -93,27 +93,29 @@ function DetalhesProdutos(): JSX.Element {
             <Navegacao />
             <main className="cliente-details-main">
                 <div className="cliente-details-heading">
-                    <div className="cliente-details-icon"><i className="pi pi-box" /></div>
-                    <div><h1>Detalhes do <span>Produto</span></h1><p>Informações completas do produto selecionado</p></div>
+                    <div className="cliente-details-icon"><i className="pi pi-shopping-bag" /></div>
+                    <div><h1>Detalhes do <span>Pedido</span></h1><p>Informações completas do pedido selecionado</p></div>
                 </div>
                 <Card className="cliente-details-card">
                     {[
-                        ["ID do produto", produto?.idProduto, "pi-hashtag"],
-                        ["Nome do produto", produto?.nomeProduto, "pi-box"],
-                        ["Preço", formatarMoeda(produto?.preco), "pi-money-bill"],
-                        ["Disponibilidade", <Tag value={produto?.disponibilidade} severity={getDisponibilidadeSeverity(produto?.disponibilidade || "")} />, "pi-check-circle"]
+                        ["ID do pedido", pedido?.idPedido, "pi-hashtag"],
+                        ["ID do cliente", pedido?.idCliente, "pi-user"],
+                        ["ID do produto", pedido?.idProduto, "pi-box"],
+                        ["Data do pedido", pedido?.dataPedido ? new Date(pedido.dataPedido).toLocaleDateString("pt-BR") : "", "pi-calendar"],
+                        ["Valor total", formatarMoeda(pedido?.valorTotal), "pi-money-bill"],
+                        ["Status do pedido", <Tag value={pedido?.statusPedido} severity={getStatusSeverity(pedido?.statusPedido || "")} />, "pi-info-circle"]
                     ].map(([label, value, icon], index) => (
                         <div className="cliente-detail-row" key={label as string}>
                             <div className="cliente-detail-row-icon"><i className={`pi ${icon}`} /></div>
                             <div className="cliente-detail-copy"><span>{label}</span><strong>{value}</strong></div>
-                            {index < 3 && <Divider />}
+                            {index < 5 && <Divider />}
                         </div>
                     ))}
                 </Card>
-                <Button label="Voltar" icon="pi pi-arrow-left" className="cliente-details-back" onClick={() => navigate("/lista/produto")} />
+                <Button label="Voltar" icon="pi pi-arrow-left" className="cliente-details-back" onClick={() => navigate("/lista/pedido")} />
             </main>
         </div>
     );
 }
 
-export default DetalhesProdutos;
+export default DetalhesPedidos;

@@ -9,7 +9,12 @@ import PedidoRequests from "../../../fetch/PedidoRequests";
 import type { PedidoDTO } from "../../../dto/PedidoDTO";
 import { useNavigate, useParams } from "react-router-dom"; // ✅ useParams adicionado
 
-function DetalhesPedidos(): JSX.Element {
+function formatarMoeda(valor: number | string): string {
+    const numero = Number(String(valor).replace(',', '.'));
+    return Number.isFinite(numero) ? numero.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'R$ 0,00';
+}
+
+function PDetalhesPedido(): JSX.Element {
 
     // ✅ Pegando o ID pela URL em vez de prop
     const { id_pedido } = useParams<{ id_pedido: string }>();
@@ -81,14 +86,57 @@ function DetalhesPedidos(): JSX.Element {
     }
 
     return (
-        <div className="flex justify-content-center mt-5">
-            <Card
-                title="Detalhes do Pedido"
-                className="w-6 shadow-4"
+
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                minHeight: "100vh",
+            }}
+        >
+
+            <Navegacao />
+
+            <main
+                style={{
+                    flex: 1,
+                    padding: "40px 10%",
+                    backgroundColor: "transparent",
+                }}
             >
-                <div className="mb-3">
-                    <h3>ID do Pedido</h3>
-                    <p>{pedido?.idPedido}</p>
+
+                <div
+                    style={{
+                        backgroundColor: "rgba(17, 17, 17, .88)",
+                        padding: "30px",
+                        borderRadius: "12px",
+                        boxShadow: "0 4px 6px rgba(0,0,0,0.05)",
+                    }}
+                >
+
+                    <h1>Detalhes do Pedido</h1>
+
+                    <p>
+                        <strong>ID Cliente:</strong> {pedido.idCliente}
+                    </p>
+
+                    <p>
+                        <strong>ID Produto:</strong> {pedido.idProduto}
+                    </p>
+
+                    <p>
+                        <strong>Data do Pedido:</strong>{" "}
+                        {new Date(pedido.dataPedido).toLocaleDateString("pt-BR")}
+                    </p>
+
+                    <p>
+                        <strong>Valor Total:</strong> {formatarMoeda(pedido.valorTotal)}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong> {pedido.statusPedido}
+                    </p>
+
                 </div>
 
                 <Divider />
@@ -147,4 +195,4 @@ function DetalhesPedidos(): JSX.Element {
     );
 }
 
-export default DetalhesPedidos;
+export default PDetalhesPedido;

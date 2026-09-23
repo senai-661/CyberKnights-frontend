@@ -8,8 +8,8 @@ function Rodape(): JSX.Element {
                 {/* Lado Esquerdo: Marca */}
                 <div className="rodape-info">
                     <h3>
-                        <i className="pi pi-heart-fill" style={{ color: '#ffb347' }}></i>
-                        Bem-vindo ao LanchesMaga
+                        <i className="pi pi-heart-fill"></i>
+                        Bem-vindo ao lanches maga
                     </h3>
                     <p>
                         Lanches artesanais feitos com ingredientes frescos e muito sabor.
@@ -20,10 +20,9 @@ function Rodape(): JSX.Element {
                 <div className="rodape-links">
                     <h4>Desenvolvido por</h4>
                     <div className="equipe-lista">
-                        <span>Lavinia</span> •
-                        <span>Beatriz</span> •
-                        <span>Heloísa</span> •
-                        <span>Sofia</span> •
+                        <span>Beatriz</span>
+                        <span>Sofia</span>
+                        <span>Heloísa</span>
                         <span>Clara</span>
                     </div>
                 </div>
@@ -34,18 +33,18 @@ function Rodape(): JSX.Element {
                     <p className="rodape-equipe">
                         <i className="pi pi-map-marker"></i> Sertãozinho - SP
                     </p>
-                    <div className="social-icons">
-                        <i className="pi pi-instagram"></i>
-                        <i className="pi pi-linkedin"></i>
-                        <i className="pi pi-facebook"></i>
+                    <div className="social-icons" aria-label="Redes sociais">
+                        <a href="https://www.instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram"><i className="pi pi-instagram"></i></a>
+                        <a href="https://www.linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn"><i className="pi pi-linkedin"></i></a>
+                        <a href="https://www.facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook"><i className="pi pi-facebook"></i></a>
                     </div>
                 </div>
             </div>
 
             {/* Faixa de Copyright Final */}
             <div className="rodape-bottom">
-                <p>© 2026 LanchesMaga - Rede de lanches.</p>
-                <p>Versão 1.0.2</p>
+                <p>© 2026 Lanches Maga. Todos os direitos autorais reservados.</p>
+                <p>Desenvolvido por Beatriz, Sofia, Heloísa e Clara</p>
             </div>
         </footer>
     );
