@@ -2,7 +2,7 @@ import { type JSX } from "react";
 import { useState, useEffect } from "react";
 import ClienteRequests from "../../../fetch/ClienteRequests";
 import type { ClienteDTO } from "../../../dto/ClienteDTO";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navegacao from "../../../components/Navegacao/Navegacao";
 
 function ListagemClientes(): JSX.Element {
@@ -10,12 +10,21 @@ function ListagemClientes(): JSX.Element {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 5;
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const buscarClientes = async () => {
             try {
                 const listaDeClientes = await ClienteRequests.obterListaDeClientes();
-                setClientes(listaDeClientes);
+                const clienteAtualizado = (location.state as { clienteAtualizado?: ClienteDTO } | null)?.clienteAtualizado;
+                if (clienteAtualizado) {
+                    const clienteExiste = listaDeClientes.some((cliente) => cliente.idCliente === clienteAtualizado.idCliente);
+                    setClientes(clienteExiste
+                        ? listaDeClientes.map((cliente) => cliente.idCliente === clienteAtualizado.idCliente ? { ...cliente, ...clienteAtualizado } : cliente)
+                        : [...listaDeClientes, clienteAtualizado]);
+                } else {
+                    setClientes(listaDeClientes);
+                }
             } catch (error) {
                 console.error(`Erro ao buscar clientes. ${error}`);
                 alert("Erro ao criar a listagem de clientes.");
@@ -23,7 +32,7 @@ function ListagemClientes(): JSX.Element {
         }
 
         buscarClientes();
-    }, []);
+    }, [location.state]);
 
     // Lógica de Paginação
     const totalPages = Math.ceil(clientes.length / rowsPerPage);

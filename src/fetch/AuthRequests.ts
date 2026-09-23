@@ -6,6 +6,15 @@ class AuthRequests {
     private serverUrl: string;
     private endpointLogin: string;
 
+    private isRecord(value: unknown): value is Record<string, unknown> {
+        return typeof value === 'object' && value !== null;
+    }
+
+    private textoDaResposta(data: Record<string, unknown>, fallback: string): string {
+        const mensagem = data.message ?? data.error;
+        return typeof mensagem === 'string' && mensagem.trim() ? mensagem : fallback;
+    }
+
     private decodeJwtPayload(token: string): { exp?: number } | null {
         try {
             const base64Url = token.split('.')[1];
@@ -40,7 +49,6 @@ class AuthRequests {
      * @returns **true** caso sucesso, **false** caso erro
      */
     async login(login: { email: string, senha: string}) {  
-        console.log("URL:", `${this.serverUrl}${this.endpointLogin}`);     
         try {
             const payload = {
                 email: login.email,
@@ -58,34 +66,48 @@ class AuthRequests {
             });
 
             const responseText = await response.text();
-            let data: any;
+            let data: Record<string, unknown> = {};
 
             try {
-                data = responseText ? JSON.parse(responseText) : {};
+                const parsed: unknown = responseText ? JSON.parse(responseText) : {};
+                data = this.isRecord(parsed) ? parsed : { message: responseText };
             } catch {
                 data = { message: responseText };
             }
 
             if (!response.ok) {
-                const message = data?.message || data?.error || `Falha no login (${response.status})`;
+                const message = this.textoDaResposta(data, `Falha no login (${response.status})`);
                 console.error('Erro na autenticação', response.status, data);
                 throw new Error(message);
             }
 
-            const auth = data?.auth ?? data?.authenticated ?? data?.status === 'success';
-            const token = data?.token ?? data?.access_token ?? data?.jwt;
-            const usuario = data?.usuario ?? data?.user ?? data?.userData ?? {};
+            const authValue = data.auth !== undefined
+                ? data.auth
+                : data.authenticated !== undefined
+                    ? data.authenticated
+                    : data.status === 'success';
+            const auth = Boolean(authValue || data.token || data.access_token || data.jwt);
+            const token = data.token !== undefined
+                ? data.token
+                : data.access_token !== undefined
+                    ? data.access_token
+                    : data.jwt;
+            const usuarioValor = data.usuario !== undefined
+                ? data.usuario
+                : data.user !== undefined
+                    ? data.user
+                    : data.userData;
+            const usuario = this.isRecord(usuarioValor) ? usuarioValor : {};
 
             if (!auth) {
-                const message = data?.message || data?.error || 'Autenticação negada pelo servidor';
-                throw new Error(message);
+                throw new Error(this.textoDaResposta(data, 'Autenticação negada pelo servidor'));
             }
 
             if (!token) {
                 throw new Error('Token de autenticação não recebido do servidor');
             }
 
-            this.persistToken(token, usuario, auth);
+            this.persistToken(String(token), usuario, Boolean(auth));
 
             return true;
         } catch (error) {
@@ -100,12 +122,12 @@ class AuthRequests {
      * @param {*} usuario - objeto com informações do usuário vindos do servidor
      * @param {*} isAuth - estado da autenticação do usuário
      */
-    persistToken(token: string, usuario: {id_usuario: number, nome: string, email: string, role: string}, isAuth: boolean) {
+    persistToken(token: string, usuario: Record<string, unknown>, isAuth: boolean) {
         localStorage.setItem('token', token);
-        localStorage.setItem('nome', usuario.nome);
-        localStorage.setItem('idUsuario', usuario.id_usuario.toString());
-        localStorage.setItem('email', usuario.email);
-        localStorage.setItem('role', usuario.role);
+        localStorage.setItem('nome', String(usuario.nome ?? 'Usuário'));
+        localStorage.setItem('idUsuario', String(usuario.id_usuario ?? usuario.id ?? ''));
+        localStorage.setItem('email', String(usuario.email ?? ''));
+        localStorage.setItem('role', String(usuario.role ?? ''));
         localStorage.setItem('isAuth', isAuth.toString());
     }
 
@@ -135,15 +157,14 @@ class AuthRequests {
 
         if (!token) return false;
 
+        if (token.split('.').length !== 3) return true;
+
         const payload = this.decodeJwtPayload(token);
-        if (!payload || typeof payload.exp !== 'number') {
-            this.removeToken();
-            return false;
-        }
+        if (!payload || typeof payload.exp !== 'number') return false;
 
         const now = Math.floor(Date.now() / 1000);
 
-        if (payload.exp < now) {
+        if (payload.exp <= now) {
             this.removeToken();
             return false;
         }
