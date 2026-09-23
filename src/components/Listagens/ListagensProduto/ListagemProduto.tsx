@@ -4,12 +4,14 @@ import ProdutoRequests from "../../../fetch/ProdutoRequests";
 import type { ProdutoDTO } from "../../../dto/ProdutoDTO";
 import { useNavigate } from "react-router-dom";
 import Navegacao from "../../../components/Navegacao/Navegacao";
+import Feedback from "../../../components/Feedback/Feedback";
 
 function ListagemProdutos(): JSX.Element {
     const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 5;
     const navigate = useNavigate();
+    const [erro, setErro] = useState('');
 
     useEffect(() => {
         const buscarProdutos = async () => {
@@ -18,7 +20,7 @@ function ListagemProdutos(): JSX.Element {
                 setProdutos(Array.isArray(listaDeProdutos) ? listaDeProdutos : []);
             } catch (error) {
                 console.error(`Erro ao buscar produtos. ${error}`);
-                alert("Erro ao criar a listagem de produtos.");
+                setErro(error instanceof Error ? error.message : "Erro ao carregar produtos.");
             }
         }
 
@@ -37,7 +39,7 @@ function ListagemProdutos(): JSX.Element {
         if (!window.confirm('Deseja realmente excluir este produto?')) return;
         const resultado = await ProdutoRequests.deletarProduto(idProduto);
         if (!resultado.sucesso) {
-            alert(resultado.mensagem);
+            setErro(resultado.mensagem ?? 'Não foi possível excluir o produto.');
             return;
         }
         setProdutos((listaAtual) => listaAtual.filter((produto) => produto.idProduto !== idProduto));
@@ -54,6 +56,7 @@ function ListagemProdutos(): JSX.Element {
                     Novo Produto
                 </a>
             </div>
+            {erro && <div className="w-full max-w-7xl mx-auto"><Feedback tipo="erro">{erro}</Feedback></div>}
 
             <input type="text" name="busca-produto" id="busca-produto" placeholder="Buscar produto" className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm" />
 

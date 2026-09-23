@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PedidoRequests from '../../../fetch/PedidoRequests';
+import Feedback from '../../Feedback/Feedback';
 
 function converterValor(valor: string): number {
     return Number(valor.trim().replace(',', '.'));
@@ -113,8 +114,8 @@ function FormPedido() {
                         </div>
                     </div>
 
-                    {mensagem && <div className="pedido-feedback pedido-feedback-success" role="status">{mensagem}</div>}
-                    {mensagemErro && <div className="pedido-feedback pedido-feedback-error" role="alert">{mensagemErro}</div>}
+                    {mensagem && <Feedback tipo="sucesso">{mensagem}</Feedback>}
+                    {mensagemErro && <Feedback tipo="erro">{mensagemErro}</Feedback>}
 
                     <div className="pedido-section-label">
                         <span>Informações principais</span>

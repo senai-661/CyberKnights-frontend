@@ -4,6 +4,7 @@ import PedidoRequests from "../../../fetch/PedidoRequests";
 import type { PedidoDTO } from "../../../dto/PedidoDTO";
 import { useNavigate } from "react-router-dom";
 import Navegacao from "../../../components/Navegacao/Navegacao";
+import Feedback from "../../../components/Feedback/Feedback";
 
 function formatarMoeda(valor: number | string): string {
     const numero = Number(String(valor).replace(',', '.'));
@@ -16,6 +17,7 @@ function ListagemPedidos(): JSX.Element {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 5;
     const navigate = useNavigate();
+    const [erro, setErro] = useState('');
 
     useEffect(() => {
         const buscarPedidos = async () => {
@@ -24,7 +26,7 @@ function ListagemPedidos(): JSX.Element {
                 setPedidos(Array.isArray(listaDePedidos) ? listaDePedidos : []);
             } catch (error) {
                 console.error(`Erro ao buscar pedidos. ${error}`);
-                alert("Erro ao criar a listagem de pedidos.");
+                setErro(error instanceof Error ? error.message : "Erro ao carregar pedidos.");
             }
         }
 
@@ -45,7 +47,7 @@ function ListagemPedidos(): JSX.Element {
         try {
             const resultado = await PedidoRequests.deletarPedido(idPedido);
             if (!resultado.sucesso) {
-                alert(resultado.mensagem);
+                setErro(resultado.mensagem ?? 'Não foi possível excluir o pedido.');
                 return;
             }
             setPedidos((listaAtual) => listaAtual.filter((pedido) => pedido.idPedido !== idPedido));
@@ -65,6 +67,7 @@ function ListagemPedidos(): JSX.Element {
                     Novo Pedido
                 </a>
             </div>
+            {erro && <div className="w-full max-w-7xl mx-auto"><Feedback tipo="erro">{erro}</Feedback></div>}
 
             <input type="text" name="busca-pedido" id="busca-pedido" placeholder="Buscar pedido" className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm" />
 

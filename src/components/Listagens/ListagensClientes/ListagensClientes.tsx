@@ -4,6 +4,7 @@ import ClienteRequests from "../../../fetch/ClienteRequests";
 import type { ClienteDTO } from "../../../dto/ClienteDTO";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navegacao from "../../../components/Navegacao/Navegacao";
+import Feedback from "../../../components/Feedback/Feedback";
 
 function ListagemClientes(): JSX.Element {
     const [clientes, setClientes] = useState<ClienteDTO[]>([]);
@@ -11,6 +12,7 @@ function ListagemClientes(): JSX.Element {
     const rowsPerPage = 5;
     const navigate = useNavigate();
     const location = useLocation();
+    const [erro, setErro] = useState('');
 
     useEffect(() => {
         const buscarClientes = async () => {
@@ -27,7 +29,7 @@ function ListagemClientes(): JSX.Element {
                 }
             } catch (error) {
                 console.error(`Erro ao buscar clientes. ${error}`);
-                alert("Erro ao criar a listagem de clientes.");
+                setErro(error instanceof Error ? error.message : "Erro ao carregar clientes.");
             }
         }
 
@@ -46,7 +48,7 @@ function ListagemClientes(): JSX.Element {
         if (!window.confirm('Deseja realmente excluir este cliente?')) return;
         const resultado = await ClienteRequests.deletarCliente(idCliente);
         if (!resultado.sucesso) {
-            alert(resultado.mensagem);
+            setErro(resultado.mensagem ?? 'Não foi possível excluir o cliente.');
             return;
         }
         setClientes((listaAtual) => listaAtual.filter((cliente) => cliente.idCliente !== idCliente));
@@ -63,6 +65,7 @@ function ListagemClientes(): JSX.Element {
                     Novo Cliente
                 </a>
             </div>
+            {erro && <div className="w-full max-w-7xl mx-auto"><Feedback tipo="erro">{erro}</Feedback></div>}
 
             <div className="w-full max-w-7xl mx-auto flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow-xl border border-slate-300 overflow-hidden">
                 <div className="flex-1 overflow-auto overscroll-none">

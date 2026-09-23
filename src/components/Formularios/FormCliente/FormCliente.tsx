@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ClienteRequests from '../../../fetch/ClienteRequests';
 import Utilitario from '../../../utils/Utilitario';
+import Feedback from '../../Feedback/Feedback';
 
 function formatarCpf(valor: string): string {
     const numeros = valor.replace(/\D/g, '').slice(0, 11);
@@ -21,6 +22,7 @@ function FormCliente() {
         telefone: '',
         cpf: '',
     });
+    const [feedback, setFeedback] = useState<{ tipo: 'sucesso' | 'erro'; texto: string } | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -51,9 +53,10 @@ function FormCliente() {
         e: React.FormEvent<HTMLFormElement>
     ) => {
         e.preventDefault();
+        setFeedback(null);
 
         if (!Utilitario.validarEmail(formData.email)) {
-            alert('E-mail inválido');
+            setFeedback({ tipo: 'erro', texto: 'E-mail inválido.' });
             return;
         }
 
@@ -67,13 +70,13 @@ function FormCliente() {
             const resposta = await ClienteRequests.enviarFormularioCliente(dadosCliente);
 
             if (resposta) {
-                alert('Cliente cadastrado com sucesso');
+                setFeedback({ tipo: 'sucesso', texto: 'Cliente cadastrado com sucesso.' });
                 navigate('/lista/cliente');
             } else {
-                alert('Não foi possível cadastrar o cliente. Confira o CPF e os demais dados.');
+                setFeedback({ tipo: 'erro', texto: 'Não foi possível cadastrar o cliente. Confira os dados.' });
             }
         } catch (error) {
-            alert(error instanceof Error ? error.message : 'Não foi possível cadastrar o cliente.');
+            setFeedback({ tipo: 'erro', texto: error instanceof Error ? error.message : 'Não foi possível cadastrar o cliente.' });
         }
     };
 
@@ -94,6 +97,7 @@ function FormCliente() {
                         border-orange-500
                     "
                 >
+                    {feedback && <Feedback tipo={feedback.tipo}>{feedback.texto}</Feedback>}
 
                     <h1
                         className="entity-heading
