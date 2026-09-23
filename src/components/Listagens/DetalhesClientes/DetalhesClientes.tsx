@@ -18,31 +18,34 @@ function DetalhesCliente(): JSX.Element {
     const { id } = useParams();
 
     useEffect(() => {
-        buscarCliente();
-    }, []);
+        let ativo = true;
 
-    const buscarCliente = async () => {
-        try {
+        const buscarCliente = async () => {
+            try {
+                if (!id || !Number.isSafeInteger(Number(id)) || Number(id) <= 0) {
+                    if (ativo) setErro("ID do cliente inválido");
+                    return;
+                }
 
-            if (!id) {
-                setErro("ID do cliente não informado");
-                return;
+                const resposta = await ClienteRequests.obterClientePorId(Number(id));
+                if (!ativo) return;
+
+                if (!resposta) {
+                    setErro("Cliente não encontrado");
+                    return;
+                }
+
+                setCliente(resposta);
+            } catch {
+                if (ativo) setErro("Erro ao buscar cliente");
+            } finally {
+                if (ativo) setLoading(false);
             }
+        };
 
-            const resposta = await ClienteRequests.obterListaDeClientes();
-
-            setCliente(resposta);
-
-        } catch (error) {
-
-            setErro("Erro ao buscar cliente");
-
-        } finally {
-
-            setLoading(false);
-
-        }
-    };
+        void buscarCliente();
+        return () => { ativo = false; };
+    }, [id]);
 
     if (loading) {
         return (

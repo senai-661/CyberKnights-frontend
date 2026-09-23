@@ -26,35 +26,42 @@ function PDetalhesPedido(): JSX.Element {
     const navigate = useNavigate();
 
     useEffect(() => {
-        buscarPedido();
+        let ativo = true;
+
+        const buscarPedido = async () => {
+            try {
+                if (!id_pedido || !Number.isSafeInteger(Number(id_pedido)) || Number(id_pedido) <= 0) {
+                    if (ativo) setErro("ID do pedido inválido");
+                    return;
+                }
+
+                const resposta = await PedidoRequests.obterPedidoPorId(Number(id_pedido));
+                if (!ativo) return;
+
+                if (!resposta) {
+                    setErro("Pedido não encontrado");
+                    return;
+                }
+
+                setPedido({
+                    ...resposta,
+                    idPedido: Number(resposta.idPedido ?? resposta.id_pedido ?? resposta.id),
+                    idCliente: Number(resposta.idCliente ?? resposta.id_cliente),
+                    idProduto: Number(resposta.idProduto ?? resposta.id_produto),
+                    dataPedido: new Date(resposta.dataPedido ?? resposta.data_pedido),
+                    valorTotal: Number(resposta.valorTotal ?? resposta.valor_total ?? 0),
+                    statusPedido: String(resposta.statusPedido ?? resposta.status_pedido ?? '')
+                });
+            } catch {
+                if (ativo) setErro("Erro ao buscar pedido");
+            } finally {
+                if (ativo) setLoading(false);
+            }
+        };
+
+        void buscarPedido();
+        return () => { ativo = false; };
     }, [id_pedido]); // ✅ depende do id_pedido
-
-    const buscarPedido = async () => {
-        try {
-
-            // ✅ Valida se o ID existe na URL
-            if (!id_pedido) {
-                setErro("ID do pedido não informado");
-                setLoading(false);
-                return;
-            }
-
-            // ✅ Busca apenas o pedido pelo ID, não a lista toda
-            const resposta = await PedidoRequests.obterPedidoPorId(Number(id_pedido));
-
-            if (!resposta) {
-                setErro("Pedido não encontrado");
-                return;
-            }
-
-            setPedido(resposta);
-
-        } catch (error) {
-            setErro("Erro ao buscar pedido");
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const getStatusSeverity = (status: string) => {
         switch (status) {
@@ -85,111 +92,46 @@ function PDetalhesPedido(): JSX.Element {
         );
     }
 
+    if (!pedido) {
+        return (
+            <div className="cliente-details-page">
+                <Navegacao />
+                <main className="cliente-details-main cliente-details-state">
+                    <Message severity="error" text="Não foi possível carregar os detalhes do pedido." />
+                </main>
+            </div>
+        );
+    }
+
     return (
-
-        <div
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                minHeight: "100vh",
-            }}
-        >
-
+        <div className="cliente-details-page">
             <Navegacao />
-
-            <main
-                style={{
-                    flex: 1,
-                    padding: "40px 10%",
-                    backgroundColor: "transparent",
-                }}
-            >
-
-                <div
-                    style={{
-                        backgroundColor: "rgba(17, 17, 17, .88)",
-                        padding: "30px",
-                        borderRadius: "12px",
-                        boxShadow: "0 4px 6px rgba(0,0,0,0.05)",
-                    }}
-                >
-
-                    <h1>Detalhes do Pedido</h1>
-
-                    <p>
-                        <strong>ID Cliente:</strong> {pedido.idCliente}
-                    </p>
-
-                    <p>
-                        <strong>ID Produto:</strong> {pedido.idProduto}
-                    </p>
-
-                    <p>
-                        <strong>Data do Pedido:</strong>{" "}
-                        {new Date(pedido.dataPedido).toLocaleDateString("pt-BR")}
-                    </p>
-
-                    <p>
-                        <strong>Valor Total:</strong> {formatarMoeda(pedido.valorTotal)}
-                    </p>
-
-                    <p>
-                        <strong>Status:</strong> {pedido.statusPedido}
-                    </p>
-
+            <main className="cliente-details-main">
+                <div className="cliente-details-heading">
+                    <div className="cliente-details-icon"><i className="pi pi-shopping-bag" /></div>
+                    <div><h1>Detalhes do <span>Pedido</span></h1><p>Informações completas do pedido selecionado</p></div>
                 </div>
 
-                <Divider />
+                <div className="cliente-details-card">
+                    <div className="cliente-detail-row"><div className="cliente-detail-row-icon"><i className="pi pi-hashtag" /></div><div className="cliente-detail-copy"><span>ID do pedido</span><strong>{pedido.idPedido}</strong></div></div>
+                    <Divider />
 
-                <div className="mb-3">
-                    <h3>ID do Cliente</h3>
-                    <p>{pedido?.idCliente}</p>
+                    <div className="cliente-detail-row"><div className="cliente-detail-row-icon"><i className="pi pi-user" /></div><div className="cliente-detail-copy"><span>ID do cliente</span><strong>{pedido.idCliente}</strong></div></div>
+                    <Divider />
+
+                    <div className="cliente-detail-row"><div className="cliente-detail-row-icon"><i className="pi pi-box" /></div><div className="cliente-detail-copy"><span>ID do produto</span><strong>{pedido.idProduto}</strong></div></div>
+                    <Divider />
+
+                    <div className="cliente-detail-row"><div className="cliente-detail-row-icon"><i className="pi pi-calendar" /></div><div className="cliente-detail-copy"><span>Data do pedido</span><strong>{new Date(pedido.dataPedido).toLocaleDateString("pt-BR")}</strong></div></div>
+                    <Divider />
+
+                    <div className="cliente-detail-row"><div className="cliente-detail-row-icon"><i className="pi pi-money-bill" /></div><div className="cliente-detail-copy"><span>Valor total</span><strong>{formatarMoeda(pedido.valorTotal)}</strong></div></div>
+                    <Divider />
+
+                    <div className="cliente-detail-row"><div className="cliente-detail-row-icon"><i className="pi pi-info-circle" /></div><div className="cliente-detail-copy"><span>Status do pedido</span><strong><Tag value={pedido.statusPedido} severity={getStatusSeverity(pedido.statusPedido)} /></strong></div></div>
                 </div>
 
-                <Divider />
-
-                <div className="mb-3">
-                    <h3>ID do Produto</h3>
-                    <p>{pedido?.idProduto}</p>
-                </div>
-
-                <Divider />
-
-                <div className="mb-3">
-                    <h3>Data do Pedido</h3>
-                    <p>
-                        {pedido?.dataPedido
-                            ? new Date(pedido.dataPedido).toLocaleDateString("pt-BR")
-                            : ""}
-                    </p>
-                </div>
-
-                <Divider />
-
-                <div className="mb-3">
-                    <h3>Valor Total</h3>
-                    <p>R$ {pedido?.valorTotal}</p>
-                </div>
-
-                <Divider />
-
-                <div className="mb-3">
-                    <h3>Status do Pedido</h3>
-                    <Tag
-                        value={pedido?.statusPedido}
-                        severity={getStatusSeverity(pedido?.statusPedido || "")}
-                    />
-                </div>
-
-                <Divider />
-
-                <div className="flex justify-content-end mt-4">
-                    <Button
-                        label="Voltar"
-                        icon="pi pi-arrow-left"
-                        onClick={() => navigate("/lista/pedido")} // ✅ rota corrigida
-                    />
-                </div>
+                <Button label="Voltar" icon="pi pi-arrow-left" className="cliente-details-back" onClick={() => navigate("/lista/pedido")} />
             </main>
         </div>
     );
