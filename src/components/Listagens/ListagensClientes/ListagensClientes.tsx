@@ -76,10 +76,14 @@ function ListagemClientes(): JSX.Element {
         <Navegacao />
 
         <main className="bg-gray-200 flex-1 flex flex-col px-4 sm:px-6 md:px-10 py-6 md:py-10 overflow-hidden">
-            <div className="w-full max-w-7xl mx-auto flex flex-col sm:flex-row items-center gap-4 mb-6 md:mb-8 flex-shrink-0">
-                <h1 className="flex-1 text-xl sm:text-2xl md:text-3xl text-center sm:text-left font-bold text-slate-800">Clientes</h1>
-                <a href="/cadastro/cliente" className="w-full sm:w-auto px-4 py-2 md:px-6 md:py-3 text-sm md:text-base bg-slate-700 rounded-md text-center text-white font-bold flex items-center justify-center hover:cursor-pointer hover:bg-slate-600 transition-all shadow-md hover:shadow-lg active:scale-95">
-                    Novo Cliente
+            <div className="lista-page-header">
+                <div>
+                    <span className="lista-page-kicker">Gestão da equipe</span>
+                    <h1>Clientes</h1>
+                </div>
+                <a href="/cadastro/cliente" className="novo-registro-button">
+                    <i className="pi pi-plus" aria-hidden="true"></i>
+                    <span>Novo Cliente</span>
                 </a>
             </div>
             {erro && <div className="w-full max-w-7xl mx-auto"><Feedback tipo="erro">{erro}</Feedback></div>}

@@ -80,7 +80,7 @@ class ProdutoRequests {
         }
     }
 
-     async enviarFormularioProduto(formProduto: ProdutoDTO): Promise<boolean> {
+     async enviarFormularioProduto(formProduto: ProdutoDTO): Promise<{ sucesso: boolean; mensagem?: string }> {
             try {
                 const token = localStorage.getItem('token');
                 const respostaAPI = await fetch(`${this.serverURL}${this.endpointProduto}`, {
@@ -92,15 +92,19 @@ class ProdutoRequests {
                     },
                     body: JSON.stringify(formProduto)
                 });
-    
-                if (!respostaAPI.ok) throw new Error(`Erro ${respostaAPI.status}: ${respostaAPI.statusText}`);
-    
-                console.info(`${respostaAPI.status}: ${respostaAPI.statusText}`);
-    
-                return true;
+
+                const dados = await respostaAPI.json().catch(() => ({}));
+                if (!respostaAPI.ok) {
+                    return {
+                        sucesso: false,
+                        mensagem: dados.mensagem ?? dados.message ?? dados.error ?? `Erro ${respostaAPI.status}: ${respostaAPI.statusText}`
+                    };
+                }
+
+                return { sucesso: true };
             } catch (error) {
                 console.error(`Erro ao fazer consulta à API. ${error}`);
-                return false;
+                return { sucesso: false, mensagem: 'Não foi possível conectar ao servidor.' };
             }
         }
 

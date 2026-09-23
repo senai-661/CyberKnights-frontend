@@ -12,6 +12,7 @@ function FormProduto() {
         disponibilidade: '',
     });
     const [feedback, setFeedback] = useState<{ tipo: 'sucesso' | 'erro'; texto: string } | null>(null);
+    const [enviando, setEnviando] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -23,17 +24,31 @@ function FormProduto() {
         setFeedback(null);
 
         const dadosProduto = {
-            nomeProduto: formData.nomeProduto,
+            nomeProduto: formData.nomeProduto.trim(),
             preco: Number(formData.preco),
-            disponibilidade: formData.disponibilidade
+            disponibilidade: formData.disponibilidade.trim()
         };
 
-        const resposta = await ProdutoRequests.enviarFormularioProduto(dadosProduto);
+        const produtos = await ProdutoRequests.obterListaDeProdutos();
+        const produtoDuplicado = produtos.some((produto) =>
+            produto.nomeProduto.trim().toLocaleLowerCase() === dadosProduto.nomeProduto.toLocaleLowerCase()
+            && Number(produto.preco) === dadosProduto.preco
+            && produto.disponibilidade.trim().toLocaleLowerCase() === dadosProduto.disponibilidade.toLocaleLowerCase()
+        );
 
-        if (resposta) {
+        if (produtoDuplicado) {
+            setFeedback({ tipo: 'erro', texto: 'Este produto já está cadastrado com os mesmos dados.' });
+            return;
+        }
+
+        setEnviando(true);
+        const resposta = await ProdutoRequests.enviarFormularioProduto(dadosProduto);
+        setEnviando(false);
+
+        if (resposta.sucesso) {
             setFeedback({ tipo: 'sucesso', texto: 'Produto cadastrado com sucesso.' });
         } else {
-            setFeedback({ tipo: 'erro', texto: 'Não foi possível cadastrar o produto.' });
+            setFeedback({ tipo: 'erro', texto: resposta.mensagem ?? 'Não foi possível cadastrar o produto.' });
         }
     };
 
@@ -127,7 +142,8 @@ function FormProduto() {
 
                         <input
                             type="submit"
-                            value="CADASTRAR PRODUTO"
+                            value={enviando ? 'CADASTRANDO...' : 'CADASTRAR PRODUTO'}
+                            disabled={enviando}
                             className="w-full bg-slate-800 text-white py-4 rounded-xl font-bold text-lg cursor-pointer hover:bg-slate-700 shadow-lg hover:shadow-xl transition-all active:scale-[0.98]"
                         />
 

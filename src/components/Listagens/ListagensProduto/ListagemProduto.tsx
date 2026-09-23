@@ -65,10 +65,14 @@ function ListagemProdutos(): JSX.Element {
     <Navegacao />
 
     <main className="bg-gray-200 flex-1 flex flex-col px-4 sm:px-6 md:px-10 py-6 md:py-10 overflow-hidden"> {/* overflow-hidden no main para conter o scroll interno */}
-            <div className="w-full max-w-7xl mx-auto flex flex-col sm:flex-row items-center gap-4 mb-6 md:mb-8 flex-shrink-0">
-                <h1 className="flex-1 text-xl sm:text-2xl md:text-3xl text-center sm:text-left font-bold text-slate-800">Produtos</h1>
-                <a href="/cadastro/produto" className="w-full sm:w-auto px-4 py-2 md:px-6 md:py-3 text-sm md:text-base bg-slate-700 rounded-md text-center text-white font-bold flex items-center justify-center hover:cursor-pointer hover:bg-slate-600 transition-all shadow-md hover:shadow-lg active:scale-95">
-                    Novo Produto
+            <div className="lista-page-header">
+                <div>
+                    <span className="lista-page-kicker">Catálogo da loja</span>
+                    <h1>Produtos</h1>
+                </div>
+                <a href="/cadastro/produto" className="novo-registro-button">
+                    <i className="pi pi-plus" aria-hidden="true"></i>
+                    <span>Novo Produto</span>
                 </a>
             </div>
             {erro && <div className="w-full max-w-7xl mx-auto"><Feedback tipo="erro">{erro}</Feedback></div>}
