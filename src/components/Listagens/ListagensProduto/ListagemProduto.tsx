@@ -8,6 +8,7 @@ import Feedback from "../../../components/Feedback/Feedback";
 
 function ListagemProdutos(): JSX.Element {
     const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
+    const [termoBusca, setTermoBusca] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 5;
     const navigate = useNavigate();
@@ -27,11 +28,25 @@ function ListagemProdutos(): JSX.Element {
         buscarProdutos();
     }, []);
 
+    const produtosFiltrados = produtos.filter((produto) => {
+        const textoBusca = termoBusca.trim().toLowerCase();
+        if (!textoBusca) return true;
+
+        const campos = [
+            produto.idProduto,
+            produto.nomeProduto,
+            produto.preco,
+            produto.disponibilidade
+        ];
+
+        return campos.some((campo) => String(campo ?? '').toLowerCase().includes(textoBusca));
+    });
+
     // Lógica de Paginação
-    const totalPages = Math.ceil(produtos.length / rowsPerPage);
+    const totalPages = Math.max(1, Math.ceil(produtosFiltrados.length / rowsPerPage));
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-    const currentProdutos = produtos.slice(indexOfFirstRow, indexOfLastRow);
+    const currentProdutos = produtosFiltrados.slice(indexOfFirstRow, indexOfLastRow);
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -58,7 +73,18 @@ function ListagemProdutos(): JSX.Element {
             </div>
             {erro && <div className="w-full max-w-7xl mx-auto"><Feedback tipo="erro">{erro}</Feedback></div>}
 
-            <input type="text" name="busca-produto" id="busca-produto" placeholder="Buscar produto" className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm" />
+            <input
+                type="text"
+                value={termoBusca}
+                onChange={(event) => {
+                    setTermoBusca(event.target.value);
+                    setCurrentPage(1);
+                }}
+                name="busca-produto"
+                id="busca-produto"
+                placeholder="Buscar produto"
+                className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm"
+            />
 
             <div className="w-full max-w-7xl mx-auto flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow-xl border border-slate-300 overflow-hidden">
                 <div className="flex-1 overflow-auto overscroll-none">
@@ -111,7 +137,7 @@ function ListagemProdutos(): JSX.Element {
                     <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
                             <p className="text-sm text-slate-700">
-                                Mostrando <span className="font-semibold">{indexOfFirstRow + 1}</span> até <span className="font-semibold">{Math.min(indexOfLastRow, produtos.length)}</span> de <span className="font-semibold">{produtos.length}</span> resultados
+                                Mostrando <span className="font-semibold">{produtosFiltrados.length === 0 ? 0 : indexOfFirstRow + 1}</span> até <span className="font-semibold">{Math.min(indexOfLastRow, produtosFiltrados.length)}</span> de <span className="font-semibold">{produtosFiltrados.length}</span> resultados
                             </p>
                         </div>
                         <div>

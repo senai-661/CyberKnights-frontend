@@ -64,52 +64,29 @@
 
 .equipe-lista {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     flex-wrap: wrap;
-    color: #ff8300;
+    color: #d97706;
     font-size: 1rem;
-    font-weight: 600;
-    align-items: center;
-}
-
-.equipe-lista span {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: rgba(255, 131, 0, 0.08);
-    border: 1px solid rgba(255, 131, 0, 0.32);
-}
-
-.equipe-lista span:first-child {
-    background: linear-gradient(135deg, rgba(255, 131, 0, 0.28), rgba(255, 171, 92, 0.12));
-    color: #ffb561;
-    font-size: 1.1rem;
-    font-weight: 900;
-    border-color: #ff9d2a;
-    box-shadow: 0 0 18px rgba(255, 131, 0, 0.25);
-    transform: scale(1.03);
+    font-weight: 500;
 }
 
 .equipe-lista span:not(:last-child)::after {
-    content: '';
+    content: ' •';
+    color: #8a8a8a;
+    margin-left: 8px;
 }
 
 .rodape-bottom {
-    border-top: 1px solid rgba(255, 131, 0, 0.45);
+    border-top: 1px solid #e7dede;
     padding-top: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 18px;
     font-size: 0.9rem;
     color: #8a8a8a;
     margin: 0 auto;
     max-width: 1280px;
-}
-
-.rodape-bottom p:last-child {
-    color: #ff9d2a;
-    font-weight: 700;
 }
 
 .social-icons {

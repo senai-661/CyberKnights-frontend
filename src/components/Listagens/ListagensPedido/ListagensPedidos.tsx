@@ -13,6 +13,7 @@ function formatarMoeda(valor: number | string): string {
 
 function ListagemPedidos(): JSX.Element {
     const [pedidos, setPedidos] = useState<PedidoDTO[]>([]);
+    const [termoBusca, setTermoBusca] = useState('');
     const [pedidoExcluindo, setPedidoExcluindo] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 5;
@@ -33,11 +34,27 @@ function ListagemPedidos(): JSX.Element {
         buscarPedidos();
     }, []);
 
+    const pedidosFiltrados = pedidos.filter((pedido) => {
+        const textoBusca = termoBusca.trim().toLowerCase();
+        if (!textoBusca) return true;
+
+        const campos = [
+            pedido.idPedido,
+            pedido.idCliente,
+            pedido.idProduto,
+            pedido.dataPedido,
+            pedido.valorTotal,
+            pedido.statusPedido
+        ];
+
+        return campos.some((campo) => String(campo ?? '').toLowerCase().includes(textoBusca));
+    });
+
     // Lógica de Paginação
-    const totalPages = Math.ceil(pedidos.length / rowsPerPage);
+    const totalPages = Math.max(1, Math.ceil(pedidosFiltrados.length / rowsPerPage));
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-    const currentPedidos = pedidos.slice(indexOfFirstRow, indexOfLastRow);
+    const currentPedidos = pedidosFiltrados.slice(indexOfFirstRow, indexOfLastRow);
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -69,7 +86,18 @@ function ListagemPedidos(): JSX.Element {
             </div>
             {erro && <div className="w-full max-w-7xl mx-auto"><Feedback tipo="erro">{erro}</Feedback></div>}
 
-            <input type="text" name="busca-pedido" id="busca-pedido" placeholder="Buscar pedido" className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm" />
+            <input
+                type="text"
+                value={termoBusca}
+                onChange={(event) => {
+                    setTermoBusca(event.target.value);
+                    setCurrentPage(1);
+                }}
+                name="busca-pedido"
+                id="busca-pedido"
+                placeholder="Buscar pedido"
+                className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm"
+            />
 
             <div className="w-full max-w-7xl mx-auto flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow-xl border border-slate-300 overflow-hidden">
                 <div className="flex-1 overflow-auto overscroll-none">
@@ -128,7 +156,7 @@ function ListagemPedidos(): JSX.Element {
                     <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
                             <p className="text-sm text-slate-700">
-                                Mostrando <span className="font-semibold">{indexOfFirstRow + 1}</span> até <span className="font-semibold">{Math.min(indexOfLastRow, pedidos.length)}</span> de <span className="font-semibold">{pedidos.length}</span> resultados
+                                Mostrando <span className="font-semibold">{pedidosFiltrados.length === 0 ? 0 : indexOfFirstRow + 1}</span> até <span className="font-semibold">{Math.min(indexOfLastRow, pedidosFiltrados.length)}</span> de <span className="font-semibold">{pedidosFiltrados.length}</span> resultados
                             </p>
                         </div>
                         <div>

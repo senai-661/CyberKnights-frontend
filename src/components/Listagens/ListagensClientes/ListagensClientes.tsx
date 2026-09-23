@@ -8,6 +8,7 @@ import Feedback from "../../../components/Feedback/Feedback";
 
 function ListagemClientes(): JSX.Element {
     const [clientes, setClientes] = useState<ClienteDTO[]>([]);
+    const [termoBusca, setTermoBusca] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 5;
     const navigate = useNavigate();
@@ -36,11 +37,27 @@ function ListagemClientes(): JSX.Element {
         buscarClientes();
     }, [location.state]);
 
+    const clientesFiltrados = clientes.filter((cliente) => {
+        const textoBusca = termoBusca.trim().toLowerCase();
+        if (!textoBusca) return true;
+
+        const campos = [
+            cliente.idCliente,
+            cliente.nome,
+            cliente.email,
+            cliente.endereco,
+            cliente.telefone,
+            cliente.cpf
+        ];
+
+        return campos.some((campo) => String(campo ?? '').toLowerCase().includes(textoBusca));
+    });
+
     // Lógica de Paginação
-    const totalPages = Math.ceil(clientes.length / rowsPerPage);
+    const totalPages = Math.max(1, Math.ceil(clientesFiltrados.length / rowsPerPage));
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-    const currentClientes = clientes.slice(indexOfFirstRow, indexOfLastRow);
+    const currentClientes = clientesFiltrados.slice(indexOfFirstRow, indexOfLastRow);
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -66,6 +83,17 @@ function ListagemClientes(): JSX.Element {
                 </a>
             </div>
             {erro && <div className="w-full max-w-7xl mx-auto"><Feedback tipo="erro">{erro}</Feedback></div>}
+
+            <input
+                type="text"
+                value={termoBusca}
+                onChange={(event) => {
+                    setTermoBusca(event.target.value);
+                    setCurrentPage(1);
+                }}
+                placeholder="Buscar cliente"
+                className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm"
+            />
 
             <div className="w-full max-w-7xl mx-auto flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow-xl border border-slate-300 overflow-hidden">
                 <div className="flex-1 overflow-auto overscroll-none">
@@ -112,7 +140,7 @@ function ListagemClientes(): JSX.Element {
                     <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
                             <p className="text-sm text-slate-700">
-                                Mostrando <span className="font-semibold">{indexOfFirstRow + 1}</span> até <span className="font-semibold">{Math.min(indexOfLastRow, clientes.length)}</span> de <span className="font-semibold">{clientes.length}</span> resultados
+                                Mostrando <span className="font-semibold">{clientesFiltrados.length === 0 ? 0 : indexOfFirstRow + 1}</span> até <span className="font-semibold">{Math.min(indexOfLastRow, clientesFiltrados.length)}</span> de <span className="font-semibold">{clientesFiltrados.length}</span> resultados
                             </p>
                         </div>
                         <div>
