@@ -112,42 +112,6 @@ class ClienteRequests {
             return false;
         }
     }
-
-    async deletarCliente(idCliente: number): Promise<{ sucesso: boolean; mensagem?: string }> {
-        try {
-            const token = localStorage.getItem('token');
-            const respostaAPI = await fetch(`${this.serverURL}${this.endpointCliente}/${idCliente}`, {
-                method: 'DELETE',
-                headers: { 'x-access-token': `${token ?? ''}`, ...(token ? { Authorization: `Bearer ${token}` } : {}) }
-            });
-            if (respostaAPI.ok) return { sucesso: true };
-            const dados = await respostaAPI.json().catch(() => ({}));
-            return { sucesso: false, mensagem: dados.mensagem ?? 'Não foi possível excluir o cliente.' };
-        } catch {
-            return { sucesso: false, mensagem: 'Não foi possível conectar ao servidor.' };
-        }
-    }
-
-    async atualizarCliente(idCliente: number, cliente: ClienteDTO): Promise<{ sucesso: boolean; mensagem?: string }> {
-        try {
-            const token = localStorage.getItem('token');
-            const respostaAPI = await fetch(`${this.serverURL}${this.endpointCliente}/${idCliente}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'x-access-token': `${token ?? ''}`, ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-                body: JSON.stringify(cliente)
-            });
-            const dados = await respostaAPI.json().catch(() => ({}));
-            return { sucesso: respostaAPI.ok, mensagem: dados.mensagem };
-        } catch {
-            return { sucesso: false, mensagem: 'Não foi possível conectar ao servidor.' };
-        }
-    }
 }
 
 export default new ClienteRequests;
-
-
-
-
-
-//djhudhfgiuwrhgiearluifgsyiftkywaugylaergfuil\ysliufliwruatyliwyrtiuwliyurtglwiygulwyefgl7wiegfyuiwrgfy    gf//

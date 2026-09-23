@@ -1,12 +1,11 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Rodape from './components/Rodape/Rodape'
 
 import PHome from './pages/PHome/PHome'
 import PLogin from './pages/PLogin/PLogin'
 
 //  Import dos componentes de listagem
-import PListagensClientes from './components/Listagens/ListagensClientes/ListagensClientes'
+import PListagensClientes from './components/Listagens/ListagensCliente/ListagensClientes'
 import PListagensPedidos from './components/Listagens/ListagensPedido/ListagensPedidos'
 import PListagensProdutos from './components/Listagens/ListagensProduto/ListagemProduto'
 
@@ -18,7 +17,7 @@ import ProtectedRoute from './components/Rotas/ProtectedRoutes'
 
 //  Import dos componentes de cadastro
 import PCadastroCliente from './pages/PCadastro/PCadastroCliente/PCadastroCliente'
-import PCadastroProduto from './pages/PCadastro/PCadastroProduto/PCadastroPoduto'
+import PCadastroProduto from './pages/PCadastro/PCadastroProduto/PCadastroProduto'
 import PCadastroPedido from './pages/PCadastro/PCadastroPedido/PCadastroPedido'
 import PAtualizarCliente from './pages/PAtualizar/PAtualizarCliente/PAtualizarCliente'
 import PAtualizarProduto from './pages/PAtualizar/PAtualizarProduto/PAtualizarProduto'

@@ -1,8 +1,4 @@
-.app-shell {
-  min-height: 100vh;
-  background: #ffffff;
-}
-
+/* Reseta as margens padrão do navegador */
 * {
   margin: 0;
   padding: 0;

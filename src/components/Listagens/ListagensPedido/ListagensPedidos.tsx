@@ -1,10 +1,11 @@
 import { type JSX } from "react";
 import { useState, useEffect } from "react";
-import PedidoRequests from "../../../fetch/PedidoRequests";
-import type { PedidoDTO } from "../../../dto/PedidoDTO";
+import ProdutoRequests from "../../../fetch/ProdutoRequests";
+import type { ProdutoDTO } from "../../../dto/ProdutoDTO";
 import { useNavigate } from "react-router-dom";
 import Navegacao from "../../../components/Navegacao/Navegacao";
 
+<<<<<<< HEAD
 function formatarMoeda(valor: number | string): string {
     const numero = Number(String(valor).replace(',', '.'));
     return Number.isFinite(numero) ? numero.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'R$ 0,00';
@@ -13,29 +14,38 @@ function formatarMoeda(valor: number | string): string {
 function ListagemPedidos(): JSX.Element {
     const [pedidos, setPedidos] = useState<PedidoDTO[]>([]);
     const [pedidoExcluindo, setPedidoExcluindo] = useState<number | null>(null);
+=======
+function ListagemProdutos(): JSX.Element {
+    const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
+>>>>>>> origin/clara-bononi
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 5;
     const navigate = useNavigate();
 
     useEffect(() => {
-        const buscarPedidos = async () => {
+        const buscarProdutos = async () => {
             try {
+<<<<<<< HEAD
                 const listaDePedidos = await PedidoRequests.obterListaDePedidos();
                 setPedidos(Array.isArray(listaDePedidos) ? listaDePedidos : []);
+=======
+                const listaDeProdutos = await ProdutoRequests.obterListaDeProdutos();
+                setProdutos(listaDeProdutos);
+>>>>>>> origin/clara-bononi
             } catch (error) {
-                console.error(`Erro ao buscar pedidos. ${error}`);
-                alert("Erro ao criar a listagem de pedidos.");
+                console.error(`Erro ao buscar produtos. ${error}`);
+                alert("Erro ao criar a listagem de produtos.");
             }
         }
 
-        buscarPedidos();
+        buscarProdutos();
     }, []);
 
     // Lógica de Paginação
-    const totalPages = Math.ceil(pedidos.length / rowsPerPage);
+    const totalPages = Math.ceil(produtos.length / rowsPerPage);
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-    const currentPedidos = pedidos.slice(indexOfFirstRow, indexOfLastRow);
+    const currentProdutos = produtos.slice(indexOfFirstRow, indexOfLastRow);
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -55,18 +65,18 @@ function ListagemPedidos(): JSX.Element {
     };
 
     return (
-    <>
-        <Navegacao />
+        <>
+    <Navegacao />
 
-        <main className="bg-gray-200 flex-1 flex flex-col px-4 sm:px-6 md:px-10 py-6 md:py-10 overflow-hidden">
+    <main className="bg-gray-200 flex-1 flex flex-col px-4 sm:px-6 md:px-10 py-6 md:py-10 overflow-hidden"> {/* overflow-hidden no main para conter o scroll interno */}
             <div className="w-full max-w-7xl mx-auto flex flex-col sm:flex-row items-center gap-4 mb-6 md:mb-8 flex-shrink-0">
-                <h1 className="flex-1 text-xl sm:text-2xl md:text-3xl text-center sm:text-left font-bold text-slate-800">Pedidos</h1>
-                <a href="/cadastro/pedido" className="w-full sm:w-auto px-4 py-2 md:px-6 md:py-3 text-sm md:text-base bg-slate-700 rounded-md text-center text-white font-bold flex items-center justify-center hover:cursor-pointer hover:bg-slate-600 transition-all shadow-md hover:shadow-lg active:scale-95">
-                    Novo Pedido
+                <h1 className="flex-1 text-xl sm:text-2xl md:text-3xl text-center sm:text-left font-bold text-slate-800">Produtos</h1>
+                <a href="/cadastro/produto" className="w-full sm:w-auto px-4 py-2 md:px-6 md:py-3 text-sm md:text-base bg-slate-700 rounded-md text-center text-white font-bold flex items-center justify-center hover:cursor-pointer hover:bg-slate-600 transition-all shadow-md hover:shadow-lg active:scale-95">
+                    Novo Produto
                 </a>
             </div>
 
-            <input type="text" name="busca-pedido" id="busca-pedido" placeholder="Buscar pedido" className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm" />
+            <input type="text" name="busca-produto" id="busca-produto" placeholder="Buscar produto" className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm" />
 
             <div className="w-full max-w-7xl mx-auto flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow-xl border border-slate-300 overflow-hidden">
                 <div className="flex-1 overflow-auto overscroll-none">
@@ -74,15 +84,22 @@ function ListagemPedidos(): JSX.Element {
                         <thead className="bg-slate-700 sticky top-0 z-10 shadow-sm">
                             <tr>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden md:table-cell text-left">ID</th>
+<<<<<<< HEAD
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 text-left">ID Cliente</th>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden sm:table-cell text-left">ID Produto</th>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden lg:table-cell text-left">Data do Pedido</th>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden sm:table-cell text-left">Valor Total</th>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden sm:table-cell text-left">Status</th>
+=======
+                                <th className="border-b border-slate-600 text-white p-3 md:p-4 text-left">Nome produto</th>
+                                <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden sm:table-cell text-left">Preço</th>
+                                <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden lg:table-cell text-left">Disponibilidade</th>
+>>>>>>> origin/clara-bononi
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-200">
+<<<<<<< HEAD
                             {currentPedidos && currentPedidos.length > 0 ? (
                                 currentPedidos.map((pedido) => (
                                     <tr className="text-center md:text-left transition-colors hover:bg-slate-50 group" key={pedido.idPedido}>
@@ -94,12 +111,21 @@ function ListagemPedidos(): JSX.Element {
                                         </td>
                                         <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{formatarMoeda(pedido.valorTotal)}</td>
                                         <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{pedido.statusPedido}</td>
+=======
+                            {currentProdutos && currentProdutos.length > 0 ? (
+                                currentProdutos.map((produto) => (
+                                    <tr className="text-center md:text-left transition-colors hover:bg-slate-50 group" key={produto.idProduto}>
+                                        <td className="p-3 md:p-4 hidden md:table-cell text-slate-500">{produto.idProduto}</td>
+                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{produto.nomeProduto}</td>
+                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{produto.preco}</td>
+                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{produto.disponibilidade}</td>
+>>>>>>> origin/clara-bononi
 
                                         <td className="p-2 md:p-4">
                                             <div className="flex flex-col sm:flex-row items-center justify-center gap-1 md:gap-2">
                                                 <button
                                                     className="w-full sm:w-auto bg-sky-100 text-sky-700 px-3 py-1.5 rounded-md text-xs md:text-sm font-medium hover:bg-sky-600 hover:text-white transition-all hover:cursor-pointer"
-                                                    onClick={() => navigate(`/detalhes/pedido/${pedido.idPedido}`)}
+                                                    onClick={() => navigate(`/detalhes/produto/${produto.idProduto}`)}
                                                 >
                                                     Detalhes
                                                 </button>
@@ -111,8 +137,13 @@ function ListagemPedidos(): JSX.Element {
                                 ))
                             ) : (
                                 <tr>
+<<<<<<< HEAD
                                     <td colSpan={7} className="text-center p-10 text-slate-500 italic">
                                         Nenhum pedido encontrado
+=======
+                                    <td colSpan={6} className="text-center p-10 text-slate-500 italic">
+                                        Nenhum produto encontrado
+>>>>>>> origin/clara-bononi
                                     </td>
                                 </tr>
                             )}
@@ -125,7 +156,7 @@ function ListagemPedidos(): JSX.Element {
                     <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
                             <p className="text-sm text-slate-700">
-                                Mostrando <span className="font-semibold">{indexOfFirstRow + 1}</span> até <span className="font-semibold">{Math.min(indexOfLastRow, pedidos.length)}</span> de <span className="font-semibold">{pedidos.length}</span> resultados
+                                Mostrando <span className="font-semibold">{indexOfFirstRow + 1}</span> até <span className="font-semibold">{Math.min(indexOfLastRow, produtos.length)}</span> de <span className="font-semibold">{produtos.length}</span> resultados
                             </p>
                         </div>
                         <div>
@@ -165,4 +196,8 @@ function ListagemPedidos(): JSX.Element {
     );
 }
 
+<<<<<<< HEAD
 export default ListagemPedidos;
+=======
+export default ListagemProdutos;
+>>>>>>> origin/clara-bononi

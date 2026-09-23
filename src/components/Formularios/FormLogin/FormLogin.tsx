@@ -17,9 +17,6 @@ function LoginForm(): JSX.Element {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log("Botão Entrar clicado");
-        setErro("");
-
         if (!email.trim()) {
             alert("O e-mail é obrigatório.");
             return;
@@ -39,10 +36,8 @@ function LoginForm(): JSX.Element {
 
         const login: LoginData = {
             email: email.trim(),
-            senha
+            senha: senha
         };
-
-        console.log("Dados enviados:", login);
 
         try {
             setCarregando(true);
@@ -59,16 +54,13 @@ function LoginForm(): JSX.Element {
                 alert("E-mail ou senha inválidos.");
             }
         } catch (error) {
-            console.error("Erro capturado:", error);
+            console.error(`Erro ao tentar fazer login: ${error}`);
 
-            const message =
-                error instanceof Error
-                    ? error.message
-                    : "Erro ao fazer login";
+            const message = error instanceof Error
+                ? error.message
+                : 'Erro ao fazer login';
 
-            setErro(message);
-        } finally {
-            setCarregando(false);
+            alert(`Falha no login: ${message}`);
         }
     };
 

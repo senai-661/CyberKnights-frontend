@@ -9,7 +9,7 @@ class PedidoRequests {
         this.endpointPedido = "/api/pedido";
     }
 
-    async obterListaDePedidos(): Promise<PedidoDTO[]> {
+    async obterListaDePedidos() {
         try {
             const token = localStorage.getItem("token");
 
@@ -89,36 +89,6 @@ class PedidoRequests {
         } catch (error) {
             console.error(`Erro ao fazer consulta à API. ${error}`);
             return false;
-        }
-    }
-
-    async deletarPedido(idPedido: number): Promise<{ sucesso: boolean; mensagem?: string }> {
-        try {
-            const token = localStorage.getItem('token');
-            const respostaAPI = await fetch(`${this.serverURL}${this.endpointPedido}/${idPedido}`, {
-                method: 'DELETE',
-                headers: { 'x-access-token': `${token ?? ''}`, ...(token ? { Authorization: `Bearer ${token}` } : {}) }
-            });
-            if (respostaAPI.ok) return { sucesso: true };
-            const dados = await respostaAPI.json().catch(() => ({}));
-            return { sucesso: false, mensagem: dados.mensagem ?? 'Não foi possível excluir o pedido.' };
-        } catch {
-            return { sucesso: false, mensagem: 'Não foi possível conectar ao servidor.' };
-        }
-    }
-
-    async atualizarPedido(idPedido: number, pedido: PedidoDTO): Promise<{ sucesso: boolean; mensagem?: string }> {
-        try {
-            const token = localStorage.getItem('token');
-            const respostaAPI = await fetch(`${this.serverURL}${this.endpointPedido}/${idPedido}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'x-access-token': `${token ?? ''}`, ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-                body: JSON.stringify(pedido)
-            });
-            const dados = await respostaAPI.json().catch(() => ({}));
-            return { sucesso: respostaAPI.ok, mensagem: dados.mensagem };
-        } catch {
-            return { sucesso: false, mensagem: 'Não foi possível conectar ao servidor.' };
         }
     }
 }

@@ -14,22 +14,50 @@ function Navegacao(): JSX.Element {
 
     const nome = localStorage.getItem('nome') || 'Usuário';
     const email = localStorage.getItem('email') || '';
+  
 
     const items = [
         { label: 'Home', icon: 'pi pi-home', url: "/" },
         ...(isAuthenticated ? [
-            { label: 'Clientes', icon: 'pi pi-users', url: "/lista/cliente" },
-            { label: 'Pedidos', icon: 'pi pi-shopping-bag', url: "/lista/pedido" },
-            { label: 'Produtos', icon: 'pi pi-hamburger', url: "/lista/produto" }
+            {
+                label: 'Clientes',
+                icon: 'pi pi-star',
+                className: 'm-5 text-white text-lg',
+                url: "/lista/cliente"
+            },
+            {
+                label: 'Pedidos',
+                icon: 'pi pi-star',
+                className: 'm-5 text-white text-lg',
+                url: "/lista/pedido"
+            },
+            {
+                label: 'Produtos',
+                icon: 'pi pi-star',
+                className: 'm-5 text-white text-lg',
+                url: "/lista/produto"
+            }
         ] : [])
     ];
 
     const userActions = isAuthenticated ? (
-        <div className="user-actions">
-            <div className="user-avatar"><i className="pi pi-user"></i></div>
-            <div className="user-details"><strong>{nome}</strong><span>{email}</span></div>
-            <button className="logout-button" onClick={AuthRequests.removeToken} type="button">
-                <i className="pi pi-sign-out"></i><span>Sair</span>
+        <div className="flex items- justify-end items-center mr-10 gap-4">
+            <div className="flex flex-col pr-3">
+                <p className="text-white font-semibold m-0">{nome}</p>
+                <p className="text-white text-sm m-0">{email}</p>
+            </div>
+            <Avatar
+              
+                shape="circle"
+                className="!w-[10%] !h-[10%]"
+            />
+            <button
+                className="bg-white ml-6 text-slate-700 px-10 py-5 rounded border-none cursor-pointer flex items-center justify-center gap-1 hover:bg-gray-100 transition-colors"
+                onClick={AuthRequests.removeToken}
+                style={{ height: '32px', fontSize: '14px' }}
+            >
+                <i className="pi pi-sign-out"></i>
+                <span>Sair</span>
             </button>
         </div>
     ) : (
