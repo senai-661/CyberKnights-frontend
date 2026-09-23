@@ -1,15 +1,28 @@
 import { type JSX } from "react";
+import { useNavigate } from "react-router-dom";
+import logoMaga from "../../assets/logo.png";
 
 function BoasVindas(): JSX.Element {
-    return (
-        <main className="bg-gray-200 h-[76vh]">
-            <h1 className="text-[3rem] pt-20" style={{ textAlign: 'center' }}>Lanches Maga</h1>
+    const navigate = useNavigate();
 
-            <p className="text-[1.2rem] mt-10" style={{ textAlign: 'center' }}>
-                Seja bem-vindo ao Lanches Maga. Aqui você encontra uma variedade de lanches deliciosos para satisfazer seu paladar. Explore nosso cardápio e descubra opções irresistíveis para todos os gostos.
-                
-            </p>
-        </main>
+    return (
+        <section className="welcome-page">
+            <div className="hero-shell">
+                <div className="hero-panel">
+                    <div className="hero-copy">
+                        <p className="hero-eyebrow">LANCHES ARTESANAIS</p>
+                        <h1>Bem-vindo ao <span>Lanches Maga!</span></h1>
+                        <p>Lanches artesanais feitos com ingredientes frescos e muito sabor.</p>
+                        <button className="hero-button" type="button" onClick={() => navigate('/cadastro/pedido')}>
+                            Faça seu pedido agora <span aria-hidden="true">›</span>
+                        </button>
+                    </div>
+                    <div className="hero-image-wrap">
+                        <img className="hero-logo" src={logoMaga} alt="Logo Lanches Maga" />
+                    </div>
+                </div>
+            </div>
+        </section>
     );
 }
 

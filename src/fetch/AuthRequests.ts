@@ -1,4 +1,3 @@
-// Classe responsável por fazer requisições à API - autenticação
 /**
  * Classe para lidar com autenticação
  */
@@ -6,6 +5,24 @@ class AuthRequests {
 
     private serverUrl: string;
     private endpointLogin: string;
+
+    private decodeJwtPayload(token: string): { exp?: number } | null {
+        try {
+            const base64Url = token.split('.')[1];
+            if (!base64Url) return null;
+
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+            const binary = atob(padded);
+            const json = decodeURIComponent(
+                Array.from(binary, (char) => `%${char.charCodeAt(0).toString(16).padStart(2, '0')}`).join('')
+            );
+
+            return JSON.parse(json);
+        } catch {
+            return null;
+        }
+    }
     
     /**
      * Construtor das rotas e do endereço do servidor
@@ -22,37 +39,56 @@ class AuthRequests {
      * @param {*} login - email e senha
      * @returns **true** caso sucesso, **false** caso erro
      */
-    async login(login: { email: string, senha: string}) {       
+    async login(login: { email: string, senha: string}) {  
+        console.log("URL:", `${this.serverUrl}${this.endpointLogin}`);     
         try {
-            // faz a requisição POST ao servidor...
+            const payload = {
+                email: login.email,
+                senha: login.senha,
+                password: login.senha,
+                username: login.email,
+            };
+
             const response = await fetch(`${this.serverUrl}${this.endpointLogin}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                // passando as informações de login no corpo da requisição
-                body: JSON.stringify(login)
+                body: JSON.stringify(payload)
             });
-            
-            // Verifica alguma falha na comunicação
+
+            const responseText = await response.text();
+            let data: any;
+
+            try {
+                data = responseText ? JSON.parse(responseText) : {};
+            } catch {
+                data = { message: responseText };
+            }
+
             if (!response.ok) {
-                console.log('Erro na autenticação');
-                throw new Error('Falha no login');
-            }
-            // caso a requisição seja bem sucedida, armazena a resposta em uma constante
-            const data = await response.json();
-            console.log( data );
-
-            // verifica se o atributo auth da resposta tem o valor TRUE, se tiver é porque a autenticação teve sucesso
-            if (data.auth) {
-                // persistem o token, o nome e o id do professor no localstorage
-                this.persistToken(data.token, data.usuario, data.auth);
+                const message = data?.message || data?.error || `Falha no login (${response.status})`;
+                console.error('Erro na autenticação', response.status, data);
+                throw new Error(message);
             }
 
-            // retorna a resposta da requisição a quem chamou a função
+            const auth = data?.auth ?? data?.authenticated ?? data?.status === 'success';
+            const token = data?.token ?? data?.access_token ?? data?.jwt;
+            const usuario = data?.usuario ?? data?.user ?? data?.userData ?? {};
+
+            if (!auth) {
+                const message = data?.message || data?.error || 'Autenticação negada pelo servidor';
+                throw new Error(message);
+            }
+
+            if (!token) {
+                throw new Error('Token de autenticação não recebido do servidor');
+            }
+
+            this.persistToken(token, usuario, auth);
+
             return true;
         } catch (error) {
-            // lança um erro em caso de falha
             console.error('Erro: ', error);
             throw error;
         }
@@ -95,30 +131,24 @@ class AuthRequests {
      * @returns **true** caso token válido, **false** caso token inválido
      */
     checkTokenExpiry() {
-        // recupera o valor do token no localstorage
         const token = localStorage.getItem('token');
-        
-        // verifica se o valor é diferente de vazio
-        if (token) {
-            // recupera a data de expiração do token
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            // recuepra a hora de expiração do token
-            const expiry = payload.exp;
-            // pega a data e hora atual
-            const now = Math.floor(Date.now() / 1000);
 
-            // verifica se o token está expirado
-            if (expiry < now) {
-                // invoca a função para remover o token do localstorage
-                this.removeToken();
-                // retorna false
-                return false;
-            }
-            // caso o token não esteja expirado, retorna true
-            return true;
+        if (!token) return false;
+
+        const payload = this.decodeJwtPayload(token);
+        if (!payload || typeof payload.exp !== 'number') {
+            this.removeToken();
+            return false;
         }
-        // caso o token esteja vazio, retorna false
-        return false;
+
+        const now = Math.floor(Date.now() / 1000);
+
+        if (payload.exp < now) {
+            this.removeToken();
+            return false;
+        }
+
+        return true;
     }
 }
 

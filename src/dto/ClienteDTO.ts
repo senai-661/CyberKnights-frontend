@@ -1,8 +1,8 @@
-export default interface ClienteDTO {
-    id_cliente?: number,
-    nome: string,
+export interface ClienteDTO {
+    idCliente?: number,
     email: string,
+    nome: string,
     endereco: string,
-    telefone: string,
-    cpf: string,
+    telefone: number,
+    cpf?: number
 }
