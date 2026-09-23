@@ -1,9 +1,9 @@
 /* Rodape.css */
 .rodape-container {
-    background-color: #f8fafc; /* Um cinza azulado bem clarinho e moderno */
-    border-top: 1px solid #e2e8f0;
-    padding: 40px 10% 20px 10%;
-    color: #475569;
+    background: linear-gradient(180deg, #2b170f 0%, #1d120d 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 48px 6% 20px;
+    color: #f8d9b7;
     font-family: 'Inter', sans-serif;
 }
 
@@ -16,9 +16,15 @@
     margin-bottom: 30px;
 }
 
+.rodape-info,
+.rodape-links {
+    flex: 1;
+    min-width: 220px;
+}
+
 .rodape-info h3 {
-    color: #1e293b;
-    font-size: 1.2rem;
+    color: #fff3d9;
+    font-size: 1.3rem;
     font-weight: 700;
     margin-bottom: 10px;
     display: flex;
@@ -26,10 +32,12 @@
     gap: 8px;
 }
 
-.rodape-info p {
-    font-size: 0.9rem;
-    line-height: 1.5;
-    max-width: 300px;
+.rodape-info p,
+.rodape-links p,
+.rodape-equipe {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: #f0d7bb;
 }
 
 .rodape-links {
@@ -39,11 +47,11 @@
 }
 
 .rodape-links h4 {
-    color: #1e293b;
-    font-size: 0.95rem;
-    font-weight: 600;
+    color: #ffe7bd;
+    font-size: 0.8rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
 }
 
 .rodape-equipe {
@@ -54,28 +62,42 @@
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    color: #3b82f6; /* Azul MedFlow */
-    font-weight: 500;
+    color: #ffb347;
+    font-weight: 600;
 }
 
 .rodape-bottom {
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding-top: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
     font-size: 0.8rem;
-    color: #94a3b8;
+    color: #e3c49d;
+    flex-wrap: wrap;
 }
 
 .social-icons {
     display: flex;
-    gap: 15px;
+    gap: 14px;
     font-size: 1.2rem;
+    color: #fff3d9;
+}
+
+.social-icons i {
+    transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .social-icons i:hover {
-    color: #3b82f6;
+    color: #ffb347;
+    transform: translateY(-2px);
     cursor: pointer;
-    transition: 0.3s;
+}
+
+@media (max-width: 700px) {
+    .rodape-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

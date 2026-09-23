@@ -8,11 +8,11 @@ function Rodape(): JSX.Element {
                 {/* Lado Esquerdo: Marca */}
                 <div className="rodape-info">
                     <h3>
-                        <i className="pi pi-heart-fill" style={{ color: '#10b981' }}></i>
-                        Bem-vindo ao lanches maga
+                        <i className="pi pi-heart-fill" style={{ color: '#ffb347' }}></i>
+                        Bem-vindo ao LanchesMaga
                     </h3>
                     <p>
-                       Lanches artesanais feitos com ingredientes frescos e muito sabor
+                        Lanches artesanais feitos com ingredientes frescos e muito sabor.
                     </p>
                 </div>
 
@@ -20,10 +20,10 @@ function Rodape(): JSX.Element {
                 <div className="rodape-links">
                     <h4>Desenvolvido por</h4>
                     <div className="equipe-lista">
-                        <span>Lavinia</span> • 
-                        <span>Beatriz</span> • 
-                        <span>Heloísa</span> • 
-                        <span>Sofia</span> • 
+                        <span>Lavinia</span> •
+                        <span>Beatriz</span> •
+                        <span>Heloísa</span> •
+                        <span>Sofia</span> •
                         <span>Clara</span>
                     </div>
                 </div>
@@ -44,7 +44,7 @@ function Rodape(): JSX.Element {
 
             {/* Faixa de Copyright Final */}
             <div className="rodape-bottom">
-                <p>© 2026 Mega Lanches - Rede de lanches .</p>
+                <p>© 2026 LanchesMaga - Rede de lanches.</p>
                 <p>Versão 1.0.2</p>
             </div>
         </footer>
