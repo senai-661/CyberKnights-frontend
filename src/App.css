@@ -39,6 +39,23 @@ button, input {
   font: inherit;
 }
 
+.app-feedback {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 0 0 24px;
+  padding: 13px 16px;
+  border-radius: 8px;
+  font-size: .92rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.app-feedback i { flex: 0 0 auto; font-size: 1rem; }
+.app-feedback-sucesso { border: 1px solid #286d4d; background: rgba(40, 109, 77, .18); color: #84e0b3; }
+.app-feedback-erro { border: 1px solid #8a3c3c; background: rgba(138, 60, 60, .18); color: #ffabab; }
+
 .app-layout { min-height: 100vh; display: flex; flex-direction: column; }
 .app-content { flex: 1; display: flex; flex-direction: column; }
 

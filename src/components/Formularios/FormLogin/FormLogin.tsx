@@ -1,6 +1,7 @@
 import { useState, type JSX, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthRequests from "../../../fetch/AuthRequests";
+import Feedback from "../../Feedback/Feedback";
 import styles from "./FormLogin.module.css";
 
 function LoginForm(): JSX.Element {
@@ -21,19 +22,19 @@ function LoginForm(): JSX.Element {
         setErro("");
 
         if (!email.trim()) {
-            alert("O e-mail é obrigatório.");
+            setErro("O e-mail é obrigatório.");
             return;
         }
 
         if (!senha.trim()) {
-            alert("A senha é obrigatória.");
+            setErro("A senha é obrigatória.");
             return;
         }
 
         const formatoEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!formatoEmail.test(email)) {
-            alert("Digite um e-mail válido.");
+            setErro("Digite um e-mail válido.");
             return;
         }
 
@@ -48,8 +49,6 @@ function LoginForm(): JSX.Element {
 
             if (resposta) {
                 navigate("/", { replace: true });
-            } else {
-                alert("E-mail ou senha inválidos.");
             }
         } catch (error) {
             console.error("Erro capturado:", error);
@@ -80,11 +79,7 @@ function LoginForm(): JSX.Element {
                     Bem-vindo de volta! Acesse sua conta.
                 </p>
 
-                {erro && (
-                    <div className={styles.loginError} role="alert">
-                        {erro}
-                    </div>
-                )}
+                {erro && <Feedback tipo="erro">{erro}</Feedback>}
 
                 <form
                     onSubmit={handleSubmit}

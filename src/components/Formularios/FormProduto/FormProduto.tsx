@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProdutoRequests from '../../../fetch/ProdutoRequests';
+import Feedback from '../../Feedback/Feedback';
 
 function FormProduto() {
     const navigate = useNavigate();
@@ -10,6 +11,7 @@ function FormProduto() {
         preco: '',
         disponibilidade: '',
     });
+    const [feedback, setFeedback] = useState<{ tipo: 'sucesso' | 'erro'; texto: string } | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -18,6 +20,7 @@ function FormProduto() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setFeedback(null);
 
         const dadosProduto = {
             nomeProduto: formData.nomeProduto,
@@ -28,9 +31,9 @@ function FormProduto() {
         const resposta = await ProdutoRequests.enviarFormularioProduto(dadosProduto);
 
         if (resposta) {
-            alert("Produto cadastrado com sucesso");
+            setFeedback({ tipo: 'sucesso', texto: 'Produto cadastrado com sucesso.' });
         } else {
-            alert("Erro ao cadastrar produto");
+            setFeedback({ tipo: 'erro', texto: 'Não foi possível cadastrar o produto.' });
         }
     };
 
@@ -42,6 +45,7 @@ function FormProduto() {
                     onSubmit={handleSubmit}
                     className="produto-form bg-white shadow-2xl rounded-2xl p-6 sm:p-10 border border-slate-200"
                 >
+                    {feedback && <Feedback tipo={feedback.tipo}>{feedback.texto}</Feedback>}
                     <h1 className="entity-heading text-3xl sm:text-4xl md:text-5xl text-center font-bold text-slate-800 mb-8 sm:mb-12">
                         <i className="pi pi-box"></i> Cadastro de <span>Produto</span>
                     </h1>
