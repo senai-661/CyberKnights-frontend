@@ -56,7 +56,7 @@ class ProdutoRequests {
         }
     }
 
-    // ✅ MÉTODO NOVO - busca um produto pelo ID
+    
     async obterProdutoPorId(id: number) {
         try {
             const token = localStorage.getItem('token');

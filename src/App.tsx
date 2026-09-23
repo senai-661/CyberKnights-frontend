@@ -12,7 +12,7 @@ import PListagensProdutos from './components/Listagens/ListagensProduto/Listagem
 
 //  Import dos componentes de detalhes
 import DetalhesCliente from './components/Listagens/DetalhesCliente/DetalheCliente'
-import DetalhesPedidos from './components/Listagens/DetalhesPedidos/DetalhesPedidos'
+import DetalhesPedidos from './components/Listagens/DetalhesPedido/PDetalhesPedido'
 import DetalhesProdutos from './components/Listagens/DetalhesProdutos/DetalhesProdutos'
 import ProtectedRoute from './components/Rotas/ProtectedRoutes'
 

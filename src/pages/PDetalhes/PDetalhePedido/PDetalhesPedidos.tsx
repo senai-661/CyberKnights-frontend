@@ -1,6 +1,6 @@
 import { type JSX } from "react";
 import Navegacao from "../../../components/Navegacao/Navegacao";
-import DetalhesPedidos from "../../../components/Listagens/DetalhesPedidos/DetalhesPedidos";
+import DetalhesPedidos from "../../../components/Listagens/DetalhesPedido/PDetalhesPedido";
 import Rodape from "../../../components/Rodape/Rodape";
 
 function PDetalhesPedido(): JSX.Element {

@@ -12,7 +12,7 @@ function Rodape(): JSX.Element {
                         Bem-vindo ao lanches maga
                     </h3>
                     <p>
-                       Lanches artesanais feitos com ingredientes frescos e muito sabor
+                        Lanches artesanais feitos com ingredientes frescos e muito sabor.
                     </p>
                 </div>
 
