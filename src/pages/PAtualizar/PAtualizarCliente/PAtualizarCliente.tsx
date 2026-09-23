@@ -32,7 +32,7 @@ function PAtualizarCliente() {
         if (!cliente.nome || !cliente.email || !cliente.endereco || !cliente.telefone) { setErro('Preencha todos os campos obrigatórios.'); setSalvando(false); return; }
         if (cliente.idCliente === undefined) { setErro('Cliente inválido.'); setSalvando(false); return; }
         const resposta = await ClienteRequests.atualizarCliente(cliente.idCliente, cliente);
-        if (resposta.sucesso) navigate('/lista/cliente');
+        if (resposta.sucesso) navigate('/lista/cliente', { state: { clienteAtualizado: cliente } });
         else setErro(resposta.mensagem ?? 'Não foi possível atualizar o cliente.');
         setSalvando(false);
     };

@@ -33,7 +33,25 @@ class ClienteRequests {
     private normalizarCliente(cliente: Record<string, unknown>): ClienteDTO {
         const email = this.encontrarEmail(cliente);
 
-        return { ...cliente, email } as ClienteDTO;
+        return {
+            ...cliente,
+            idCliente: Number(cliente.idCliente ?? cliente.id_cliente ?? cliente.id),
+            nome: String(cliente.nome ?? ''),
+            email,
+            endereco: String(cliente.endereco ?? cliente.endereço ?? ''),
+            telefone: String(cliente.telefone ?? ''),
+            cpf: cliente.cpf == null ? undefined : String(cliente.cpf)
+        };
+    }
+
+    private extrairLista(dados: unknown): unknown[] {
+        if (Array.isArray(dados)) return dados;
+        if (typeof dados !== 'object' || dados === null) return [];
+
+        const resposta = dados as Record<string, unknown>;
+        return this.extrairLista(
+            resposta.clientes ?? resposta.data ?? resposta.results ?? resposta.result ?? resposta.items
+        );
     }
 
     async obterListaDeClientes(): Promise<ClienteDTO[]> {
@@ -50,14 +68,12 @@ class ClienteRequests {
 
             if (respostaAPI.ok) {
                 const dados = await respostaAPI.json();
-                const lista = Array.isArray(dados)
-                    ? dados
-                    : dados?.clientes ?? dados?.data?.clientes ?? dados?.data ?? dados?.results;
-                return Array.isArray(lista)
-                    ? lista.map((cliente) => this.normalizarCliente(cliente as Record<string, unknown>))
-                    : [];
+                return this.extrairLista(dados)
+                    .filter((cliente): cliente is Record<string, unknown> => typeof cliente === 'object' && cliente !== null)
+                    .map((cliente) => this.normalizarCliente(cliente));
             } else {
-                throw new Error("Não foi possível listar os clientes.");
+                const dados = await respostaAPI.json().catch(() => ({}));
+                throw new Error(dados.mensagem ?? dados.message ?? dados.error ?? `Não foi possível listar os clientes (${respostaAPI.status}).`);
             }
         } catch (error) {
             console.error(`Erro ao fazer a consulta de clientes. ${error}`);
@@ -118,6 +134,10 @@ class ClienteRequests {
 
     async deletarCliente(idCliente: number): Promise<{ sucesso: boolean; mensagem?: string }> {
         try {
+            if (!Number.isInteger(idCliente) || idCliente <= 0) {
+                return { sucesso: false, mensagem: 'ID do cliente inválido.' };
+            }
+
             const token = localStorage.getItem('token');
             const respostaAPI = await fetch(`${this.serverURL}${this.endpointCliente}/${idCliente}`, {
                 method: 'DELETE',
@@ -125,7 +145,7 @@ class ClienteRequests {
             });
             if (respostaAPI.ok) return { sucesso: true };
             const dados = await respostaAPI.json().catch(() => ({}));
-            return { sucesso: false, mensagem: dados.mensagem ?? 'Não foi possível excluir o cliente.' };
+            return { sucesso: false, mensagem: dados.mensagem ?? dados.message ?? dados.error ?? `Erro ${respostaAPI.status} ao excluir o cliente.` };
         } catch {
             return { sucesso: false, mensagem: 'Não foi possível conectar ao servidor.' };
         }
@@ -133,14 +153,30 @@ class ClienteRequests {
 
     async atualizarCliente(idCliente: number, cliente: ClienteDTO): Promise<{ sucesso: boolean; mensagem?: string }> {
         try {
+            if (!Number.isInteger(idCliente) || idCliente <= 0) {
+                return { sucesso: false, mensagem: 'ID do cliente inválido.' };
+            }
+
             const token = localStorage.getItem('token');
-            const respostaAPI = await fetch(`${this.serverURL}${this.endpointCliente}/${idCliente}`, {
-                method: 'PUT',
+            const url = `${this.serverURL}${this.endpointCliente}/${idCliente}`;
+            const opcoes = {
                 headers: { 'Content-Type': 'application/json', 'x-access-token': `${token ?? ''}`, ...(token ? { Authorization: `Bearer ${token}` } : {}) },
                 body: JSON.stringify(cliente)
+            };
+            let respostaAPI = await fetch(url, {
+                method: 'PUT',
+                ...opcoes
             });
+
+            if (respostaAPI.status === 404 || respostaAPI.status === 405) {
+                respostaAPI = await fetch(url, { method: 'PATCH', ...opcoes });
+            }
+
             const dados = await respostaAPI.json().catch(() => ({}));
-            return { sucesso: respostaAPI.ok, mensagem: dados.mensagem };
+            return {
+                sucesso: respostaAPI.ok,
+                mensagem: dados.mensagem ?? dados.message ?? dados.error ?? (respostaAPI.ok ? undefined : `Erro ${respostaAPI.status} ao atualizar o cliente.`)
+            };
         } catch {
             return { sucesso: false, mensagem: 'Não foi possível conectar ao servidor.' };
         }

@@ -28,7 +28,7 @@ function FormCliente() {
         if (name === 'telefone') {
             const telefoneFormatado = Utilitario.formatarTelefone(value);
 
-            setFormData((prev: any) => ({
+            setFormData((prev) => ({
                 ...prev,
                 [name]: telefoneFormatado
             }));
@@ -41,7 +41,7 @@ function FormCliente() {
             return;
         }
 
-        setFormData((prev: any) => ({
+        setFormData((prev) => ({
             ...prev,
             [name]: value
         }));

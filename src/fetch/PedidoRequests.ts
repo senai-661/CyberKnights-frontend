@@ -9,6 +9,28 @@ class PedidoRequests {
         this.endpointPedido = "/api/pedido";
     }
 
+    private extrairLista(dados: unknown): unknown[] {
+        if (Array.isArray(dados)) return dados;
+        if (typeof dados !== 'object' || dados === null) return [];
+
+        const resposta = dados as Record<string, unknown>;
+        return this.extrairLista(
+            resposta.pedidos ?? resposta.data ?? resposta.results ?? resposta.result ?? resposta.items
+        );
+    }
+
+    private normalizarPedido(pedido: Record<string, unknown>): PedidoDTO {
+        return {
+            ...pedido,
+            idPedido: Number(pedido.idPedido ?? pedido.id_pedido ?? pedido.id),
+            idCliente: Number(pedido.idCliente ?? pedido.id_cliente),
+            idProduto: Number(pedido.idProduto ?? pedido.id_produto),
+            dataPedido: new Date(String(pedido.dataPedido ?? pedido.data_pedido ?? '')),
+            valorTotal: Number(pedido.valorTotal ?? pedido.valor_total ?? 0),
+            statusPedido: String(pedido.statusPedido ?? pedido.status_pedido ?? '')
+        };
+    }
+
     async obterListaDePedidos(): Promise<PedidoDTO[]> {
         try {
             const token = localStorage.getItem("token");
@@ -26,12 +48,12 @@ class PedidoRequests {
 
             if (respostaAPI.ok) {
                 const dados = await respostaAPI.json();
-                const lista = Array.isArray(dados)
-                    ? dados
-                    : dados?.pedidos ?? dados?.data ?? dados?.results;
-                return Array.isArray(lista) ? lista : [];
+                return this.extrairLista(dados)
+                    .filter((pedido): pedido is Record<string, unknown> => typeof pedido === 'object' && pedido !== null)
+                    .map((pedido) => this.normalizarPedido(pedido));
             } else {
-                throw new Error("Não foi possível listar os pedidos.");
+                const dados = await respostaAPI.json().catch(() => ({}));
+                throw new Error(dados.mensagem ?? dados.message ?? dados.error ?? `Não foi possível listar os pedidos (${respostaAPI.status}).`);
             }
 
         } catch (error) {
@@ -81,7 +103,10 @@ class PedidoRequests {
                 body: JSON.stringify(formPedido)
             });
 
-            if (!respostaAPI.ok) throw new Error(`Erro ${respostaAPI.status}: ${respostaAPI.statusText}`);
+            if (!respostaAPI.ok) {
+                const dados = await respostaAPI.json().catch(() => ({}));
+                throw new Error(dados.mensagem ?? dados.message ?? dados.error ?? `Erro ${respostaAPI.status}: ${respostaAPI.statusText}`);
+            }
 
             console.info(`${respostaAPI.status}: ${respostaAPI.statusText}`);
 
@@ -94,6 +119,10 @@ class PedidoRequests {
 
     async deletarPedido(idPedido: number): Promise<{ sucesso: boolean; mensagem?: string }> {
         try {
+            if (!Number.isInteger(idPedido) || idPedido <= 0) {
+                return { sucesso: false, mensagem: 'ID do pedido inválido.' };
+            }
+
             const token = localStorage.getItem('token');
             const respostaAPI = await fetch(`${this.serverURL}${this.endpointPedido}/${idPedido}`, {
                 method: 'DELETE',
@@ -101,7 +130,7 @@ class PedidoRequests {
             });
             if (respostaAPI.ok) return { sucesso: true };
             const dados = await respostaAPI.json().catch(() => ({}));
-            return { sucesso: false, mensagem: dados.mensagem ?? 'Não foi possível excluir o pedido.' };
+            return { sucesso: false, mensagem: dados.mensagem ?? dados.message ?? dados.error ?? `Erro ${respostaAPI.status} ao excluir o pedido.` };
         } catch {
             return { sucesso: false, mensagem: 'Não foi possível conectar ao servidor.' };
         }
@@ -109,14 +138,28 @@ class PedidoRequests {
 
     async atualizarPedido(idPedido: number, pedido: PedidoDTO): Promise<{ sucesso: boolean; mensagem?: string }> {
         try {
+            if (!Number.isInteger(idPedido) || idPedido <= 0) {
+                return { sucesso: false, mensagem: 'ID do pedido inválido.' };
+            }
+
             const token = localStorage.getItem('token');
-            const respostaAPI = await fetch(`${this.serverURL}${this.endpointPedido}/${idPedido}`, {
-                method: 'PUT',
+            const url = `${this.serverURL}${this.endpointPedido}/${idPedido}`;
+            const opcoes = {
                 headers: { 'Content-Type': 'application/json', 'x-access-token': `${token ?? ''}`, ...(token ? { Authorization: `Bearer ${token}` } : {}) },
                 body: JSON.stringify(pedido)
+            };
+            let respostaAPI = await fetch(url, {
+                method: 'PUT',
+                ...opcoes
             });
+            if (respostaAPI.status === 404 || respostaAPI.status === 405) {
+                respostaAPI = await fetch(url, { method: 'PATCH', ...opcoes });
+            }
             const dados = await respostaAPI.json().catch(() => ({}));
-            return { sucesso: respostaAPI.ok, mensagem: dados.mensagem };
+            return {
+                sucesso: respostaAPI.ok,
+                mensagem: dados.mensagem ?? dados.message ?? dados.error ?? (respostaAPI.ok ? undefined : `Erro ${respostaAPI.status} ao atualizar o pedido.`)
+            };
         } catch {
             return { sucesso: false, mensagem: 'Não foi possível conectar ao servidor.' };
         }

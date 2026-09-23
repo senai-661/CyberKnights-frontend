@@ -4,7 +4,11 @@ import PedidoRequests from '../../../fetch/PedidoRequests';
 import type { PedidoDTO } from '../../../dto/PedidoDTO';
 import Navegacao from '../../../components/Navegacao/Navegacao';
 
-function dataInput(data: Date | string | undefined) { return data ? new Date(data).toISOString().slice(0, 10) : ''; }
+function dataInput(data: Date | string | undefined) {
+    if (!data) return '';
+    const dataConvertida = new Date(data);
+    return Number.isNaN(dataConvertida.getTime()) ? '' : dataConvertida.toISOString().slice(0, 10);
+}
 
 function PAtualizarPedido() {
     const { id_pedido } = useParams<{ id_pedido: string }>();
@@ -30,9 +34,10 @@ function PAtualizarPedido() {
         setSalvando(true);
         setErro('');
         const pedido: PedidoDTO = { idPedido: Number(id_pedido), idCliente: Number(formData.idCliente), idProduto: Number(formData.idProduto), dataPedido: new Date(`${formData.dataPedido}T00:00:00`), valorTotal: Number(formData.valorTotal.replace(',', '.')), statusPedido: formData.statusPedido.trim() };
-        if (!pedido.idCliente || !pedido.idProduto || Number.isNaN(pedido.dataPedido.getTime()) || Number.isNaN(pedido.valorTotal) || !pedido.statusPedido) { setErro('Preencha todos os campos corretamente.'); setSalvando(false); return; }
-        if (pedido.idPedido === undefined) { setErro('Pedido inválido.'); setSalvando(false); return; }
-        const resposta = await PedidoRequests.atualizarPedido(pedido.idPedido, pedido);
+        if (!Number.isInteger(pedido.idCliente) || pedido.idCliente <= 0 || !Number.isInteger(pedido.idProduto) || pedido.idProduto <= 0 || Number.isNaN(pedido.dataPedido.getTime()) || !Number.isFinite(pedido.valorTotal) || pedido.valorTotal < 0 || !pedido.statusPedido) { setErro('Preencha todos os campos corretamente.'); setSalvando(false); return; }
+        const idPedido = pedido.idPedido;
+        if (typeof idPedido !== 'number' || !Number.isInteger(idPedido) || idPedido <= 0) { setErro('Pedido inválido.'); setSalvando(false); return; }
+        const resposta = await PedidoRequests.atualizarPedido(idPedido, pedido);
         if (resposta.sucesso) navigate('/lista/pedido');
         else setErro(resposta.mensagem ?? 'Não foi possível atualizar o pedido.');
         setSalvando(false);

@@ -269,7 +269,7 @@ main.bg-gray-200 .bg-red-100 { background: #252525; color: #ff7777; }
 .pedido-field-hint { display: block; margin-top: 7px; color: #777b83; font-size: .78rem; }
 .pedido-money-field { position: relative; }
 .pedido-money-field span { position: absolute; top: 50%; left: 16px; z-index: 1; color: #ffad4d; font-weight: 800; transform: translateY(-50%); }
-.pedido-money-field input { padding-left: 48px; }
+.pedido-fields .pedido-money-field input { padding-left: 58px; }
 .pedido-status-row { grid-template-columns: minmax(0, 1fr) !important; }
 .pedido-feedback { margin: -4px 0 24px; padding: 13px 16px; border-radius: 8px; font-size: .92rem; font-weight: 600; }
 .pedido-feedback-success { border: 1px solid #286d4d; background: rgba(40, 109, 77, .18); color: #84e0b3; }

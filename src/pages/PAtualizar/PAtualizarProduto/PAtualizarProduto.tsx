@@ -28,9 +28,10 @@ function PAtualizarProduto() {
         setSalvando(true);
         setErro('');
         const produto: ProdutoDTO = { idProduto: Number(id_produto), nomeProduto: formData.nomeProduto.trim(), preco: Number(formData.preco.replace(',', '.')), disponibilidade: formData.disponibilidade.trim() };
-        if (!produto.nomeProduto || Number.isNaN(produto.preco) || !produto.disponibilidade) { setErro('Preencha todos os campos corretamente.'); setSalvando(false); return; }
-        if (produto.idProduto === undefined) { setErro('Produto inválido.'); setSalvando(false); return; }
-        const resposta = await ProdutoRequests.atualizarProduto(produto.idProduto, produto);
+        if (!produto.nomeProduto || !Number.isFinite(produto.preco) || produto.preco < 0 || !produto.disponibilidade) { setErro('Preencha todos os campos corretamente.'); setSalvando(false); return; }
+        const idProduto = produto.idProduto;
+        if (typeof idProduto !== 'number' || !Number.isInteger(idProduto) || idProduto <= 0) { setErro('Produto inválido.'); setSalvando(false); return; }
+        const resposta = await ProdutoRequests.atualizarProduto(idProduto, produto);
         if (resposta.sucesso) navigate('/lista/produto');
         else setErro(resposta.mensagem ?? 'Não foi possível atualizar o produto.');
         setSalvando(false);

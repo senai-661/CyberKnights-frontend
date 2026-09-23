@@ -1,5 +1,5 @@
 import { useState, type JSX, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthRequests from "../../../fetch/AuthRequests";
 import styles from "./FormLogin.module.css";
 
@@ -8,6 +8,7 @@ function LoginForm(): JSX.Element {
     const [senha, setSenha] = useState("");
     const [carregando, setCarregando] = useState(false);
     const [erro, setErro] = useState("");
+    const navigate = useNavigate();
 
     interface LoginData {
         email: string;
@@ -17,7 +18,6 @@ function LoginForm(): JSX.Element {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log("Botão Entrar clicado");
         setErro("");
 
         if (!email.trim()) {
@@ -42,19 +42,12 @@ function LoginForm(): JSX.Element {
             senha
         };
 
-        console.log("Dados enviados:", login);
-
         try {
             setCarregando(true);
-            console.log("Chamando AuthRequests.login...");
-
             const resposta = await AuthRequests.login(login);
 
-            console.log("Resposta:", resposta);
-
             if (resposta) {
-                alert("Login realizado com sucesso!");
-                window.location.href = "/";
+                navigate("/", { replace: true });
             } else {
                 alert("E-mail ou senha inválidos.");
             }

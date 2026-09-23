@@ -6,6 +6,10 @@ function converterValor(valor: string): number {
     return Number(valor.trim().replace(',', '.'));
 }
 
+function converterData(valor: string): Date {
+    return new Date(`${valor}T00:00:00`);
+}
+
 function FormPedido() {
     const navigate = useNavigate();
 
@@ -36,6 +40,25 @@ function FormPedido() {
         setEnviando(true);
 
         const valorTotal = converterValor(formData.valorTotal);
+        const dataPedido = converterData(formData.dataPedido);
+
+        if (!Number.isInteger(Number(formData.idCliente)) || Number(formData.idCliente) <= 0) {
+            setMensagemErro('Informe um ID de cliente válido.');
+            setEnviando(false);
+            return;
+        }
+
+        if (!Number.isInteger(Number(formData.idProduto)) || Number(formData.idProduto) <= 0) {
+            setMensagemErro('Informe um ID de produto válido.');
+            setEnviando(false);
+            return;
+        }
+
+        if (Number.isNaN(dataPedido.getTime())) {
+            setMensagemErro('Informe uma data de pedido válida.');
+            setEnviando(false);
+            return;
+        }
 
         if (!Number.isFinite(valorTotal) || valorTotal < 0) {
             setMensagemErro('Informe um valor total válido, por exemplo: 49,90.');
@@ -43,12 +66,18 @@ function FormPedido() {
             return;
         }
 
+        if (!formData.statusPedido) {
+            setMensagemErro('Selecione o status do pedido.');
+            setEnviando(false);
+            return;
+        }
+
         const dadosPedido = {
             idCliente: Number(formData.idCliente),
             idProduto: Number(formData.idProduto),
-            dataPedido: new Date(formData.dataPedido),
+            dataPedido,
             valorTotal,
-            statusPedido: formData.statusPedido
+            statusPedido: formData.statusPedido.trim()
         };
 
         try {
@@ -60,8 +89,8 @@ function FormPedido() {
             } else {
                 setMensagemErro('Não foi possível cadastrar o pedido. Confira os dados e tente novamente.');
             }
-        } catch {
-            setMensagemErro('Não foi possível conectar ao servidor.');
+        } catch (error) {
+            setMensagemErro(error instanceof Error ? error.message : 'Não foi possível conectar ao servidor.');
         } finally {
             setEnviando(false);
         }

@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { type ReactElement } from 'react';
+import AuthRequests from '../../fetch/AuthRequests';
 
 interface ProtectedRouteProps {
     element: ReactElement;
@@ -15,9 +16,9 @@ interface ProtectedRouteProps {
  * @returns Elemento renderizado caso o usuário esteja autenticado, caso contrário, redireciona para a página de login
  */
 const ProtectedRoute = ({ element }: ProtectedRouteProps) => {
-    const isAuthenticated = !!localStorage.getItem('isAuth');   // recupera o valor de isAuth no localstorage
+    const isAuthenticated = localStorage.getItem('isAuth') === 'true' && AuthRequests.checkTokenExpiry();
 
-    return isAuthenticated ? element : <Navigate to="/login" />;  // verifica se o usuário está autenticado (isAuth = true), caso sim, renderiza o elemento, caso contrário, redireciona para a página de login
+    return isAuthenticated ? element : <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;
