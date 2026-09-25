@@ -111,8 +111,9 @@ function FormPedido() {
             return;
         }
 
-        if (!Number.isFinite(valorTotal) || valorTotal < 0) {
-            setMensagemErro('Informe um valor total válido, por exemplo: 49,90.');
+        if (!Number.isFinite(valorTotal) || valorTotal < 0 || valorTotal > 99999999.99
+            || Math.abs(valorTotal - Math.round(valorTotal * 100) / 100) > 1e-8) {
+            setMensagemErro('Informe um valor total válido, entre R$0,00 e R$99.999.999,99, com até duas casas decimais.');
             setEnviando(false);
             return;
         }
@@ -146,6 +147,7 @@ function FormPedido() {
             if (resposta.sucesso) {
                 setMensagem(resposta.mensagem ?? 'Pedido cadastrado com sucesso.');
                 setFormData({ idCliente: '', idProduto: '', quantidade: '1', dataPedido: '', valorTotal: '', formaPagamento: '', pago: false });
+                navigate('/lista/pedido');
             } else {
                 setMensagemErro(resposta.mensagem ?? 'Não foi possível cadastrar o pedido. Confira os dados e tente novamente.');
             }
@@ -226,7 +228,7 @@ function FormPedido() {
 
                             <div>
                                 <label htmlFor="quantidade">Quantidade</label>
-                                <input type="number" name="quantidade" id="quantidade" required min="1" step="1" value={formData.quantidade} onChange={(event) => atualizarQuantidade(event.target.value)} />
+                                <input type="number" name="quantidade" id="quantidade" required min="1" max="2147483647" step="1" value={formData.quantidade} onChange={(event) => atualizarQuantidade(event.target.value)} />
                             </div>
 
                             <div>

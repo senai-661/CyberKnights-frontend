@@ -22,9 +22,25 @@ function FormProduto() {
         e.preventDefault();
         setFeedback(null);
 
+        const nomeProduto = formData.nomeProduto.trim();
+        const preco = Number(formData.preco);
+        if (!nomeProduto || nomeProduto.length > 80) {
+            setFeedback({ tipo: 'erro', texto: 'O nome do produto é obrigatório e deve ter no máximo 80 caracteres.' });
+            return;
+        }
+        if (!Number.isFinite(preco) || preco < 0 || preco > 99999999.99
+            || Math.abs(preco - Math.round(preco * 100) / 100) > 1e-8) {
+            setFeedback({ tipo: 'erro', texto: 'Informe um preço entre R$0,00 e R$99.999.999,99, com até duas casas decimais.' });
+            return;
+        }
+        if (!['Disponível', 'Indisponível'].includes(formData.disponibilidade)) {
+            setFeedback({ tipo: 'erro', texto: 'Selecione uma disponibilidade válida.' });
+            return;
+        }
+
         const dadosProduto = {
-            nomeProduto: formData.nomeProduto,
-            preco: Number(formData.preco),
+            nomeProduto,
+            preco,
             disponibilidade: formData.disponibilidade
         };
 
@@ -68,6 +84,7 @@ function FormProduto() {
                                     id="nomeProduto"
                                     required
                                     minLength={3}
+                                    maxLength={80}
                                     onChange={handleChange}
                                     placeholder="Digite o nome"
                                     className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
@@ -88,6 +105,7 @@ function FormProduto() {
                                     id="preco"
                                     required
                                     min="0"
+                                    max="99999999.99"
                                     step="0.01"
                                     onChange={handleChange}
                                     placeholder="R$ 0,00"

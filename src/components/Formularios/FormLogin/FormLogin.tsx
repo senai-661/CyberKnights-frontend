@@ -91,6 +91,7 @@ function LoginForm(): JSX.Element {
                         <input
                             id="login-email"
                             type="email"
+                            maxLength={100}
                             placeholder="exemplo@email.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -108,6 +109,7 @@ function LoginForm(): JSX.Element {
                         <input
                             id="login-senha"
                             type="password"
+                            maxLength={100}
                             placeholder="Sua senha segura"
                             value={senha}
                             onChange={(e) => setSenha(e.target.value)}

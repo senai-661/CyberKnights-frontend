@@ -59,6 +59,25 @@ function FormCliente() {
             setFeedback({ tipo: 'erro', texto: 'E-mail inválido.' });
             return;
         }
+        if (!formData.email.trim() || formData.email.trim().length > 120) {
+            setFeedback({ tipo: 'erro', texto: 'O e-mail é obrigatório e deve ter no máximo 120 caracteres.' });
+            return;
+        }
+        if (!formData.nome.trim() || formData.nome.trim().length > 80
+            || !formData.endereco.trim() || formData.endereco.trim().length > 100) {
+            setFeedback({ tipo: 'erro', texto: 'Preencha nome e endereço dentro dos limites permitidos.' });
+            return;
+        }
+        const telefone = formData.telefone.replace(/\D/g, '');
+        if (![10, 11].includes(telefone.length)) {
+            setFeedback({ tipo: 'erro', texto: 'O telefone deve ter 10 ou 11 dígitos.' });
+            return;
+        }
+        const cpf = formData.cpf.replace(/\D/g, '');
+        if (cpf && cpf.length !== 11) {
+            setFeedback({ tipo: 'erro', texto: 'O CPF deve ter 11 dígitos.' });
+            return;
+        }
 
         const dadosCliente = {
             ...formData,
@@ -133,6 +152,7 @@ function FormCliente() {
                                 id="nome"
                                 required
                                 minLength={3}
+                                maxLength={80}
                                 onChange={handleChange}
                                 placeholder="Digite o nome"
                                 className="
@@ -168,6 +188,7 @@ function FormCliente() {
                                 name="telefone"
                                 id="telefone"
                                 required
+                                maxLength={16}
                                 value={formData.telefone}
                                 onChange={handleChange}
                                 placeholder="(99) 99999-9999"
@@ -205,6 +226,7 @@ function FormCliente() {
                                 id="endereco"
                                 required
                                 minLength={6}
+                                maxLength={100}
                                 onChange={handleChange}
                                 placeholder="Rua, número, bairro..."
                                 className="
@@ -239,6 +261,8 @@ function FormCliente() {
                                 type="email"
                                 name="email"
                                 id="email"
+                                required
+                                maxLength={120}
                                 onChange={handleChange}
                                 placeholder="exemplo@email.com"
                                 className="
