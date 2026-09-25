@@ -67,6 +67,7 @@ class ClienteRequests {
             });
 
             if (respostaAPI.ok) {
+                if (respostaAPI.status === 204) return [];
                 const dados = await respostaAPI.json();
                 return this.extrairLista(dados)
                     .filter((cliente): cliente is Record<string, unknown> => typeof cliente === 'object' && cliente !== null)
@@ -77,7 +78,7 @@ class ClienteRequests {
             }
         } catch (error) {
             console.error(`Erro ao fazer a consulta de clientes. ${error}`);
-            return [];
+            throw error;
         }
     }
 

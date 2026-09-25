@@ -29,7 +29,7 @@ function PAtualizarCliente() {
         setSalvando(true);
         setErro('');
         const cliente: ClienteDTO = { idCliente: Number(id_cliente), nome: formData.nome.trim(), email: formData.email.trim(), endereco: formData.endereco.trim(), telefone: formData.telefone.replace(/\D/g, ''), cpf: formData.cpf ? formData.cpf.replace(/\D/g, '') : undefined };
-        if (!cliente.nome || !cliente.email || !cliente.endereco || !cliente.telefone) { setErro('Preencha todos os campos obrigatórios.'); setSalvando(false); return; }
+        if (!cliente.nome || !cliente.endereco || !cliente.telefone) { setErro('Preencha todos os campos obrigatórios.'); setSalvando(false); return; }
         if (cliente.idCliente === undefined) { setErro('Cliente inválido.'); setSalvando(false); return; }
         const resposta = await ClienteRequests.atualizarCliente(cliente.idCliente, cliente);
         if (resposta.sucesso) navigate('/lista/cliente', { state: { clienteAtualizado: cliente } });

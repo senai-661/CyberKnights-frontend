@@ -59,6 +59,8 @@ function FormPedido() {
                     const disponibilidade = produto.disponibilidade.trim().toLowerCase();
                     return produto.idProduto && (disponibilidade === 'disponível' || disponibilidade === 'disponivel');
                 }));
+            } catch (error) {
+                setMensagemErro(error instanceof Error ? error.message : 'Não foi possível carregar clientes e produtos.');
             } finally {
                 setCarregandoOpcoes(false);
             }

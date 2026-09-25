@@ -42,6 +42,7 @@ class ProdutoRequests {
             });
 
             if (respostaAPI.ok) {
+                if (respostaAPI.status === 204) return [];
                 const dados = await respostaAPI.json();
                 return this.extrairLista(dados)
                     .filter((produto): produto is Record<string, unknown> => typeof produto === 'object' && produto !== null)
@@ -52,7 +53,7 @@ class ProdutoRequests {
             }
         } catch (error) {
             console.error(`Erro ao fazer a consulta de produtos. ${error}`);
-            return [];
+            throw error;
         }
     }
 

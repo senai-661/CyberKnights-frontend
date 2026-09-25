@@ -50,6 +50,7 @@ class PedidoRequests {
             );
 
             if (respostaAPI.ok) {
+                if (respostaAPI.status === 204) return [];
                 const dados = await respostaAPI.json();
                 return this.extrairLista(dados)
                     .filter((pedido): pedido is Record<string, unknown> => typeof pedido === 'object' && pedido !== null)
@@ -61,7 +62,7 @@ class PedidoRequests {
 
         } catch (error) {
             console.error("Erro ao fazer a consulta de pedidos.", error);
-            return [];
+            throw error;
         }
     }
 
