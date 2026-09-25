@@ -107,16 +107,18 @@ function FormProduto() {
                                     Disponibilidade
                                 </label>
 
-                                <input
-                                    type="text"
+                                <select
                                     name="disponibilidade"
                                     id="disponibilidade"
                                     required
-                                    minLength={6}
-                                    onChange={handleChange}
-                                    placeholder="Disponível, Indisponível"
+                                    value={formData.disponibilidade}
+                                    onChange={(event) => setFormData((prev) => ({ ...prev, disponibilidade: event.target.value }))}
                                     className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
-                                />
+                                >
+                                    <option value="" disabled>Selecione uma opção</option>
+                                    <option value="Disponível">Disponível</option>
+                                    <option value="Indisponível">Indisponível</option>
+                                </select>
                             </div>
 
                         </div>

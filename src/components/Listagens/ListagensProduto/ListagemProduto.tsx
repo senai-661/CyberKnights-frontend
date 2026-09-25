@@ -12,6 +12,7 @@ function ListagemProdutos(): JSX.Element {
     const rowsPerPage = 5;
     const navigate = useNavigate();
     const [erro, setErro] = useState('');
+    const [busca, setBusca] = useState('');
 
     useEffect(() => {
         const buscarProdutos = async () => {
@@ -27,11 +28,19 @@ function ListagemProdutos(): JSX.Element {
         buscarProdutos();
     }, []);
 
-    // Lógica de Paginação
-    const totalPages = Math.ceil(produtos.length / rowsPerPage);
+    const produtosFiltrados = produtos.filter((produto) => {
+        const termo = busca.trim().toLowerCase();
+        if (!termo) return true;
+        return [produto.nomeProduto, produto.disponibilidade, String(produto.preco)]
+            .some((valor) => valor.toLowerCase().includes(termo));
+    });
+
+    // Lógica de paginação
+    const totalPages = Math.ceil(produtosFiltrados.length / rowsPerPage);
     const indexOfLastRow = currentPage * rowsPerPage;
     const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-    const currentProdutos = produtos.slice(indexOfFirstRow, indexOfLastRow);
+    const currentProdutos = produtosFiltrados.slice(indexOfFirstRow, indexOfLastRow);
+    const inicioExibicao = produtosFiltrados.length === 0 ? 0 : indexOfFirstRow + 1;
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -52,13 +61,13 @@ function ListagemProdutos(): JSX.Element {
     <main className="bg-gray-200 flex-1 flex flex-col px-4 sm:px-6 md:px-10 py-6 md:py-10 overflow-hidden"> {/* overflow-hidden no main para conter o scroll interno */}
             <div className="w-full max-w-7xl mx-auto flex flex-col sm:flex-row items-center gap-4 mb-6 md:mb-8 flex-shrink-0">
                 <h1 className="flex-1 text-xl sm:text-2xl md:text-3xl text-center sm:text-left font-bold text-slate-800">Produtos</h1>
-                <a href="/cadastro/produto" className="w-full sm:w-auto px-4 py-2 md:px-6 md:py-3 text-sm md:text-base bg-slate-700 rounded-md text-center text-white font-bold flex items-center justify-center hover:cursor-pointer hover:bg-slate-600 transition-all shadow-md hover:shadow-lg active:scale-95">
+                <button type="button" onClick={() => navigate('/cadastro/produto')} className="w-full sm:w-auto px-4 py-2 md:px-6 md:py-3 text-sm md:text-base bg-slate-700 rounded-md text-center text-white font-bold flex items-center justify-center hover:cursor-pointer hover:bg-slate-600 transition-all shadow-md hover:shadow-lg active:scale-95">
                     Novo Produto
-                </a>
+                </button>
             </div>
             {erro && <div className="w-full max-w-7xl mx-auto"><Feedback tipo="erro">{erro}</Feedback></div>}
 
-            <input type="text" name="busca-produto" id="busca-produto" placeholder="Buscar produto" className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm" />
+            <input type="search" name="busca-produto" id="busca-produto" value={busca} onChange={(event) => { setBusca(event.target.value); setCurrentPage(1); }} placeholder="Buscar por nome, preço ou disponibilidade" className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm" />
 
             <div className="w-full max-w-7xl mx-auto flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow-xl border border-slate-300 overflow-hidden">
                 <div className="flex-1 overflow-auto overscroll-none">
@@ -111,14 +120,14 @@ function ListagemProdutos(): JSX.Element {
                     <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
                             <p className="text-sm text-slate-700">
-                                Mostrando <span className="font-semibold">{indexOfFirstRow + 1}</span> até <span className="font-semibold">{Math.min(indexOfLastRow, produtos.length)}</span> de <span className="font-semibold">{produtos.length}</span> resultados
+                                Mostrando <span className="font-semibold">{inicioExibicao}</span> até <span className="font-semibold">{Math.min(indexOfLastRow, produtosFiltrados.length)}</span> de <span className="font-semibold">{produtosFiltrados.length}</span> resultados
                             </p>
                         </div>
                         <div>
                             <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                                 <button
                                     onClick={() => paginate(Math.max(1, currentPage - 1))}
-                                    disabled={currentPage === 1}
+                                    disabled={totalPages === 0 || currentPage === 1}
                                     className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
                                     <span className="sr-only">Anterior</span>
@@ -135,7 +144,7 @@ function ListagemProdutos(): JSX.Element {
                                 ))}
                                 <button
                                     onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
-                                    disabled={currentPage === totalPages}
+                                    disabled={totalPages === 0 || currentPage === totalPages}
                                     className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
                                     <span className="sr-only">Próximo</span>

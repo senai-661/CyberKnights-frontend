@@ -13,7 +13,7 @@ function dataInput(data: Date | string | undefined) {
 function PAtualizarPedido() {
     const { id_pedido } = useParams<{ id_pedido: string }>();
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ idCliente: '', idProduto: '', dataPedido: '', valorTotal: '', statusPedido: '' });
+    const [formData, setFormData] = useState({ idCliente: '', idProduto: '', quantidade: '1', dataPedido: '', valorTotal: '', statusPedido: '' });
     const [carregando, setCarregando] = useState(true);
     const [salvando, setSalvando] = useState(false);
     const [erro, setErro] = useState('');
@@ -22,7 +22,7 @@ function PAtualizarPedido() {
         const carregar = async () => {
             const pedido = await PedidoRequests.obterPedidoPorId(Number(id_pedido)) as PedidoDTO | undefined;
             if (!pedido) setErro('Pedido não encontrado.');
-            else setFormData({ idCliente: String(pedido.idCliente ?? ''), idProduto: String(pedido.idProduto ?? ''), dataPedido: dataInput(pedido.dataPedido), valorTotal: String(pedido.valorTotal ?? ''), statusPedido: pedido.statusPedido ?? '' });
+            else setFormData({ idCliente: String(pedido.idCliente ?? ''), idProduto: String(pedido.idProduto ?? ''), quantidade: String(pedido.quantidade ?? 1), dataPedido: dataInput(pedido.dataPedido), valorTotal: String(pedido.valorTotal ?? ''), statusPedido: pedido.statusPedido ?? '' });
             setCarregando(false);
         };
         void carregar();
@@ -33,8 +33,8 @@ function PAtualizarPedido() {
         event.preventDefault();
         setSalvando(true);
         setErro('');
-        const pedido: PedidoDTO = { idPedido: Number(id_pedido), idCliente: Number(formData.idCliente), idProduto: Number(formData.idProduto), dataPedido: new Date(`${formData.dataPedido}T00:00:00`), valorTotal: Number(formData.valorTotal.replace(',', '.')), statusPedido: formData.statusPedido.trim() };
-        if (!Number.isInteger(pedido.idCliente) || pedido.idCliente <= 0 || !Number.isInteger(pedido.idProduto) || pedido.idProduto <= 0 || Number.isNaN(pedido.dataPedido.getTime()) || !Number.isFinite(pedido.valorTotal) || pedido.valorTotal < 0 || !pedido.statusPedido) { setErro('Preencha todos os campos corretamente.'); setSalvando(false); return; }
+        const pedido: PedidoDTO = { idPedido: Number(id_pedido), idCliente: Number(formData.idCliente), idProduto: Number(formData.idProduto), quantidade: Number(formData.quantidade), dataPedido: new Date(`${formData.dataPedido}T00:00:00`), valorTotal: Number(formData.valorTotal.replace(',', '.')), statusPedido: formData.statusPedido.trim() };
+        if (!Number.isInteger(pedido.idCliente) || pedido.idCliente <= 0 || !Number.isInteger(pedido.idProduto) || pedido.idProduto <= 0 || !Number.isInteger(pedido.quantidade) || pedido.quantidade <= 0 || Number.isNaN(pedido.dataPedido.getTime()) || !Number.isFinite(pedido.valorTotal) || pedido.valorTotal < 0 || !pedido.statusPedido) { setErro('Preencha todos os campos corretamente.'); setSalvando(false); return; }
         const idPedido = pedido.idPedido;
         if (typeof idPedido !== 'number' || !Number.isInteger(idPedido) || idPedido <= 0) { setErro('Pedido inválido.'); setSalvando(false); return; }
         const resposta = await PedidoRequests.atualizarPedido(idPedido, pedido);

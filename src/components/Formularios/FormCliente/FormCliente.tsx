@@ -55,7 +55,7 @@ function FormCliente() {
         e.preventDefault();
         setFeedback(null);
 
-        if (!Utilitario.validarEmail(formData.email)) {
+        if (formData.email && !Utilitario.validarEmail(formData.email)) {
             setFeedback({ tipo: 'erro', texto: 'E-mail inválido.' });
             return;
         }
@@ -167,6 +167,7 @@ function FormCliente() {
                                 type="tel"
                                 name="telefone"
                                 id="telefone"
+                                required
                                 value={formData.telefone}
                                 onChange={handleChange}
                                 placeholder="(99) 99999-9999"
@@ -202,6 +203,7 @@ function FormCliente() {
                                 type="text"
                                 name="endereco"
                                 id="endereco"
+                                required
                                 minLength={6}
                                 onChange={handleChange}
                                 placeholder="Rua, número, bairro..."
@@ -274,7 +276,6 @@ function FormCliente() {
                             inputMode="numeric"
                             name="cpf"
                             id="cpf"
-                            required
                             maxLength={14}
                             value={formData.cpf}
                             onChange={handleChange}

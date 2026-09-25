@@ -25,6 +25,9 @@ class PedidoRequests {
             idPedido: Number(pedido.idPedido ?? pedido.id_pedido ?? pedido.id),
             idCliente: Number(pedido.idCliente ?? pedido.id_cliente),
             idProduto: Number(pedido.idProduto ?? pedido.id_produto),
+            nomeCliente: String(pedido.nomeCliente ?? pedido.nome_cliente ?? ''),
+            nomeProduto: String(pedido.nomeProduto ?? pedido.nome_produto ?? ''),
+            quantidade: Number(pedido.quantidade ?? 1),
             dataPedido: new Date(String(pedido.dataPedido ?? pedido.data_pedido ?? '')),
             valorTotal: Number(pedido.valorTotal ?? pedido.valor_total ?? 0),
             statusPedido: String(pedido.statusPedido ?? pedido.status_pedido ?? '')
@@ -90,7 +93,7 @@ class PedidoRequests {
         }
     }
 
-    async enviarFormularioPedido(formPedido: PedidoDTO): Promise<boolean> {
+    async enviarFormularioPedido(formPedido: PedidoDTO): Promise<{ sucesso: boolean; mensagem?: string }> {
         try {
             const token = localStorage.getItem('token');
             const respostaAPI = await fetch(`${this.serverURL}${this.endpointPedido}`, {
@@ -105,15 +108,19 @@ class PedidoRequests {
 
             if (!respostaAPI.ok) {
                 const dados = await respostaAPI.json().catch(() => ({}));
-                throw new Error(dados.mensagem ?? dados.message ?? dados.error ?? `Erro ${respostaAPI.status}: ${respostaAPI.statusText}`);
+                return {
+                    sucesso: false,
+                    mensagem: dados.mensagem ?? dados.message ?? dados.error ?? `Erro ${respostaAPI.status}: ${respostaAPI.statusText}`
+                };
             }
 
             console.info(`${respostaAPI.status}: ${respostaAPI.statusText}`);
 
-            return true;
+            const dados = await respostaAPI.json().catch(() => ({}));
+            return { sucesso: true, mensagem: dados.mensagem };
         } catch (error) {
             console.error(`Erro ao fazer consulta à API. ${error}`);
-            return false;
+            return { sucesso: false, mensagem: 'Não foi possível conectar ao servidor.' };
         }
     }
 
