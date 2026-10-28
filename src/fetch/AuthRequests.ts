@@ -1,10 +1,9 @@
 /**
  * Classe para lidar com autenticação
  */
-class AuthRequests {
+import { API_URL } from '../config/api';
 
-    private serverUrl: string;
-    private endpointLogin: string;
+class AuthRequests {
 
     private isRecord(value: unknown): value is Record<string, unknown> {
         return typeof value === 'object' && value !== null;
@@ -34,16 +33,6 @@ class AuthRequests {
     }
     
     /**
-     * Construtor das rotas e do endereço do servidor
-     */
-    constructor() {
-        // endereço do servidor
-        this.serverUrl = 'http://localhost:3333';
-        // rota do servidor
-        this.endpointLogin = '/api/login';
-    }
-
-    /**
      * Realiza a autenticação no servidor
      * @param {*} login - email e senha
      * @returns **true** caso sucesso, **false** caso erro
@@ -52,12 +41,10 @@ class AuthRequests {
         try {
             const payload = {
                 email: login.email,
-                senha: login.senha,
-                password: login.senha,
-                username: login.email,
+                senha: login.senha
             };
 
-            const response = await fetch(`${this.serverUrl}${this.endpointLogin}`, {
+            const response = await fetch(`${API_URL}/api/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -174,4 +161,3 @@ class AuthRequests {
 }
 
 export default new AuthRequests();
-//kjhdfiuseghfisdgfjsrgfzujreuikdbwukeygfdwjratw//
