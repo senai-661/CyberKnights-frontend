@@ -1,11 +1,12 @@
 import type { ClienteDTO } from "../dto/ClienteDTO";
+import { API_URL } from '../config/api';
 
 class ClienteRequests {
     private serverURL;
     private endpointCliente;
 
     constructor() {
-        this.serverURL = `http://localhost:3333`;
+        this.serverURL = API_URL;
         this.endpointCliente = `/api/cliente`;
     }
 

@@ -4,7 +4,6 @@ import Navegacao from "../../components/Navegacao/Navegacao";
 
 import LoginForm from "../../components/Formularios/FormLogin/FormLogin";
 
-
 function PLogin(): JSX.Element {
     return (
         <div className="pagina-grid">

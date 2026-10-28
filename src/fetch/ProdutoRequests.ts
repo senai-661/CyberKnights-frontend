@@ -1,11 +1,12 @@
 import type { ProdutoDTO } from "../dto/ProdutoDTO";
+import { API_URL } from '../config/api';
 
 class ProdutoRequests {
     private serverURL;
     private endpointProduto;
 
     constructor() {
-        this.serverURL = `http://localhost:3333`;
+        this.serverURL = API_URL;
         this.endpointProduto = `/api/produto`;
     }
 
@@ -178,4 +179,4 @@ class ProdutoRequests {
          }
     }
 
-export default new ProdutoRequests;
+export default new ProdutoRequests();

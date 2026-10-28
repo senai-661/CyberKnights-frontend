@@ -1,11 +1,12 @@
 import type { PedidoDTO } from "../dto/PedidoDTO";
+import { API_URL } from '../config/api';
 
 class PedidoRequests {
     private serverURL: string;
     private endpointPedido: string;
 
     constructor() {
-        this.serverURL = "http://localhost:3333";
+        this.serverURL = API_URL;
         this.endpointPedido = "/api/pedido";
     }
 
