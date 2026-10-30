@@ -24,7 +24,7 @@ function PDetalhesProduto(): JSX.Element {
                         Number(id)
                     );
 
-                setProduto(dados);
+                if (dados) setProduto(dados);
 
             } catch (error) {
 

@@ -101,6 +101,9 @@ function DetalhesPedidos(): JSX.Element {
                         ["ID do pedido", pedido?.idPedido, "pi-hashtag"],
                         ["ID do cliente", pedido?.idCliente, "pi-user"],
                         ["ID do produto", pedido?.idProduto, "pi-box"],
+                        ...(pedido?.saborMilkshake ? [["Sabor do milkshake", pedido.saborMilkshake, "pi-star"]] : []),
+                        ...(pedido?.ingredientesRemovidos?.length ? [["Ingredientes removidos", pedido.ingredientesRemovidos.join(", "), "pi-minus-circle"]] : []),
+                        ...(pedido?.adicionaisSelecionados?.length ? [["Adicionais", pedido.adicionaisSelecionados.join(", "), "pi-plus-circle"]] : []),
                         ["Data do pedido", pedido?.dataPedido ? new Date(pedido.dataPedido).toLocaleDateString("pt-BR") : "", "pi-calendar"],
                         ["Valor total", formatarMoeda(pedido?.valorTotal), "pi-money-bill"],
                         ["Status do pedido", <Tag value={pedido?.statusPedido} severity={getStatusSeverity(pedido?.statusPedido || "")} />, "pi-info-circle"]

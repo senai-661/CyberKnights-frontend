@@ -2,6 +2,11 @@ import { type JSX } from "react";
 import { useState, useEffect } from "react";
 import PedidoRequests from "../../../fetch/PedidoRequests";
 import type { PedidoDTO } from "../../../dto/PedidoDTO";
+import ClienteRequests from "../../../fetch/ClienteRequests";
+import ProdutoRequests from "../../../fetch/ProdutoRequests";
+import type { ClienteDTO } from "../../../dto/ClienteDTO";
+import type { ProdutoDTO } from "../../../dto/ProdutoDTO";
+import { agruparTamanhosMilkshake, nomeMilkshake } from "../../../utils/Milkshake";
 import { useNavigate } from "react-router-dom";
 import Navegacao from "../../../components/Navegacao/Navegacao";
 import Feedback from "../../../components/Feedback/Feedback";
@@ -11,8 +16,18 @@ function formatarMoeda(valor: number | string): string {
     return Number.isFinite(numero) ? numero.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'R$ 0,00';
 }
 
+function nomeProdutoPedido(pedido: PedidoDTO, produtos: ProdutoDTO[]): string {
+    const produto = produtos.find((item) => item.idProduto === pedido.idProduto);
+    if (!produto) return `Produto #${pedido.idProduto}`;
+
+    const tamanho = agruparTamanhosMilkshake([produto])[0];
+    return tamanho ? nomeMilkshake(tamanho, pedido.saborMilkshake) : produto.nomeProduto;
+}
+
 function ListagemPedidos(): JSX.Element {
     const [pedidos, setPedidos] = useState<PedidoDTO[]>([]);
+    const [clientes, setClientes] = useState<ClienteDTO[]>([]);
+    const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
     const [termoBusca, setTermoBusca] = useState('');
     const [pedidoExcluindo, setPedidoExcluindo] = useState<number | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -23,8 +38,14 @@ function ListagemPedidos(): JSX.Element {
     useEffect(() => {
         const buscarPedidos = async () => {
             try {
-                const listaDePedidos = await PedidoRequests.obterListaDePedidos();
+                const [listaDePedidos, listaDeClientes, listaDeProdutos] = await Promise.all([
+                    PedidoRequests.obterListaDePedidos(),
+                    ClienteRequests.obterListaDeClientes(),
+                    ProdutoRequests.obterListaDeProdutos()
+                ]);
                 setPedidos(Array.isArray(listaDePedidos) ? listaDePedidos : []);
+                setClientes(Array.isArray(listaDeClientes) ? listaDeClientes : []);
+                setProdutos(Array.isArray(listaDeProdutos) ? listaDeProdutos : []);
             } catch (error) {
                 console.error(`Erro ao buscar pedidos. ${error}`);
                 setErro(error instanceof Error ? error.message : "Erro ao carregar pedidos.");
@@ -38,10 +59,11 @@ function ListagemPedidos(): JSX.Element {
         const textoBusca = termoBusca.trim().toLowerCase();
         if (!textoBusca) return true;
 
+        const nomeCliente = clientes.find((cliente) => cliente.idCliente === pedido.idCliente)?.nome ?? '';
+        const nomeProduto = nomeProdutoPedido(pedido, produtos);
         const campos = [
-            pedido.idPedido,
-            pedido.idCliente,
-            pedido.idProduto,
+            nomeCliente,
+            nomeProduto,
             pedido.dataPedido,
             pedido.valorTotal,
             pedido.statusPedido
@@ -99,7 +121,7 @@ function ListagemPedidos(): JSX.Element {
                 }}
                 name="busca-pedido"
                 id="busca-pedido"
-                placeholder="Buscar pedido"
+                placeholder="Buscar por nome do cliente ou produto"
                 className="w-full max-w-6xl mx-auto p-3 md:p-2 md:mb-4 border-b-2 border-slate-700 rounded-sm"
             />
 
@@ -109,8 +131,8 @@ function ListagemPedidos(): JSX.Element {
                         <thead className="bg-slate-700 sticky top-0 z-10 shadow-sm">
                             <tr>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden md:table-cell text-left">ID</th>
-                                <th className="border-b border-slate-600 text-white p-3 md:p-4 text-left">ID Cliente</th>
-                                <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden sm:table-cell text-left">ID Produto</th>
+                                <th className="border-b border-slate-600 text-white p-3 md:p-4 text-left">Cliente</th>
+                                <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden sm:table-cell text-left">Produto</th>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden lg:table-cell text-left">Data do Pedido</th>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden sm:table-cell text-left">Valor Total</th>
                                 <th className="border-b border-slate-600 text-white p-3 md:p-4 hidden sm:table-cell text-left">Status</th>
@@ -122,8 +144,8 @@ function ListagemPedidos(): JSX.Element {
                                 currentPedidos.map((pedido) => (
                                     <tr className="text-center md:text-left transition-colors hover:bg-slate-50 group" key={pedido.idPedido}>
                                         <td className="p-3 md:p-4 hidden md:table-cell text-slate-500">{pedido.idPedido}</td>
-                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{pedido.idCliente}</td>
-                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{pedido.idProduto}</td>
+                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{clientes.find((cliente) => cliente.idCliente === pedido.idCliente)?.nome ?? `Cliente #${pedido.idCliente}`}</td>
+                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{nomeProdutoPedido(pedido, produtos)}</td>
                                         <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">
                                             {new Date(pedido.dataPedido).toLocaleDateString('pt-BR')}
                                         </td>

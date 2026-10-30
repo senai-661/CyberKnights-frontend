@@ -10,7 +10,9 @@ function FormProduto() {
         nomeProduto: '',
         preco: '',
         disponibilidade: '',
+        ingredientes: '',
     });
+    const [adicionais, setAdicionais] = useState([{ nome: '', preco: '' }]);
     const [feedback, setFeedback] = useState<{ tipo: 'sucesso' | 'erro'; texto: string } | null>(null);
     const [enviando, setEnviando] = useState(false);
 
@@ -26,8 +28,15 @@ function FormProduto() {
         const dadosProduto = {
             nomeProduto: formData.nomeProduto.trim(),
             preco: Number(formData.preco),
-            disponibilidade: formData.disponibilidade.trim()
+            disponibilidade: formData.disponibilidade.trim(),
+            ingredientes: formData.ingredientes.split(/[,;\n]/).map((item) => item.trim()).filter(Boolean),
+            adicionais: adicionais.filter((item) => item.nome.trim()).map((item) => ({ nome: item.nome.trim(), preco: Number(item.preco) }))
         };
+
+        if (adicionais.some((item) => item.nome.trim() && (!item.preco || !Number.isFinite(Number(item.preco)) || Number(item.preco) < 0))) {
+            setFeedback({ tipo: 'erro', texto: 'Informe um preço válido para cada adicional.' });
+            return;
+        }
 
         const produtos = await ProdutoRequests.obterListaDeProdutos();
         const produtoDuplicado = produtos.some((produto) =>
@@ -134,6 +143,25 @@ function FormProduto() {
                                 />
                             </div>
 
+                        </div>
+
+                        <div className="product-customization-fields">
+                            <div>
+                                <label htmlFor="ingredientesProduto">Ingredientes incluídos</label>
+                                <textarea id="ingredientesProduto" value={formData.ingredientes} onChange={(event) => setFormData((anterior) => ({ ...anterior, ingredientes: event.target.value }))} placeholder="Ex.: pão, hambúrguer, queijo, alface, tomate" rows={3} />
+                                <small>Separe os ingredientes por vírgula. O cliente poderá pedir para retirar algum.</small>
+                            </div>
+
+                            <div className="product-extras-editor">
+                                <div className="product-extras-heading"><div><label>Adicionais disponíveis</label><small>Cadastre cada extra e seu preço.</small></div>
+                                    <button type="button" onClick={() => setAdicionais((anteriores) => [...anteriores, { nome: '', preco: '' }])}>+ Adicionar opção</button>
+                                </div>
+                                {adicionais.map((adicional, index) => <div className="product-extra-edit-row" key={index}>
+                                    <input aria-label={`Nome do adicional ${index + 1}`} value={adicional.nome} onChange={(event) => setAdicionais((anteriores) => anteriores.map((item, itemIndex) => itemIndex === index ? { ...item, nome: event.target.value } : item))} placeholder="Ex.: bacon extra" />
+                                    <div className="product-extra-price"><span>R$</span><input aria-label={`Preço do adicional ${index + 1}`} type="number" min="0" step="0.01" value={adicional.preco} onChange={(event) => setAdicionais((anteriores) => anteriores.map((item, itemIndex) => itemIndex === index ? { ...item, preco: event.target.value } : item))} placeholder="0,00" required={Boolean(adicional.nome.trim())} /></div>
+                                    {adicionais.length > 1 && <button type="button" aria-label={`Remover adicional ${index + 1}`} onClick={() => setAdicionais((anteriores) => anteriores.filter((_, itemIndex) => itemIndex !== index))}>×</button>}
+                                </div>)}
+                            </div>
                         </div>
 
                     </div>

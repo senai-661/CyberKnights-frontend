@@ -1,5 +1,7 @@
-import type { ProdutoDTO } from "../dto/ProdutoDTO";
+import type { AdicionalProdutoDTO, ProdutoDTO } from "../dto/ProdutoDTO";
 import { API_URL } from '../config/api';
+import { obterCustomizacaoProduto, obterCustomizacaoProdutoPorNome, salvarCustomizacaoProduto } from '../utils/CustomizacaoProduto';
+import { obterIngredientesPadrao } from '../utils/IngredientesPadrao';
 
 class ProdutoRequests {
     private serverURL;
@@ -21,12 +23,40 @@ class ProdutoRequests {
     }
 
     private normalizarProduto(produto: Record<string, unknown>): ProdutoDTO {
+        const idProduto = Number(produto.idProduto ?? produto.id_produto ?? produto.id);
+        const nomeProduto = String(produto.nomeProduto ?? produto.nome_produto ?? produto.nome ?? '');
+        const customizacaoLocal = obterCustomizacaoProduto(idProduto) ?? obterCustomizacaoProdutoPorNome(nomeProduto);
+        const ingredientesOriginais = produto.ingredientes ?? produto.ingredientesProduto ?? produto.ingredientes_produto;
+        const ingredientesApi = Array.isArray(ingredientesOriginais)
+            ? ingredientesOriginais.filter((item): item is string => typeof item === 'string').map((item) => item.trim()).filter(Boolean)
+            : typeof ingredientesOriginais === 'string'
+                ? ingredientesOriginais.split(/[,;\n]/).map((item) => item.trim()).filter(Boolean)
+                : [];
+        const ingredientes = ingredientesApi.length
+            ? ingredientesApi
+            : customizacaoLocal?.ingredientes.length
+                ? customizacaoLocal.ingredientes
+                : obterIngredientesPadrao(nomeProduto);
+        const adicionaisOriginais = produto.adicionais ?? produto.extras;
+        const adicionaisApi = Array.isArray(adicionaisOriginais)
+            ? adicionaisOriginais.flatMap((item): AdicionalProdutoDTO[] => {
+                if (typeof item !== 'object' || item === null) return [];
+                const adicional = item as Record<string, unknown>;
+                const nome = String(adicional.nome ?? adicional.nomeAdicional ?? '').trim();
+                const preco = Number(adicional.preco ?? adicional.valor ?? 0);
+                return nome && Number.isFinite(preco) && preco >= 0 ? [{ nome, preco }] : [];
+            })
+            : [];
+        const adicionais = adicionaisApi.length ? adicionaisApi : customizacaoLocal?.adicionais ?? [];
+
         return {
             ...produto,
-            idProduto: Number(produto.idProduto ?? produto.id_produto ?? produto.id),
-            nomeProduto: String(produto.nomeProduto ?? produto.nome_produto ?? produto.nome ?? ''),
+            idProduto,
+            nomeProduto,
             preco: Number(produto.preco ?? produto.preço ?? 0),
-            disponibilidade: String(produto.disponibilidade ?? '')
+            disponibilidade: String(produto.disponibilidade ?? ''),
+            ingredientes,
+            adicionais
         };
     }
 
@@ -71,7 +101,13 @@ class ProdutoRequests {
             });
 
             if (respostaAPI.ok) {
-                return await respostaAPI.json();
+                const dados: unknown = await respostaAPI.json();
+                if (typeof dados !== 'object' || dados === null) return;
+                const resposta = dados as Record<string, unknown>;
+                const registro = resposta.produto ?? resposta.data ?? dados;
+                return typeof registro === 'object' && registro !== null
+                    ? this.normalizarProduto(registro as Record<string, unknown>)
+                    : undefined;
             } else {
                 throw new Error("Não foi possível buscar o produto.");
             }
@@ -100,6 +136,30 @@ class ProdutoRequests {
                         sucesso: false,
                         mensagem: dados.mensagem ?? dados.message ?? dados.error ?? `Erro ${respostaAPI.status}: ${respostaAPI.statusText}`
                     };
+                }
+
+                const corpo = typeof dados === 'object' && dados !== null ? dados as Record<string, unknown> : {};
+                const produtoResposta = corpo.produto ?? corpo.data ?? corpo;
+                let idProduto = formProduto.idProduto;
+                if (typeof produtoResposta === 'object' && produtoResposta !== null) {
+                    const registro = produtoResposta as Record<string, unknown>;
+                    const idRetornado = Number(registro.idProduto ?? registro.id_produto ?? registro.id);
+                    if (Number.isSafeInteger(idRetornado) && idRetornado > 0) idProduto = idRetornado;
+                }
+
+                if (!idProduto && (formProduto.ingredientes?.length || formProduto.adicionais?.length)) {
+                    const produtos = await this.obterListaDeProdutos();
+                    idProduto = produtos.find((produto) =>
+                        produto.nomeProduto.trim().toLocaleLowerCase() === formProduto.nomeProduto.trim().toLocaleLowerCase() &&
+                        Number(produto.preco) === Number(formProduto.preco)
+                    )?.idProduto;
+                }
+
+                if (formProduto.ingredientes || formProduto.adicionais) {
+                    salvarCustomizacaoProduto(idProduto, formProduto.nomeProduto, {
+                        ingredientes: formProduto.ingredientes ?? [],
+                        adicionais: formProduto.adicionais ?? []
+                    });
                 }
 
                 return { sucesso: true };
@@ -153,6 +213,13 @@ class ProdutoRequests {
             try {
                 if (!Number.isInteger(idProduto) || idProduto <= 0) {
                     return { sucesso: false, mensagem: 'ID do produto inválido.' };
+                }
+
+                if (produto.ingredientes || produto.adicionais) {
+                    salvarCustomizacaoProduto(idProduto, produto.nomeProduto, {
+                        ingredientes: produto.ingredientes ?? [],
+                        adicionais: produto.adicionais ?? []
+                    });
                 }
 
                 const token = localStorage.getItem('token');

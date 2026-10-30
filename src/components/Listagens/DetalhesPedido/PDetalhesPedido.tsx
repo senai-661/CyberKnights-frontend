@@ -43,15 +43,7 @@ function PDetalhesPedido(): JSX.Element {
                     return;
                 }
 
-                setPedido({
-                    ...resposta,
-                    idPedido: Number(resposta.idPedido ?? resposta.id_pedido ?? resposta.id),
-                    idCliente: Number(resposta.idCliente ?? resposta.id_cliente),
-                    idProduto: Number(resposta.idProduto ?? resposta.id_produto),
-                    dataPedido: new Date(resposta.dataPedido ?? resposta.data_pedido),
-                    valorTotal: Number(resposta.valorTotal ?? resposta.valor_total ?? 0),
-                    statusPedido: String(resposta.statusPedido ?? resposta.status_pedido ?? '')
-                });
+                setPedido(resposta);
             } catch {
                 if (ativo) setErro("Erro ao buscar pedido");
             } finally {
@@ -121,6 +113,10 @@ function PDetalhesPedido(): JSX.Element {
 
                     <div className="cliente-detail-row"><div className="cliente-detail-row-icon"><i className="pi pi-box" /></div><div className="cliente-detail-copy"><span>ID do produto</span><strong>{pedido.idProduto}</strong></div></div>
                     <Divider />
+
+                    {pedido.saborMilkshake && <><div className="cliente-detail-row"><div className="cliente-detail-row-icon"><i className="pi pi-star" /></div><div className="cliente-detail-copy"><span>Sabor do milkshake</span><strong>{pedido.saborMilkshake}</strong></div></div><Divider /></>}
+                    {pedido.ingredientesRemovidos?.length ? <><div className="cliente-detail-row"><div className="cliente-detail-row-icon"><i className="pi pi-minus-circle" /></div><div className="cliente-detail-copy"><span>Ingredientes removidos</span><strong>{pedido.ingredientesRemovidos.join(', ')}</strong></div></div><Divider /></> : null}
+                    {pedido.adicionaisSelecionados?.length ? <><div className="cliente-detail-row"><div className="cliente-detail-row-icon"><i className="pi pi-plus-circle" /></div><div className="cliente-detail-copy"><span>Adicionais</span><strong>{pedido.adicionaisSelecionados.join(', ')}</strong></div></div><Divider /></> : null}
 
                     <div className="cliente-detail-row"><div className="cliente-detail-row-icon"><i className="pi pi-calendar" /></div><div className="cliente-detail-copy"><span>Data do pedido</span><strong>{new Date(pedido.dataPedido).toLocaleDateString("pt-BR")}</strong></div></div>
                     <Divider />

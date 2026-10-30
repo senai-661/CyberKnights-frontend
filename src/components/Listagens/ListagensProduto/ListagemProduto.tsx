@@ -5,6 +5,7 @@ import type { ProdutoDTO } from "../../../dto/ProdutoDTO";
 import { useNavigate } from "react-router-dom";
 import Navegacao from "../../../components/Navegacao/Navegacao";
 import Feedback from "../../../components/Feedback/Feedback";
+import { agruparTamanhosMilkshake, identificarTamanhoMilkshake, nomeMilkshake } from "../../../utils/Milkshake";
 
 function ListagemProdutos(): JSX.Element {
     const [produtos, setProdutos] = useState<ProdutoDTO[]>([]);
@@ -28,13 +29,20 @@ function ListagemProdutos(): JSX.Element {
         buscarProdutos();
     }, []);
 
-    const produtosFiltrados = produtos.filter((produto) => {
+    const tamanhosMilkshake = agruparTamanhosMilkshake(produtos);
+    const produtosParaExibir = [
+        ...produtos.filter((produto) => identificarTamanhoMilkshake(produto.nomeProduto) === null),
+        ...tamanhosMilkshake.map((tamanho) => tamanho.produto)
+    ];
+
+    const produtosFiltrados = produtosParaExibir.filter((produto) => {
         const textoBusca = termoBusca.trim().toLowerCase();
         if (!textoBusca) return true;
 
+        const tamanhoMilkshake = tamanhosMilkshake.find((tamanho) => tamanho.produto.idProduto === produto.idProduto);
         const campos = [
             produto.idProduto,
-            produto.nomeProduto,
+            tamanhoMilkshake ? nomeMilkshake(tamanhoMilkshake) : produto.nomeProduto,
             produto.preco,
             produto.disponibilidade
         ];
@@ -107,8 +115,8 @@ function ListagemProdutos(): JSX.Element {
                                 currentProdutos.map((produto) => (
                                     <tr className="text-center md:text-left transition-colors hover:bg-slate-50 group" key={produto.idProduto}>
                                         <td className="p-3 md:p-4 hidden md:table-cell text-slate-500">{produto.idProduto}</td>
-                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{produto.nomeProduto}</td>
-                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{produto.preco}</td>
+                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{(() => { const tamanho = tamanhosMilkshake.find((item) => item.produto.idProduto === produto.idProduto); return tamanho ? nomeMilkshake(tamanho) : produto.nomeProduto; })()}</td>
+                                        <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{tamanhosMilkshake.find((item) => item.produto.idProduto === produto.idProduto)?.preco ?? produto.preco}</td>
                                         <td className="p-3 md:p-4 hidden sm:table-cell text-slate-600">{produto.disponibilidade}</td>
 
                                         <td className="p-2 md:p-4">

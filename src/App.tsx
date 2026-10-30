@@ -4,6 +4,7 @@ import Rodape from './components/Rodape/Rodape'
 
 import PHome from './pages/PHome/PHome'
 import PLogin from './pages/PLogin/PLogin'
+import PCombos from './pages/PCombos/PCombos'
 
 //  Import dos componentes de listagem
 import PListagensClientes from './components/Listagens/ListagensClientes/ListagensClientes'
@@ -39,6 +40,7 @@ function App() {
         <Route path='/lista/cliente' element={<ProtectedRoute element={<PListagensClientes />} />} />
         <Route path='/lista/pedido'  element={<ProtectedRoute element={<PListagensPedidos />} />} />
         <Route path='/lista/produto' element={<ProtectedRoute element={<PListagensProdutos />} />} />
+        <Route path='/combos' element={<ProtectedRoute element={<PCombos />} />} />
 
         {/*  Detalhes — rotas novas */}
         <Route path='/detalhes/cliente/:id_cliente' element={<ProtectedRoute element={<DetalhesCliente />} />} />

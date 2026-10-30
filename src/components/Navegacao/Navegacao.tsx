@@ -20,7 +20,8 @@ function Navegacao(): JSX.Element {
         ...(isAuthenticated ? [
             { label: 'Clientes', icon: 'pi pi-users', url: "/lista/cliente" },
             { label: 'Pedidos', icon: 'pi pi-shopping-bag', url: "/lista/pedido" },
-            { label: 'Produtos', icon: 'pi pi-hamburger', url: "/lista/produto" }
+            { label: 'Produtos', icon: 'pi pi-hamburger', url: "/lista/produto" },
+            { label: 'Combos', icon: 'pi pi-tags', url: "/combos" }
         ] : [])
     ];
 

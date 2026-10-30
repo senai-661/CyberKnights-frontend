@@ -21,11 +21,16 @@ class PedidoRequests {
     }
 
     private normalizarPedido(pedido: Record<string, unknown>): PedidoDTO {
+        const ingredientesRemovidos = pedido.ingredientesRemovidos ?? pedido.ingredientes_removidos;
+        const adicionaisSelecionados = pedido.adicionaisSelecionados ?? pedido.adicionais_selecionados;
         return {
             ...pedido,
             idPedido: Number(pedido.idPedido ?? pedido.id_pedido ?? pedido.id),
             idCliente: Number(pedido.idCliente ?? pedido.id_cliente),
             idProduto: Number(pedido.idProduto ?? pedido.id_produto),
+            saborMilkshake: String(pedido.saborMilkshake ?? pedido.sabor_milkshake ?? '') || undefined,
+            ingredientesRemovidos: Array.isArray(ingredientesRemovidos) ? ingredientesRemovidos.filter((item): item is string => typeof item === 'string') : undefined,
+            adicionaisSelecionados: Array.isArray(adicionaisSelecionados) ? adicionaisSelecionados.filter((item): item is string => typeof item === 'string') : undefined,
             dataPedido: new Date(String(pedido.dataPedido ?? pedido.data_pedido ?? '')),
             valorTotal: Number(pedido.valorTotal ?? pedido.valor_total ?? 0),
             statusPedido: String(pedido.statusPedido ?? pedido.status_pedido ?? '')
@@ -82,8 +87,13 @@ class PedidoRequests {
                 throw new Error("Não foi possível buscar o pedido por ID.");
             }
 
-            const resposta = await respostaAPI.json();
-            return resposta;
+            const resposta: unknown = await respostaAPI.json();
+            if (typeof resposta !== 'object' || resposta === null) return null;
+            const corpo = resposta as Record<string, unknown>;
+            const pedido = corpo.pedido ?? corpo.data ?? resposta;
+            return typeof pedido === 'object' && pedido !== null
+                ? this.normalizarPedido(pedido as Record<string, unknown>)
+                : null;
 
         } catch (error) {
             console.error("Erro ao buscar pedido por ID.", error);
